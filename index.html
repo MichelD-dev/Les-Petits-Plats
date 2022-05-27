@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Site de recettes de cuisine" />
+    <script
+      src="https://kit.fontawesome.com/9adb84594d.js"
+      crossorigin="anonymous"
+    ></script>
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <script type="module" src="scripts/index.js"></script>
+    <title>Les petits plats</title>
+  </head>
+
+  <body>
+    <div class="container">
+      <!---------------------------- HEADER------------------------------->
+
+      <header class="header">
+        <figure>
+          <img
+            class="logo"
+            src="./assets/logo/15973932905401_logo.png"
+            alt="Logo de l'entreprise Les Petits Plats"
+          />
+        </figure>
+      </header>
+
+      <!---------------------------------------------------------------------->
+      <!------------------------- SECTION RECHERCHE -------------------------->
+      <!---------------------------------------------------------------------->
+      <div class="search">
+        <form class="search__form" method="get" action="#">
+          <input
+            type="search"
+            class="search__form_searchbar"
+            placeholder="Rechercher une recette"
+          />
+          <!-- <input type="submit" value="Rechercher" /> -->
+        </form>
+        <i class="search__fa-search fas fa-search fa-2x"></i>
+      </div>
+
+      <!------------------------------------------------------------>
+      <!--------------------------SELECTEUR------------------------->
+      <!------------------------------------------------------------>
+
+      <!-- <label for="medias-sort"></label> -->
+      <!-- <input id="medias-sort" class="visually-hidden" tabindex="-1" /> -->
+      <section class="selectors">
+        <div class="select-wrapper">
+          <div class="select" id="select_ingredients">
+            <div
+              tabindex="0"
+              class="select__trigger select__trigger_ingredients"
+              aria-label="Sélecteur"
+              id="ingredients"
+            >
+              <span>Ingrédients</span>
+              <div class="arrow"></div>
+            </div>
+            <div
+              aria-label="Options de tri"
+              class="custom-options"
+              role="listbox"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+            >
+              <span
+                tabindex="0"
+                role="option"
+                aria-selected="true"
+                class="custom-option selected hidden"
+                data-value="popularity"
+                >Ingredients</span
+              >
+              <span
+                tabindex="0"
+                role="option"
+                class="custom-option"
+                data-value="date"
+                >Ingredients 2</span
+              >
+              <span
+                tabindex="0"
+                role="option"
+                class="custom-option"
+                data-value="title"
+                >Ingredients 3</span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="select-wrapper">
+          <div class="select select_appareils">
+            <div
+              tabindex="0"
+              class="select__trigger select__trigger_appareils"
+              aria-label="Sélecteur"
+              id="appareils"
+            >
+              <span>Appareils</span>
+              <div class="arrow"></div>
+            </div>
+            <div
+              aria-label="Options de tri"
+              class="custom-options"
+              role="listbox"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+            >
+              <span
+                tabindex="0"
+                role="option"
+                aria-selected="true"
+                class="custom-option selected hidden"
+                data-value="popularity"
+                >Appareils</span
+              >
+              <span
+                tabindex="0"
+                role="option"
+                class="custom-option"
+                data-value="date"
+                >Appareils 2</span
+              >
+              <span
+                tabindex="0"
+                role="option"
+                class="custom-option"
+                data-value="title"
+                >Appareils 3</span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="select-wrapper">
+          <div class="select select_ustensiles">
+            <div
+              tabindex="0"
+              class="select__trigger select__trigger_ustensiles"
+              aria-label="Sélecteur"
+              id="ustensiles"
+            >
+              <span>Ustensiles</span>
+              <div class="arrow"></div>
+            </div>
+            <div
+              aria-label="Options de tri"
+              class="custom-options"
+              role="listbox"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+            >
+              <span
+                tabindex="0"
+                role="option"
+                aria-selected="true"
+                class="custom-option selected hidden"
+                data-value="popularity"
+                >Ustensiles</span
+              >
+              <span
+                tabindex="0"
+                role="option"
+                class="custom-option"
+                data-value="date"
+                >Ustensiles 2</span
+              >
+              <span
+                tabindex="0"
+                role="option"
+                class="custom-option"
+                data-value="title"
+                >Ustensiles 3</span
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!------------------------------------------------------------>
+      <!--------------------------RECETTES------------------------->
+      <!------------------------------------------------------------>
+
+      <section class="recipes"></section>
+    </div>
+  </body>
+</html>

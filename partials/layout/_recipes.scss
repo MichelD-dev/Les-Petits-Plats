@@ -1,0 +1,9 @@
+.recipes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4%;
+  margin-top: 80px;
+  width: 100%;
+  height: 100vh //FIXME à enlever
+;
+}

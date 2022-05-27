@@ -1,0 +1,12 @@
+{
+  "name": "Les_petits_plats",
+  "version": "1.0.0",
+  "description": "Site de recettes de cuisine",
+  "main": "index.js",
+  "author": "Michel DELAUNAY",
+  "scripts": {
+    "sass": "sass -w ./style.scss:./css/style.css"
+  },
+  "license": "MIT",
+  "packageManager": "yarn@3.2.1"
+}

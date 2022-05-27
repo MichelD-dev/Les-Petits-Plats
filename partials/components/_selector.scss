@@ -1,0 +1,162 @@
+@use '../utils/variables' as *;
+
+.selectors {
+  align-self: start;
+  display: flex;
+  gap: 20px;
+}
+
+.select {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  &__label {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  &-wrapper {
+    align-self: start;
+    position: relative;
+    width: 170px;
+    display: inline-block;
+  }
+  &__trigger {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 18px;
+    color: white;
+    padding: 11px 15px 11px 19px;
+    margin-bottom: -1px;
+    height: 69px;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    &:focus {
+      // outline: 4px solid black;
+      z-index: 10;
+    }
+    &_ingredients {
+      background-color: $secondary-color;
+    }
+    &_appareils {
+      background-color: $tertiary-color;
+    }
+    &_ustensiles {
+      background-color: $quaternary-color;
+    }
+  }
+}
+
+.custom-options {
+  position: absolute;
+  display: block;
+  top: 100%;
+  left: 0;
+  right: 0;
+  transition: all 0.5s;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.select.open {
+  .select__trigger {
+    border-radius: 7px 7px 0 0;
+  }
+}
+
+.select.open .custom-options {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: all;
+}
+
+.custom-option {
+  display: block;
+  line-height: 60px;
+  font-size: 20px;
+  color: white;
+  padding: 1px 30px;
+  height: 60px;
+  border: none;
+  background-color: $secondary-color;
+  position: relative;
+  &:focus {
+    // outline: 4px solid black;
+    z-index: 100;
+  }
+  &:hover {
+    cursor: pointer;
+  }
+  &_last {
+    border-radius: 0 0 7px 7px;
+    box-shadow: 0 3px 10px -5px rgba(0, 0, 0, 1);
+  }
+}
+
+.no-btm-border-radius {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+label[for='medias-sort'] {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.arrow {
+  position: relative;
+  height: 9.88px;
+  width: 16px;
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0px;
+    width: 0.2rem;
+    height: 100%;
+    transition: all 0.5s;
+  }
+  &::before {
+    left: -1px;
+    transform: rotate(-45deg);
+    background-color: white;
+  }
+  &::after {
+    left: 5px;
+    transform: rotate(45deg);
+    background-color: white;
+  }
+}
+
+.open {
+  & .arrow {
+    &::before {
+      left: -1px;
+      transform: rotate(45deg);
+    }
+
+    &::after {
+      left: 5px;
+      transform: rotate(-45deg);
+    }
+  }
+}
+
+.hidden {
+    display: none;
+  }
+
+//   .visually-hidden {
+//     border: 0;
+//     clip: rect(0 0 0 0);
+//     height: 1px;
+//     overflow: hidden;
+//     padding: 0;
+//     position: absolute;
+//     white-space: nowrap;
+//     width: 1px;
+//   }

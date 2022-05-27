@@ -1,0 +1,12 @@
+@use '../layout/header';
+@use '../layout/recipes';
+@use '../components/selector';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 1240px;
+  margin: auto;
+  margin-top: 50px;
+}
