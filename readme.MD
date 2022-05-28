@@ -5,4 +5,3 @@
 ### Développeur d'applications JavaScript React
 ### - Projet 7 -
 ---
-"# Les-Petits-Plats" 

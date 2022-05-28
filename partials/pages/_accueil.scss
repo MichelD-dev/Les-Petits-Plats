@@ -1,6 +1,8 @@
 @use '../layout/header';
 @use '../layout/recipes';
 @use '../components/selector';
+@use '../components/search';
+@use '../components/recipe-card';
 
 .container {
   display: flex;
