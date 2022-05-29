@@ -11,7 +11,7 @@
   display: flex;
   flex-direction: column;
   &__label {
-    font-size: 18px;
+    // font-size: 18px;
     font-weight: bold;
   }
   &-wrapper {
@@ -25,7 +25,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 18px;
+    // font-size: 18px;
     color: white;
     padding: 11px 15px 11px 19px;
     margin-bottom: -1px;
@@ -34,7 +34,6 @@
     border-radius: 7px;
     cursor: pointer;
     &:focus {
-      // outline: 4px solid black;
       z-index: 10;
     }
     &_ingredients {
@@ -51,7 +50,10 @@
 
 .custom-options {
   position: absolute;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  max-height: 600px;
   top: 100%;
   left: 0;
   right: 0;
@@ -79,13 +81,12 @@
   line-height: 60px;
   font-size: 20px;
   color: white;
-  padding: 1px 30px;
+  padding: 0 20px;
   height: 60px;
   border: none;
   background-color: $secondary-color;
   position: relative;
   &:focus {
-    // outline: 4px solid black;
     z-index: 100;
   }
   &:hover {
@@ -93,7 +94,7 @@
   }
   &_last {
     border-radius: 0 0 7px 7px;
-    box-shadow: 0 3px 10px -5px rgba(0, 0, 0, 1);
+    // box-shadow: 0 3px 10px -5px rgba(0, 0, 0, 1);
   }
 }
 
@@ -147,8 +148,8 @@ label[for='medias-sort'] {
 }
 
 .hidden {
-    display: none;
-  }
+  display: none;
+}
 
 //   .visually-hidden {
 //     border: 0;

@@ -2,9 +2,9 @@
 
 // Syntaxe :  addReactionTo('evt').on(window || 'class/id/attribut...').withFunction(fonction)
 
-const event = actionChoice => evt => ({
-  on: elem => ({
-    withFunction: (action, ...params) => {
+const event = actionChoice => evt => {
+  const on = elem => {
+    const withFunction = (action, ...params) => {
       if (typeof elem === 'string') {
         if (actionChoice === 'add') {
           return document
@@ -23,9 +23,11 @@ const event = actionChoice => evt => ({
           return elem.removeEventListener(evt, action)
         }
       }
-    },
-  }),
-})
+    }
+    return { withFunction }
+  }
+  return { on }
+}
 
 export const addReactionTo = event('add')
 export const removeReactionTo = event('remove')

@@ -25,7 +25,7 @@
       outline: none;
       background-color: $primary-color;
       border: none;
-      font-size: 18px;
+      // font-size: 18px;
       &::placeholder {
         color: color.scale($primary-color, $lightness: -30%);
       }

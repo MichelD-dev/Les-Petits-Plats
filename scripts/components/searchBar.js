@@ -1,7 +1,5 @@
 import { recipes } from '../data/recipes.js'
 
-// addReactionTo('change').on(search).withFunction(() => console.log(search.value))
-
 export const search = search => {
   let results = []
 

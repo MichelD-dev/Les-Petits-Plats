@@ -3,6 +3,7 @@
 @use '../components/selector';
 @use '../components/search';
 @use '../components/recipe-card';
+@use '../components/snackbar';
 
 .container {
   display: flex;

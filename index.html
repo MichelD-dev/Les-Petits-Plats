@@ -28,9 +28,16 @@
         </figure>
       </header>
 
+      <!------------------------------------------------------------>
+      <!--------------------------SNACKBAR-------------------------->
+      <!------------------------------------------------------------>
+
+      <div id="snackbar" class="hidden"></div>
+
       <!---------------------------------------------------------------------->
       <!------------------------- SECTION RECHERCHE -------------------------->
       <!---------------------------------------------------------------------->
+
       <div class="search">
         <form class="search__form" method="get" action="#">
           <input
@@ -47,47 +54,34 @@
       <!--------------------------SELECTEUR------------------------->
       <!------------------------------------------------------------>
 
-        <section class="selectors">
+      <section class="selectors">
         <div class="select-wrapper">
           <div class="select" id="select_ingredients">
             <div
               tabindex="0"
               class="select__trigger select__trigger_ingredients"
-                            id="ingredients"
+              id="ingredients"
             >
               <span>Ingrédients</span>
               <div class="arrow"></div>
             </div>
-            <div
+            <ul
               aria-label="Options de tri"
               class="custom-options"
               role="listbox"
               aria-haspopup="listbox"
               aria-expanded="false"
             >
-              <span
+              <li
                 tabindex="0"
                 role="option"
                 aria-selected="true"
                 class="custom-option selected hidden"
                 data-value="popularity"
-                >Ingredients</span
               >
-              <span
-                tabindex="0"
-                role="option"
-                class="custom-option"
-                data-value="date"
-                >Ingredients 2</span
-              >
-              <span
-                tabindex="0"
-                role="option"
-                class="custom-option"
-                data-value="title"
-                >Ingredients 3</span
-              >
-            </div>
+                Ingredients
+              </li>
+            </ul>
           </div>
         </div>
         <div class="select-wrapper">
@@ -95,7 +89,7 @@
             <div
               tabindex="0"
               class="select__trigger select__trigger_appareils"
-                           id="appareils"
+              id="appareils"
             >
               <span>Appareils</span>
               <div class="arrow"></div>
@@ -137,7 +131,7 @@
             <div
               tabindex="0"
               class="select__trigger select__trigger_ustensiles"
-                          id="ustensiles"
+              id="ustensiles"
             >
               <span>Ustensiles</span>
               <div class="arrow"></div>

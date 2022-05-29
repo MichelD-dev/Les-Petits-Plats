@@ -15,31 +15,32 @@
     background: $primary-color;
     display: flex;
     padding: 20px;
-    &-left {
-      display: flex;
-      flex-direction: column;
-      &__title {
-        padding-bottom: 20px;
-      }
+  }
+  &__left {
+    display: flex;
+    flex-direction: column;
+    &__title {
+      padding-bottom: 20px;
     }
-    &-right {
-      width: 189px;
-      display: flex;
-      flex-direction: column;
-      &__duration {
-        align-self: flex-end;
-        padding-bottom: 20px;
-      }
-      &__description {
-        height: 109px;
-        display: -webkit-box;
-        -webkit-line-clamp: 7; //FIXME
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        font-family: 'Roboto', sans-serif;
-        font-size: 12px;
-        line-height: 12px;
-      }
+  }
+
+  &__right {
+    width: 189px;
+    display: flex;
+    flex-direction: column;
+    &__duration {
+      align-self: flex-end;
+      padding-bottom: 20px;
+    }
+    &__description {
+      height: 109px;
+      display: -webkit-box;
+      -webkit-line-clamp: 7; //FIXME
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      font-family: 'Roboto', sans-serif;
+      font-size: 12px;
+      line-height: 12px;
     }
   }
 }
