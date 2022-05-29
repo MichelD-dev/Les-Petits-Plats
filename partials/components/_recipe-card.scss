@@ -5,6 +5,7 @@
   width: 380px;
   border-radius: 5px;
   overflow: hidden;
+  margin: auto;
   &__image {
     height: 178px;
     background: #c7bebe;
@@ -33,7 +34,7 @@
         height: 109px;
         display: -webkit-box;
         -webkit-line-clamp: 7; //FIXME
-        -webkit-box-orient: vertical;  
+        -webkit-box-orient: vertical;
         overflow: hidden;
         font-family: 'Roboto', sans-serif;
         font-size: 12px;
@@ -41,4 +42,8 @@
       }
     }
   }
+}
+
+.fa-clock {
+  padding-right: 5px;
 }

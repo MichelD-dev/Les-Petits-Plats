@@ -1,73 +1,58 @@
 // import { sortBy } from "../scripts/components/selector.js";
-import { recipes } from './data/recipes.js'
+
+import { search } from './components/searchBar.js'
 import recipeFactory from './factory/recipeFactory.js'
+import DOM from './utils/domElements.js'
+import { addReactionTo } from './utils/eventListener.js'
+import { cardsSectionReset } from './utils/utils.js'
 
-let searchInput = document.querySelector('.search__form_searchbar')
+/**
+ * On met le focus dans l'input de recherche à l'ouverture de la page
+ */
+DOM.searchInput.focus()
 
-// addReactionTo('change').on(search).withFunction(() => console.log(search.value))
+const printRecipes = e => {
+  let selectedRecipes = []
 
-const search = () => {
-  if (searchInput.value.length < 3) return
-
-  let results = []
-
-  for (let i = 0; i < recipes.length; i++) {
-    if (
-      recipes[i].name.toLowerCase().includes(searchInput.value.toLowerCase())
-    ) {
-      const result = [
-        ...recipes[i].name
-          .toLowerCase()
-          .matchAll(new RegExp(searchInput.value, 'gi')),
-      ]
-      for (const match of result) {
-        results.push(match.input)
-      }
-      // searchInput.value = result
-
-      for (let j = 0; j < recipes[i].ingredients.length; j++) {
-        if (
-          recipes[i].ingredients[j].ingredient
-            .toLowerCase()
-            .includes(searchInput.value.toLowerCase())
-        ) {
-          const result = [
-            ...recipes[i].ingredients[j].ingredient
-              .toLowerCase()
-              .matchAll(new RegExp(searchInput.value, 'gi')),
-          ]
-          for (const match of result) {
-            results.push(match.input)
-          }
-          // searchInput.value = result
-        }
-      }
-    }
-
-    if (
-      recipes[i].description
-        .toLowerCase()
-        .includes(searchInput.value.toLowerCase())
-    ) {
-      const result = [
-        ...recipes[i].description
-          .toLowerCase()
-          .matchAll(new RegExp(searchInput.value, 'gi')),
-      ]
-      for (const match of result) {
-        results.push(match.input)
-      }
-      // searchInput.value = result
-    }
+  if (e.target.value.length < 3) {
+    cardsSectionReset()
+    console.log(`0 recettes trouvées`);
+    
+    return
   }
 
-  console.log(results)
+  /**
+   * On récupère un tableau de selections de recettes d'après les critères de recherche
+   */
+  const selections = search(e.target.value)
+
+  /**
+   * On ajoute éventuellement cette séléction  aux résultats précédents
+   */
+  selectedRecipes = [...selectedRecipes, ...selections]
+
+  /**
+   * On réinitialise l'affichage des cards recettes
+   */
+  cardsSectionReset()
+
+  /**
+   * On supprime les doublons de la selection
+   */
+  ;[...new Set([...selectedRecipes])].forEach(recipe => {
+    const article = recipeFactory(recipe).getRecipeCardDOM()
+
+console.log(`${[...new Set([...selectedRecipes])].length} recettes trouvées`);
+
+    /**
+     * On affiche la selection
+     */
+    DOM.cardsSection.appendChild(article)
+  })
 }
 
-searchInput.addEventListener('keyup', search)
-
-recipes.forEach(recipe => {
-  const article = recipeFactory(recipe).getRecipeCardDOM();
-
-  document.querySelector('.recipes').appendChild(article)
-})
+/**
+ * On écoute les frappes clavier
+ */
+// DOM.searchInput.addEventListener('keyup', printRecipes)
+addReactionTo('keyup').on(DOM.searchInput).withFunction(printRecipes)

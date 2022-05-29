@@ -23,7 +23,7 @@ const recipeFactory = recipe => {
     recipe.ingredients.forEach(item => {
       const ingredient = document.createElement('li')
       const ingredientName = document.createElement('span')
-      
+
       ingredientName.textContent = `${item.ingredient}`
       ingredient.textContent = `${item.quantity || item.quantite ? ':' : ''}  ${
         item.quantity || item.quantite || ''
@@ -56,10 +56,10 @@ const recipeFactory = recipe => {
     textRight.appendChild(cookingTime)
     textRight.appendChild(description)
 
-    // cookingTime.insertAdjacentElement(
-    //   'afterbegin',
-    //  `<i class="fa-regular fa-clock"></i>`
-    // )
+    cookingTime.insertAdjacentHTML(
+      'afterbegin',
+      `<i class="fa-regular fa-clock"></i> `
+    )
 
     return article
   }

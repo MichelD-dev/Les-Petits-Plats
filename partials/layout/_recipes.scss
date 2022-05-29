@@ -1,9 +1,17 @@
+@use '../utils/mixins' as *;
+
 .recipes {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 4%;
   margin-top: 80px;
   width: 100%;
-  height: 100vh //FIXME à enlever
+  // height: 100vh //FIXME à enlever
 ;
+  @include media-max(1380px) {
+    // grid-template-columns: repeat(2, 1fr);
+  }
+  @include media-max(900px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
 }
