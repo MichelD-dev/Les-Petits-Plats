@@ -1,27 +1,26 @@
-import { recipes } from '../data/recipes.js'
+import { recipes as recipesList } from '../data/recipes.js'
 
-export const getFromSearch = search => {
-  const results = []
+const isFound = search => ({
+  in: list => list.toLowerCase().includes(search.toLowerCase()),
+})
 
-  for (let i = 0; i < recipes.length; i++) {
-    if (recipes[i].name.toLowerCase().includes(search.toLowerCase())) {
-      results.push(recipes[i])
+const getFromSearch = search => {
+  const searchResults = []
 
-      for (let j = 0; j < recipes[i].ingredients.length; j++) {
-        if (
-          recipes[i].ingredients[j].ingredient
-            .toLowerCase()
-            .includes(search.toLowerCase())
-        ) {
-          results.push(recipes[i])
-        }
-      }
-    }
+  for (let i = 0; i < recipesList.length; i++) {
+    let recipes = recipesList[i]
 
-    if (recipes[i].description.toLowerCase().includes(search.toLowerCase())) {
-      results.push(recipes[i])
+    if (isFound(search).in(recipes.name)) searchResults.push(recipes)
+
+    if (isFound(search).in(recipes.description)) searchResults.push(recipes)
+
+    for (let j = 0; j < recipes.ingredients.length; j++) {
+      if (isFound(search).in(recipes.ingredients[j].ingredient))
+        searchResults.push(recipes)
     }
   }
 
-  return results
+  return searchResults
 }
+
+export { getFromSearch }
