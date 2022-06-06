@@ -1,7 +1,7 @@
 import { getRecipes } from '../index.js'
 import DOM from '../utils/domElements.js'
 import { addReactionTo } from '../utils/eventListener.js'
-import { search } from './searchBar.js'
+import { getFromSearch } from './searchBar.js'
 
 /**
  * Tri de l'ordre d'affichage des images selon choix utilisateur
@@ -25,92 +25,58 @@ export const sortBy = medias => {
  * Changements d'apparence du selecteur sur events
  */
 const selectorChange = selector => {
-  //   console.log(selector)
-  /**
-   * Déclaration d'un tableau des selections non choisies
-   */
-  let notSelectedsOptionsArray = []
-
   /**
    * Ouverture du selecteur
    */
-  if (!document.querySelector('.select').classList.contains('open')) {
-    document.querySelector('.select').classList.add('open')
-    document
-      .querySelector('.custom-options')
-      .setAttribute('aria-expanded', true)
-
-    /**
-     * Mise en tableau des selections non choisies
-     */ //TODO
-    //  e.target.parentElement.dataset.selector
-    notSelectedsOptionsArray = [
-      ...selector.getElementsByClassName('custom-option'),
-    ].filter(el => !el.classList.contains('selected'))
-
-    /**
-     * Border-radius placé dynamiquement en bas de la dernière selection non choisie
-     */
-    notSelectedsOptionsArray[notSelectedsOptionsArray.length - 1].classList.add(
-      'custom-option_last'
-    )
-
-    document.querySelector('.selected').focus()
+  if (!document.getElementById(selector.id).classList.contains('open')) {
+    document.getElementById(selector.id).classList.add('open')
   } else {
     /**
      * Fermeture du selecteur
      */
-    document.querySelector('.select').classList.remove('open')
-    document
-      .querySelector('.custom-options')
-      .setAttribute('aria-expanded', false)
-
-    /**
-     * On retire le bottom border-radius des selections avant de positionner une nouvelle selection en dernière position
-     */
-    ;[...document.getElementsByClassName('custom-option')].forEach(option =>
-      option.classList.remove('custom-option_last')
-    )
+    if (!DOM.selectorInput.activeElement) {
+      document.getElementById(selector.id).classList.remove('open')
+    }
   }
 }
 
 /**
  * Affichage de l'option selectionnée
  */
-const selectDisplaySorting = option => {
-  for (const hidden of document.querySelectorAll(
-    '.custom-option.hidden, .select__trigger'
-  )) {
-    hidden.classList.remove('hidden')
-    document
-      .querySelector('.select__trigger')
-      .classList.add('no-btm-border-radius')
-  }
-  if (!option.classList.contains('selected')) {
-    option.parentNode
-      .querySelector('.custom-option.selected')
-      .removeAttribute('aria-selected')
-    option.parentNode
-      .querySelector('.custom-option.selected')
-      .classList.remove('selected')
+// const selectDisplaySorting = option => {
+//   for (const hidden of document.querySelectorAll(
+//     '.custom-option.hidden, .select__trigger'
+//   )) {
+//     hidden.classList.remove('hidden')
+//     document
+//       .querySelector('.select__trigger')
+//       .classList.add('no-btm-border-radius')
+//   }
+//   if (!option.classList.contains('selected')) {
+//     option.parentNode
+//       .querySelector('.custom-option.selected')
+//       .removeAttribute('aria-selected')
+//     option.parentNode
+//       .querySelector('.custom-option.selected')
+//       .classList.remove('selected')
 
-    option.classList.add('selected')
-    option.setAttribute('aria-selected', true)
-    option.classList.add('hidden')
-    setTimeout(() => {
-      document
-        .querySelector('.select__trigger')
-        .classList.remove('no-btm-border-radius')
-    }, 200)
+//     option.classList.add('selected')
+//     option.setAttribute('aria-selected', true)
+//     option.classList.add('hidden')
+//     setTimeout(() => {
+//       document
+//         .querySelector('.select__trigger')
+//         .classList.remove('no-btm-border-radius')
+//     }, 200)
 
-    option
-      .closest('.select')
-      .querySelector('.select__trigger span').textContent = option.textContent
-    document
-      .querySelector('.select__trigger')
-      .setAttribute('aria-activedescendant', `${option.textContent}`)
-  }
-}
+//     option
+//       .closest('.select')
+//       .querySelector('.select__trigger span').textContent = option.textContent
+//     document
+//       .querySelector('.select__trigger')
+//       .setAttribute('aria-activedescendant', `${option.textContent}`)
+//   }
+// }
 
 /**
  * GESTION DU FOCUS
@@ -156,7 +122,7 @@ const focusInSelector = e => {
 /**
  * On ouvre le selecteur
  */
-;[...document.querySelectorAll('.select-wrapper')].forEach(selector => {
+;[...document.querySelectorAll('.select__trigger')].forEach(selector => {
   addReactionTo('pointerdown')
     .on(selector)
     .withFunction(e => {
@@ -175,20 +141,20 @@ const focusInSelector = e => {
 /**
  * On ouvre le selecteur avec le clavier
  */
-addReactionTo('keydown')
-  .on('.select-wrapper')
-  .withFunction(e => {
-    if (e.key === 'Enter') {
-      selectorChange(DOM.ingredientsSelector)
-      document.querySelector('.select__trigger').focus()
-    }
-  })
+// addReactionTo('keydown')
+//   .on('.select-wrapper')
+//   .withFunction(e => {
+//     if (e.key === 'Enter') {
+//       selectorChange(DOM.ingredientsSelector)
+//       document.querySelector('.select__trigger').focus()
+//     }
+//   })
 
 /**
  * Navigation au clavier dans le selecteur
  */
 addReactionTo('keydown')
-  .on(DOM.selector)
+  .on(DOM.selectorInput)
   .withFunction(e => {
     if (e.key === 'Escape' || e.key === 'Esc') {
       document.querySelector('.select.open')?.classList.remove('open')

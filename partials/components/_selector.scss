@@ -1,76 +1,92 @@
 @use '../utils/variables' as *;
 
 .selectors {
-  align-self: start;
   display: flex;
   gap: 20px;
+  align-self: flex-start;
 }
 
 .select {
-  position: relative;
-  display: flex;
-  flex-direction: column;
+  width: 200px;
+  position: absolute;
   &__label {
-    // font-size: 18px;
     font-weight: bold;
   }
   &-wrapper {
-    align-self: start;
-    position: relative;
-    width: 170px;
-    display: inline-block;
+    user-select: none;
   }
   &__trigger {
-    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    // font-size: 18px;
     color: white;
     padding: 11px 15px 11px 19px;
-    margin-bottom: -1px;
+    margin-bottom: 5px;
     height: 69px;
     border: none;
     border-radius: 7px;
     cursor: pointer;
-    &:focus {
-      z-index: 10;
-    }
+    // &:focus {
+    //   z-index: 10;
+    // }
     &_ingredients {
       background-color: $secondary-color;
     }
     &_appareils {
       background-color: $tertiary-color;
+      left: 200px;
     }
     &_ustensiles {
       background-color: $quaternary-color;
     }
   }
+  &__input {
+    border: none;
+    outline: none;
+    background: transparent;
+    color: white;
+    width: 80%;
+    height: 100%;
+    font-size: 1.1rem;
+    &::placeholder {
+      color: white;
+      // font-weight: bold;
+      font-size: 1.1rem;
+    }
+    &:focus::placeholder {
+      opacity: 0;
+    }
+  }
+}
+
+// #select_ingredients {
+//   left:0;
+// }
+#select_appareils {
+  left:275px;
+}
+#select_ustensiles {
+  left: 483px;
 }
 
 .custom-options {
-  position: absolute;
+  width: 800px;
+  color: white;
+  // position: absolute;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
   max-height: 600px;
-  top: 100%;
   left: 0;
-  right: 0;
   transition: all 0.5s;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
   z-index: 2;
+  padding: 20px;
 }
 
-.select.open {
-  .select__trigger {
-    border-radius: 7px 7px 0 0;
-  }
-}
-
-.select.open .custom-options {
+.select.open .custom-options, .select.open .list-bg {
   opacity: 1;
   visibility: visible;
   pointer-events: all;
@@ -78,11 +94,11 @@
 
 .custom-option {
   display: block;
-  line-height: 60px;
+  line-height: 2.5rem;
   font-size: 20px;
   color: white;
   padding: 0 20px;
-  height: 60px;
+  // height: 60px;
   border: none;
   background-color: $secondary-color;
   position: relative;
@@ -145,6 +161,18 @@ label[for='medias-sort'] {
       transform: rotate(-45deg);
     }
   }
+}
+
+.list-bg {
+  width: 800px;
+  max-width: 800px;
+  max-height: 600px;
+  background-color: $secondary-color;
+  border-radius: 5px;
+  transition: all 0.5s;
+  opacity: 0;
+  visibility: hidden;
+  z-index: 20;
 }
 
 .hidden {

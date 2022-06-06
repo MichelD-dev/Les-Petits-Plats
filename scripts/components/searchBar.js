@@ -1,7 +1,7 @@
 import { recipes } from '../data/recipes.js'
 
-export const search = search => {
-  let results = []
+export const getFromSearch = search => {
+  const results = []
 
   for (let i = 0; i < recipes.length; i++) {
     if (recipes[i].name.toLowerCase().includes(search.toLowerCase())) {

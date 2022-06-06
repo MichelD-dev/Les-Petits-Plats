@@ -1,78 +1,46 @@
 @import url("https://fonts.googleapis.com/css2?family=Lato&family=Roboto&display=swap");
-/* Box sizing rules */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-/* Remove default margin */
-body,
-h1,
-h2,
-h3,
-h4,
-p,
-figure,
-blockquote,
-dl,
-dd {
+/* http://meyerweb.com/eric/tools/css/reset/ v2.0 | 20110126 License: none (public domain) */
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
   margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
 }
 
-/* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
-ul[role=list],
-ol[role=list] {
-  list-style: none;
-}
-
-/* Set core root defaults */
-html:focus-within {
-  scroll-behavior: smooth;
-}
-
-/* Set core body defaults */
-body {
-  min-height: 100vh;
-  text-rendering: optimizeSpeed;
-  line-height: 1.5;
-}
-
-/* A elements that don't have a class get default styles */
-a:not([class]) {
-  text-decoration-skip-ink: auto;
-}
-
-/* Make images easier to work with */
-img,
-picture {
-  max-width: 100%;
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
   display: block;
 }
 
-/* Inherit fonts for inputs and buttons */
-input,
-button,
-textarea,
-select {
-  font: inherit;
+body {
+  line-height: 1;
+  position: relative;
 }
 
-/* Remove all animations, transitions and smooth scroll for people that prefer not to see them */
-@media (prefers-reduced-motion: reduce) {
-  html:focus-within {
-    scroll-behavior: auto;
-  }
-
-  *,
-*::before,
-*::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+ol, ul {
+  list-style: none;
 }
+
+blockquote, q {
+  quotes: none;
+}
+
+blockquote:before, blockquote:after, q:before, q:after {
+  content: "";
+  content: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+*, *:after, *:before {
+  box-sizing: border-box;
+}
+
 .header {
   margin-bottom: 20px;
   width: 30%;
@@ -96,72 +64,85 @@ select {
 }
 
 .selectors {
-  align-self: start;
   display: flex;
   gap: 20px;
+  align-self: flex-start;
 }
 
 .select {
-  position: relative;
-  display: flex;
-  flex-direction: column;
+  width: 200px;
+  position: absolute;
 }
 .select__label {
   font-weight: bold;
 }
 .select-wrapper {
-  align-self: start;
-  position: relative;
-  width: 170px;
-  display: inline-block;
+  user-select: none;
 }
 .select__trigger {
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   color: white;
   padding: 11px 15px 11px 19px;
-  margin-bottom: -1px;
+  margin-bottom: 5px;
   height: 69px;
   border: none;
   border-radius: 7px;
   cursor: pointer;
-}
-.select__trigger:focus {
-  z-index: 10;
 }
 .select__trigger_ingredients {
   background-color: #3282F7;
 }
 .select__trigger_appareils {
   background-color: #68D9A4;
+  left: 200px;
 }
 .select__trigger_ustensiles {
   background-color: #ED6454;
 }
+.select__input {
+  border: none;
+  outline: none;
+  background: transparent;
+  color: white;
+  width: 80%;
+  height: 100%;
+  font-size: 1.1rem;
+}
+.select__input::placeholder {
+  color: white;
+  font-size: 1.1rem;
+}
+.select__input:focus::placeholder {
+  opacity: 0;
+}
+
+#select_appareils {
+  left: 275px;
+}
+
+#select_ustensiles {
+  left: 483px;
+}
 
 .custom-options {
-  position: absolute;
+  width: 800px;
+  color: white;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
   max-height: 600px;
-  top: 100%;
   left: 0;
-  right: 0;
   transition: all 0.5s;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
   z-index: 2;
+  padding: 20px;
 }
 
-.select.open .select__trigger {
-  border-radius: 7px 7px 0 0;
-}
-
-.select.open .custom-options {
+.select.open .custom-options, .select.open .list-bg {
   opacity: 1;
   visibility: visible;
   pointer-events: all;
@@ -169,11 +150,10 @@ select {
 
 .custom-option {
   display: block;
-  line-height: 60px;
+  line-height: 2.5rem;
   font-size: 20px;
   color: white;
   padding: 0 20px;
-  height: 60px;
   border: none;
   background-color: #3282F7;
   position: relative;
@@ -229,6 +209,18 @@ label[for=medias-sort] {
 .open .arrow::after {
   left: 5px;
   transform: rotate(-45deg);
+}
+
+.list-bg {
+  width: 800px;
+  max-width: 800px;
+  max-height: 600px;
+  background-color: #3282F7;
+  border-radius: 5px;
+  transition: all 0.5s;
+  opacity: 0;
+  visibility: hidden;
+  z-index: 20;
 }
 
 .hidden {

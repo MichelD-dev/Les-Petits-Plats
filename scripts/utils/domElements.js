@@ -5,7 +5,8 @@ const DOM = {
 
   searchInput: document.querySelector('.search__form_searchbar'),
 
-  selector: document.querySelector('.select'),
+  selectorInput: document.querySelector('.select__input'),
+  selectorArrow: document.querySelector('.arrow'),
 
   ingredientsSelector: document.getElementById('select_ingredients'),
   appareilsSelector: document.getElementById('select_appareils'),
@@ -14,6 +15,8 @@ const DOM = {
   cardsSection: document.querySelector('.recipes'),
 
   ingredients: document.querySelector('.custom-options'),
+  appareils: document.querySelector('.custom-options'),
+  ustensiles: document.querySelector('.custom-options'),
 
 }
 

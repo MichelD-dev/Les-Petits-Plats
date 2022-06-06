@@ -1,14 +1,17 @@
 import { sortBy } from '../scripts/components/selector.js'
 
-import { search } from './components/searchBar.js'
+import { getFromSearch } from './components/searchBar.js'
+import { printSnackbar, stopSnackbarTimeOut } from './components/snackbar.js'
 import recipeFactory from './factory/recipeFactory.js'
 import DOM from './utils/domElements.js'
 import { addReactionTo } from './utils/eventListener.js'
 import {
   cardsSectionReset,
-  getSelectionOf,
-  orderAlphabetically,
+  // getSelectionOf,
+  sortAlphabetically,
   setAttributesFor,
+  capitalize,
+  tagsSectionReset,
 } from './utils/utils.js'
 
 /**
@@ -18,31 +21,33 @@ DOM.searchInput.focus()
 
 export const getRecipes = e => {
   /**
-   * On réinitialise l'affichage des cards recettes
-   */
-  cardsSectionReset()
-
-  /**
    * On ne retourne un résultat qu'à partir de trois caractères tapés par l'utilisateur
    */
   if (e.target.value.length < 3) return
 
   /**
+   * On réinitialise l'affichage des cards recettes
+   */
+  cardsSectionReset()
+
+  stopSnackbarTimeOut()
+
+  /**
+   * Snackbar signalant le nombre de recettes retournées
+   */ //TODO actualisation
+
+  /**
    * On récupère un tableau de selections de recettes d'après les critères de recherche
    */
-  const recipes = search(e.target.value)
+  const recipes = getFromSearch(e.target.value)
 
   /**
-   * On ajoute éventuellement cette selection  aux résultats précédents et on en récupère le tableau résultant
+   * On supprime les doublons de la selection et on la trie alphabétiquement
    */
-  const userInputResult = getSelectionOf(recipes)()
-  /**
-   * On supprime les doublons de la selection
-   */
-  console.log([...new Set(userInputResult)])
-  const sortedSelections = orderAlphabetically([...new Set(userInputResult)])
+  const sortedSelections = sortAlphabetically([...new Set(recipes)])
 
-  console.log(sortedSelections)
+  printSnackbar(sortedSelections)
+
   /**
    * On récupère les cards DOM correspondantes
    */
@@ -53,28 +58,51 @@ export const getRecipes = e => {
      * On affiche la selection
      */
     DOM.cardsSection.appendChild(recipeCard)
+  })
 
-    console.log(recipe.ingredients)
+  tagsSectionReset()
 
-    recipe.ingredients.forEach(_ => {
+  const getTags = (ingredientsList = []) => {
+    sortedSelections.forEach(_ =>
+      _.ingredients.forEach(_ => {
+        ingredientsList.push(_.ingredient.toLowerCase())
+      })
+    )
+    printTags(ingredientsList)
+    return ingredientsList
+  }
+
+  const printTags = ingredientsList => {
+    const list = [...new Set(ingredientsList)].sort((a, b) =>
+      a.localeCompare(b)
+    )
+
+    list.forEach(tag => {
       const ingredient = document.createElement('li')
       ingredient.classList.add('custom-option')
       setAttributesFor(ingredient)({
         tabIndex: 0,
-        'data-value': 'ingredients',
+        'data-value': 'ingredient',
       })
-      ingredient.textContent = _.ingredient
+
+      ingredient.textContent = capitalize(tag)
 
       DOM.ingredients.appendChild(ingredient)
     })
+  }
 
-    /**
-     * Snackbar signalant le nombre de recettes retournées
-     */
-    DOM.snackbar.classList.remove('hidden')
-    DOM.snackbar.classList.add('snackbar')
-    DOM.snackbar.textContent = `Votre recherche a retourné ${sortedSelections.length} recettes`
-  })
+  const filterTags = e => {
+    const filteredTags = getTags().filter(tag => {
+      if (tag.indexOf(e.target.value) !== -1) return tag
+    })
+
+    tagsSectionReset()
+    printTags(filteredTags)
+  }
+
+  addReactionTo('input').on(DOM.selectorInput).withFunction(filterTags)
+
+  getTags()
 }
 
 // ------------------------------------------------------------------------- //
