@@ -2,6 +2,7 @@ import { getRecipes } from '../index.js'
 import DOM from '../utils/domElements.js'
 import { addReactionTo } from '../utils/eventListener.js'
 import { getFromSearch } from './searchBar.js'
+import { getTags } from './tagsList.js'
 
 /**
  * Tri de l'ordre d'affichage des images selon choix utilisateur
@@ -24,16 +25,20 @@ export const sortBy = medias => {
 /**
  * Changements d'apparence du selecteur sur events
  */
-const selectorChange = selector => {
+export const selectorChange = selector => {
   /**
    * Ouverture du selecteur
    */
   if (!document.getElementById(selector.id).classList.contains('open')) {
+    ;[...document.querySelectorAll('.select')].forEach(selector =>
+      selector.classList.remove('open')
+    )
     document.getElementById(selector.id).classList.add('open')
   } else {
     /**
      * Fermeture du selecteur
      */
+
     if (!DOM.selectorInput.activeElement) {
       document.getElementById(selector.id).classList.remove('open')
     }
@@ -120,25 +125,6 @@ const focusInSelector = e => {
 //TODO
 
 /**
- * On ouvre le selecteur
- */
-;[...document.querySelectorAll('.select__trigger')].forEach(selector => {
-  addReactionTo('pointerdown')
-    .on(selector)
-    .withFunction(e => {
-      if (DOM.searchInput.value.length < 3) return
-
-      const id = {
-        ingredients: () => selectorChange(DOM.ingredientsSelector),
-        appareils: () => selectorChange(DOM.appareilsSelector),
-        ustensiles: () => selectorChange(DOM.ustensilesSelector),
-      }
-
-      return id[e.target.parentElement.id]?.() ?? "Ce selecteur n'existe pas"
-    })
-})
-
-/**
  * On ouvre le selecteur avec le clavier
  */
 // addReactionTo('keydown')
@@ -157,7 +143,7 @@ addReactionTo('keydown')
   .on(DOM.selectorInput)
   .withFunction(e => {
     if (e.key === 'Escape' || e.key === 'Esc') {
-      document.querySelector('.select.open')?.classList.remove('open')
+      document.querySelector('.select.open').classList.remove('open')
       document.querySelector('.select__trigger').focus()
     }
     if (e.key === 'Tab' && !!document.querySelector('.select.open')) {

@@ -1,18 +1,27 @@
-import { sortBy } from '../scripts/components/selector.js'
+import { selectorChange, sortBy } from '../scripts/components/selector.js'
 
 import { getFromSearch } from './components/searchBar.js'
 import { printSnackbar, stopSnackbarTimeOut } from './components/snackbar.js'
-import recipeFactory from './factory/recipeFactory.js'
+// import { sortList } from './components/sortList.js'
+import recipeCardFactory from './factory/recipeFactory.js'
+import { sortList } from './algorithms/quickSort.js'
 import DOM from './utils/domElements.js'
-import { addReactionTo } from './utils/eventListener.js'
+import { addReactionTo, removeReactionTo } from './utils/eventListener.js'
 import {
   cardsSectionReset,
   // getSelectionOf,
-  sortAlphabetically,
   setAttributesFor,
   capitalize,
   tagsSectionReset,
+  printError,
 } from './utils/utils.js'
+import { getTags } from './components/tagsList.js'
+
+/**
+ * On crée une liste ordonnée de mots clés à partir de la liste de recettes
+ */
+export const sortedList = sortList()
+console.log(sortedList)
 
 /**
  * On met le focus dans l'input de recherche à l'ouverture de la page
@@ -22,8 +31,15 @@ DOM.searchInput.focus()
 export const getRecipes = e => {
   /**
    * On ne retourne un résultat qu'à partir de trois caractères tapés par l'utilisateur
+   * On supprime le message d'erreur quand l'utilisateur revient sur sa frappe
+   * On réinitialise l'affichage des cards recettes
    */
-  if (e.target.value.length < 3) return
+  if (e.target.value.length < 3) {
+    DOM.disabled.forEach(selectorCache => selectorCache.classList.remove('hidden'))
+    cardsSectionReset()
+    printError('')
+    return
+  }
 
   /**
    * On réinitialise l'affichage des cards recettes
@@ -32,6 +48,8 @@ export const getRecipes = e => {
 
   stopSnackbarTimeOut()
 
+  DOM.disabled.forEach(selectorCache => selectorCache.classList.add('hidden'))
+
   /**
    * Snackbar signalant le nombre de recettes retournées
    */ //TODO actualisation
@@ -39,12 +57,8 @@ export const getRecipes = e => {
   /**
    * On récupère un tableau de selections de recettes d'après les critères de recherche
    */
-  const recipes = getFromSearch(e.target.value)
-
-  /**
-   * On supprime les doublons de la selection et on la trie alphabétiquement
-   */
-  const sortedSelections = sortAlphabetically([...new Set(recipes)])
+  const sortedSelections = getFromSearch(e.target.value)
+  if (!sortedSelections) return
 
   printSnackbar(sortedSelections)
 
@@ -52,7 +66,7 @@ export const getRecipes = e => {
    * On récupère les cards DOM correspondantes
    */
   sortedSelections.forEach(recipe => {
-    const recipeCard = recipeFactory(recipe).getRecipeCardDOM()
+    const recipeCard = recipeCardFactory(recipe)
 
     /**
      * On affiche la selection
@@ -60,49 +74,39 @@ export const getRecipes = e => {
     DOM.cardsSection.appendChild(recipeCard)
   })
 
-  tagsSectionReset()
+  // tagsSectionReset()
 
-  const getTags = (ingredientsList = []) => {
-    sortedSelections.forEach(_ =>
-      _.ingredients.forEach(_ => {
-        ingredientsList.push(_.ingredient.toLowerCase())
-      })
-    )
-    printTags(ingredientsList)
-    return ingredientsList
+  const printTagsList = e => {
+    if (DOM.searchInput.value.length < 3) return
+
+    const id = {
+      ingredients: () => {
+        getTags(sortedSelections, 'ingredients')
+        selectorChange(DOM.ingredientsSelector)
+      },
+      appareils: () => {
+        getTags(sortedSelections, 'appliance')
+        selectorChange(DOM.appareilsSelector)
+      },
+      ustensiles: () => {
+        getTags(sortedSelections, 'ustensils')
+        selectorChange(DOM.ustensilesSelector)
+      },
+    }
+
+    return id[e.target.parentElement.id]?.() ?? "Ce selecteur n'existe pas"
   }
 
-  const printTags = ingredientsList => {
-    const list = [...new Set(ingredientsList)].sort((a, b) =>
-      a.localeCompare(b)
-    )
+  /**
+   * On ouvre le selecteur
+   */
+  ;[...document.querySelectorAll('.select__trigger')].forEach(selector => {
+    addReactionTo('pointerdown').on(selector).withFunction(printTagsList)
+  })
 
-    list.forEach(tag => {
-      const ingredient = document.createElement('li')
-      ingredient.classList.add('custom-option')
-      setAttributesFor(ingredient)({
-        tabIndex: 0,
-        'data-value': 'ingredient',
-      })
-
-      ingredient.textContent = capitalize(tag)
-
-      DOM.ingredients.appendChild(ingredient)
-    })
-  }
-
-  const filterTags = e => {
-    const filteredTags = getTags().filter(tag => {
-      if (tag.indexOf(e.target.value) !== -1) return tag
-    })
-
-    tagsSectionReset()
-    printTags(filteredTags)
-  }
-
-  addReactionTo('input').on(DOM.selectorInput).withFunction(filterTags)
-
-  getTags()
+  // getTags(sortedSelections, "appliance")
+  // getTags(sortedSelections, "ustensils")
+  console.log(sortedSelections)
 }
 
 // ------------------------------------------------------------------------- //

@@ -12,9 +12,16 @@ export const cardsSectionReset = () => {
 /**
  * Fonction de réinitialisation de la liste de tags
  */
-export const tagsSectionReset = () => {
-  while (DOM.ingredients.firstChild) {
-    DOM.ingredients.removeChild(DOM.ingredients.lastChild)
+export const tagsSectionReset = selector => {
+  const select = //FIXME rendre générique
+    selector === 'appliance'
+      ? 'appareils'
+      : selector === 'ustensils'
+      ? 'ustensiles'
+      : 'ingredients'
+
+  while (DOM[select].firstChild) {
+    DOM[select].removeChild(DOM[select].lastChild)
   }
 }
 
@@ -34,12 +41,6 @@ export const setAttributesFor = el => attrs =>
 // }
 
 /**
- * Tri alphabétique d'une liste
- */
-export const sortAlphabetically = data =>
-  data.sort((a, b) => a.name.localeCompare(b.name))
-
-  /**
  * Fonction capitalize
  */
 export const capitalize = str => {
@@ -49,3 +50,6 @@ export const capitalize = str => {
     return ''
   }
 }
+
+export const printError = message =>
+  (document.querySelector('.error').textContent = message)

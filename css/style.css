@@ -142,7 +142,8 @@ table {
   padding: 20px;
 }
 
-.select.open .custom-options, .select.open .list-bg {
+.select.open .custom-options,
+.select.open .list-bg {
   opacity: 1;
   visibility: visible;
   pointer-events: all;
@@ -155,7 +156,6 @@ table {
   color: white;
   padding: 0 20px;
   border: none;
-  background-color: #3282F7;
   position: relative;
 }
 .custom-option:focus {
@@ -166,6 +166,12 @@ table {
 }
 .custom-option_last {
   border-radius: 0 0 7px 7px;
+}
+.custom-option_ingredients {
+  background-color: #3282F7;
+}
+.custom-option_appareils {
+  background-color: #68D9A4;
 }
 
 .no-btm-border-radius {
@@ -215,16 +221,33 @@ label[for=medias-sort] {
   width: 800px;
   max-width: 800px;
   max-height: 600px;
-  background-color: #3282F7;
   border-radius: 5px;
   transition: all 0.5s;
   opacity: 0;
-  visibility: hidden;
   z-index: 20;
+  visibility: hidden;
+}
+.list-bg_ingredients {
+  background-color: #3282F7;
+}
+.list-bg_appareils {
+  background-color: #68D9A4;
+}
+.list-bg_ustensiles {
+  background-color: #ED6454;
 }
 
 .hidden {
   display: none;
+}
+
+.disabled {
+  width: 100%;
+  height: 100px;
+  z-index: 50;
+  position: absolute;
+  background-color: #fff;
+  opacity: 0.2;
 }
 
 .search {
@@ -334,6 +357,14 @@ label[for=medias-sort] {
 }
 .hidden {
   display: none;
+}
+
+.error {
+  color: red;
+  margin-right: auto;
+  font-weight: bold;
+  font-size: 1.2rem;
+  padding-bottom: 20px;
 }
 
 .container {

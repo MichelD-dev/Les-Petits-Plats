@@ -14,10 +14,11 @@ const DOM = {
 
   cardsSection: document.querySelector('.recipes'),
 
-  ingredients: document.querySelector('.custom-options'),
-  appareils: document.querySelector('.custom-options'),
-  ustensiles: document.querySelector('.custom-options'),
+  ingredients: document.getElementById('ingredients-list'),
+  appareils: document.getElementById('appareils-list'),
+  ustensiles: document.getElementById('ustensiles-list'),
 
+  disabled: [...document.querySelectorAll('.disabled')]
 }
 
 export default DOM

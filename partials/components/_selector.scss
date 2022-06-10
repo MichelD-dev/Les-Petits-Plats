@@ -63,7 +63,7 @@
 //   left:0;
 // }
 #select_appareils {
-  left:275px;
+  left: 275px;
 }
 #select_ustensiles {
   left: 483px;
@@ -86,7 +86,8 @@
   padding: 20px;
 }
 
-.select.open .custom-options, .select.open .list-bg {
+.select.open .custom-options,
+.select.open .list-bg {
   opacity: 1;
   visibility: visible;
   pointer-events: all;
@@ -100,7 +101,6 @@
   padding: 0 20px;
   // height: 60px;
   border: none;
-  background-color: $secondary-color;
   position: relative;
   &:focus {
     z-index: 100;
@@ -111,6 +111,12 @@
   &_last {
     border-radius: 0 0 7px 7px;
     // box-shadow: 0 3px 10px -5px rgba(0, 0, 0, 1);
+  }
+  &_ingredients {
+    background-color: $secondary-color;
+  }
+  &_appareils {
+    background-color: $tertiary-color;
   }
 }
 
@@ -167,16 +173,33 @@ label[for='medias-sort'] {
   width: 800px;
   max-width: 800px;
   max-height: 600px;
-  background-color: $secondary-color;
   border-radius: 5px;
   transition: all 0.5s;
   opacity: 0;
-  visibility: hidden;
   z-index: 20;
+  visibility: hidden;
+  &_ingredients {
+    background-color: $secondary-color;
+  }
+  &_appareils {
+    background-color: $tertiary-color;
+  }
+  &_ustensiles {
+    background-color: $quaternary-color;
+  }
 }
 
 .hidden {
   display: none;
+}
+
+.disabled {
+  width: 100%;
+  height: 100px;
+  z-index: 50;
+  position: absolute;
+  background-color: #fff;
+  opacity: 0.2;
 }
 
 //   .visually-hidden {
