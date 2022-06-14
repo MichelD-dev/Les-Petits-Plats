@@ -1,6 +1,6 @@
 import { recipes as recipesList } from '../data/recipes.js'
 import { sortedList } from '../index.js'
-import { printError } from '../utils/utils.js'
+import { printErrorMessage } from '../utils/utils.js'
 
 const defaultCompare = (a, b) => {
   if (b.includes(a)) return 0
@@ -17,24 +17,24 @@ export const binarySearch = (
   const searchFrom = middle => {
     let tab = []
 
-    const searchLeft = mid => {
+    const searchLeftFrom = mid => {
       if (array[mid - 1].text.includes(search)) {
         tab = [
           ...tab,
           ...recipesList.filter(recipe => recipe.id === array[mid - 1].id),
         ]
-        searchLeft(mid - 1)
+        searchLeftFrom(mid - 1)
       }
       return tab
     }
 
-    const searchRight = mid => {
+    const searchRightFrom = mid => {
       if (array[mid + 1].text.includes(search)) {
         tab = [
           ...tab,
           ...recipesList.filter(recipe => recipe.id === array[mid + 1].id),
         ]
-        searchRight(mid + 1)
+        searchRightFrom(mid + 1)
       }
       return tab
     }
@@ -43,15 +43,21 @@ export const binarySearch = (
       recipe => recipe.id === array[middle].id
     )
 
-    return [...foundRecipe, ...searchLeft(middle), ...searchRight(middle)]
+    return [
+      ...foundRecipe,
+      ...searchLeftFrom(middle),
+      ...searchRightFrom(middle),
+    ]
   }
 
-  if (left > right) {console.log('ok');
-    printError('Aucune recette ne correspond à votre critère...Vous pouvez chercher "tarte aux pommes", "poisson", etc.')
+  if (left > right) {
+    printErrorMessage(
+      'Aucune recette ne correspond à votre critère...Vous pouvez chercher "tarte aux pommes", "poisson", etc.'
+    )
     return
   }
 
-  printError('')
+  printErrorMessage('')
 
   const middle = Math.floor((left + right) / 2)
   const comparison = compare(search, array[middle].text)

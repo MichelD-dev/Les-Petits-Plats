@@ -1,9 +1,11 @@
 const DOM = {
   container: document.querySelector('.container'),
-  
+
   snackbar: document.getElementById('snackbar'),
 
   searchInput: document.querySelector('.search__form_searchbar'),
+
+  errorMessage: document.querySelector('.error'),
 
   selectorInput: document.querySelector('.select__input'),
   selectorArrow: document.querySelector('.arrow'),
@@ -17,8 +19,6 @@ const DOM = {
   ingredients: document.getElementById('ingredients-list'),
   appareils: document.getElementById('appareils-list'),
   ustensiles: document.getElementById('ustensiles-list'),
-
-  disabled: [...document.querySelectorAll('.disabled')]
 }
 
 export default DOM

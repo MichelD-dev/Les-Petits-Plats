@@ -5,24 +5,17 @@
 const event = actionChoice => evt => {
   const on = elem => {
     const withFunction = (action, ...params) => {
-      if (typeof elem === 'string') {
-        if (actionChoice === 'add') {
-          return document
-            .querySelector(elem)
-            .addEventListener(evt, action, ...params)
-        }
-        if (actionChoice === 'remove') {
-          return document.querySelector(elem).removeEventListener(evt, action)
-        }
-      }
-      {
-        if (actionChoice === 'add') {
-          return elem.addEventListener(evt, action, ...params)
-        }
-        if (actionChoice === 'remove') {
-          return elem.removeEventListener(evt, action)
-        }
-      }
+      if (actionChoice === 'add')
+        typeof elem === 'string'
+          ? document
+              .querySelector(elem)
+              .addEventListener(evt, action, ...params)
+          : elem.addEventListener(evt, action, ...params)
+
+      if (actionChoice === 'remove')
+        typeof elem === 'string'
+          ? document.querySelector(elem).removeEventListener(evt, action)
+          : elem.removeEventListener(evt, action)
     }
     return { withFunction }
   }

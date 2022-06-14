@@ -1,7 +1,7 @@
 import { getRecipes } from '../index.js'
 import DOM from '../utils/domElements.js'
 import { addReactionTo } from '../utils/eventListener.js'
-import { getFromSearch } from './searchBar.js'
+import { getRecipesFromSearch } from './searchBar.js'
 import { getTags } from './tagsList.js'
 
 /**
@@ -30,6 +30,7 @@ export const selectorChange = selector => {
    * Ouverture du selecteur
    */
   if (!document.getElementById(selector.id).classList.contains('open')) {
+    console.log(selector)
     ;[...document.querySelectorAll('.select')].forEach(selector =>
       selector.classList.remove('open')
     )
@@ -40,6 +41,7 @@ export const selectorChange = selector => {
      */
 
     if (!DOM.selectorInput.activeElement) {
+      // FIXME pas de list à 4 caractères et plus...
       document.getElementById(selector.id).classList.remove('open')
     }
   }
@@ -106,11 +108,13 @@ const focusInSelector = e => {
 
   e.shiftKey === true ? index-- : index++
 
-  if (index >= focusables.length) {
+  const focusablesNbr = focusables.length
+
+  if (index >= focusablesNbr) {
     index = 0
   }
   if (index < 0) {
-    index = focusables.length - 1
+    index = focusablesNbr - 1
   }
 
   let option = focusables[index]
@@ -122,7 +126,6 @@ const focusInSelector = e => {
 // --------------------------------------------------------------------------- //
 // -------------------------------EVENT LISTENERS----------------------------- //
 // --------------------------------------------------------------------------- //
-//TODO
 
 /**
  * On ouvre le selecteur avec le clavier

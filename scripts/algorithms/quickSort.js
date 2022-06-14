@@ -4,7 +4,7 @@ const list = recipes.reduce((arr, obj1) => {
   const splitted = str =>
     str
       .toLowerCase()
-      .replace(/[.,/#!$%^&*;:{}=-_`~()]/g, '') //FIXME problème avec " ( " (700)
+      .replace(/[.,/#!$%^&*;:{}=-_`~()]/g, '')
       .replace(/\s+/g, ' ')
       .trim()
       .split(' ')
@@ -18,11 +18,10 @@ const list = recipes.reduce((arr, obj1) => {
     splitted(obj1.name),
     splitted(obj1.description),
 
-    obj1.ingredients
-      .reduce((arr, obj2) => {
-        return [...arr, splitted(obj2.ingredient)]
-      }, [])
-      .map(element => element),
+    obj1.ingredients.reduce(
+      (arr, obj2) => [...arr, splitted(obj2.ingredient)],
+      []
+    ),
   ].flat(2)
 }, [])
 
@@ -30,7 +29,7 @@ const list = recipes.reduce((arr, obj1) => {
 /* ---------------------------------------------------------------------- */
 /* ---------------------------------------------------------------------- */
 
-const defaultCompare = (a, b) => a.localeCompare(b) || 0
+const defaultCompare = (a, b) => a.localeCompare(b)
 
 const quickSort = (unsortedArray, compare = defaultCompare) => {
   // On crée un tableau final d'éléments triés
@@ -39,11 +38,10 @@ const quickSort = (unsortedArray, compare = defaultCompare) => {
   // On trie récursivement les sous-tableaux
   const recursiveSort = (left, right) => {
     // Si ce sous-tableau est vide, il est trié
-    if (right - left < 1) {
-      return
-    }
+    if (right - left < 1) return
 
     const pivotValue = sortedArray[right]
+
     let splitIndex = left
 
     for (let i = left; i < right; i++) {
@@ -58,7 +56,7 @@ const quickSort = (unsortedArray, compare = defaultCompare) => {
           sortedArray[i] = temp
         }
 
-        // On déplace le split index d'un rang vers le droite
+        // On déplace le split index d'un rang vers la droite
         // augmentant la taille du sous-tableau d'éléments inférieurs d'un rang
         splitIndex++
       }
@@ -82,5 +80,4 @@ const quickSort = (unsortedArray, compare = defaultCompare) => {
 
 /* ---------------------------------------------------------------------- */
 
-export const sortList = () => quickSort(list)
-// export const sortList = () => console.log(list)
+export const initiateSortedList = () => quickSort(list)

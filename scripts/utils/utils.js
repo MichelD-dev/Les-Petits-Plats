@@ -3,7 +3,7 @@ import DOM from './domElements.js'
 /**
  * Fonction de réinitialisation de la grille d'images
  */
-export const cardsSectionReset = () => {
+export const clearCardsSection = () => {
   while (DOM.cardsSection.firstChild) {
     DOM.cardsSection.removeChild(DOM.cardsSection.lastChild)
   }
@@ -12,7 +12,7 @@ export const cardsSectionReset = () => {
 /**
  * Fonction de réinitialisation de la liste de tags
  */
-export const tagsSectionReset = selector => {
+export const clearTagsSection = selector => {
   const select = //FIXME rendre générique
     selector === 'appliance'
       ? 'appareils'
@@ -44,12 +44,36 @@ export const setAttributesFor = el => attrs =>
  * Fonction capitalize
  */
 export const capitalize = str => {
-  if (typeof str === 'string') {
-    return str.replace(/^\w/, c => c.toUpperCase())
-  } else {
-    return ''
+  if (typeof str !== 'string') return ''
+
+  return str.replace(/^\w/, c => c.toUpperCase())
+}
+
+export const printErrorMessage = message =>
+  (DOM.errorMessage.textContent = message)
+
+export const pipe =
+  (...fns) =>
+  x =>
+    fns.reduce((y, f) => f(y), x)
+
+// a simple memoize function that takes in a function
+// and returns a memoized function
+export const memoize = fn => {
+  let cache = {}
+  return (...args) => {
+    let n = args[0]
+    console.log(n)
+    // just taking one argument here
+    if (n in cache) {
+      console.log('Fetching from cache')
+      return cache[n]
+    } else {
+      console.log('Calculating result')
+      let result = fn(n)
+      cache[n] = result
+      return result
+    }
   }
 }
 
-export const printError = message =>
-  (document.querySelector('.error').textContent = message)

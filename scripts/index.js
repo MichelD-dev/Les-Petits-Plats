@@ -1,120 +1,119 @@
-import { selectorChange, sortBy } from '../scripts/components/selector.js'
-
-import { getFromSearch } from './components/searchBar.js'
+import { getRecipesFromSearch } from './components/searchBar.js'
 import { printSnackbar, stopSnackbarTimeOut } from './components/snackbar.js'
-// import { sortList } from './components/sortList.js'
 import recipeCardFactory from './factory/recipeFactory.js'
-import { sortList } from './algorithms/quickSort.js'
+import { initiateSortedList } from './algorithms/quickSort.js'
 import DOM from './utils/domElements.js'
-import { addReactionTo, removeReactionTo } from './utils/eventListener.js'
+import { addReactionTo } from './utils/eventListener.js'
+// import { initTagsList } from './components/tagsList.js'
 import {
-  cardsSectionReset,
-  // getSelectionOf,
-  setAttributesFor,
-  capitalize,
-  tagsSectionReset,
-  printError,
+  clearCardsSection,
+  clearTagsSection,
+  printErrorMessage,
+  pipe,
+  execOnce,
 } from './utils/utils.js'
-import { getTags } from './components/tagsList.js'
+import { getTags, showTagsList } from './components/tagsList.js'
+import { recipes } from './data/recipes.js'
 
-/**
- * On crée une liste ordonnée de mots clés à partir de la liste de recettes
- */
-export const sortedList = sortList()
-console.log(sortedList)
+// ---------------------------------------------------------------------------- //
+// ------------------------------- UTILITAIRES -------------------------------- //
+// ---------------------------------------------------------------------------- //
 
-/**
- * On met le focus dans l'input de recherche à l'ouverture de la page
- */
+// Fonction de suppression du message d'erreur
+const deleteErrorMessage = printErrorMessage
+
+// Fonction de reset de la page
+const clearPage = pipe(clearCardsSection, deleteErrorMessage)
+
+// Fonction renvoyant le nombre de recettes trouvées
+const getRecipesQuantity = selection => ({
+  selection,
+  recipesQuantity: selection.length,
+})
+
+// Fonction de récupération des cards DOM correspondantes aux recettes selectionnées
+const getRecipesCards = selection => selection.map(recipeCardFactory)
+
+// Fonction d'affichage de la selection de cartes de recettes
+const printRecipesCards = recipeCards =>
+  recipeCards.forEach(recipeCard => DOM.cardsSection.appendChild(recipeCard))
+
+// ---------------------------------------------------------------------------- //
+// ---------------------------- INITIALISATION -------------------------------- //
+// ---------------------------------------------------------------------------- //
+
+// On crée une liste ordonnée de mots clés à partir de la liste de recettes
+const sortedList = initiateSortedList()
+
+// test(recipes)
+
+// On met le focus dans l'input de recherche à l'ouverture de la page
 DOM.searchInput.focus()
 
-export const getRecipes = e => {
+// ---------------------------------------------------------------------------- //
+// -------------------- FONCTION DE RECHERCHE DE RECETTES --------------------- //
+// ---------------------------------------------------------------------------- //
+
+const getRecipes = (e = null) => {
   /**
-   * On ne retourne un résultat qu'à partir de trois caractères tapés par l'utilisateur
-   * On supprime le message d'erreur quand l'utilisateur revient sur sa frappe
-   * On réinitialise l'affichage des cards recettes
+   On ne retourne un résultat qu'à partir de trois caractères tapés par l'utilisateur
+   On supprime le message d'erreur quand l'utilisateur revient sur sa frappe
+   On réinitialise l'affichage des cards recettes
+  */
+  if (e?.target.value.length < 3) return clearPage()
+
+  if (!e || e.target.value.length < 3) return createTagsListWith(recipes)
+
+  // On réinitialise l'affichage des cards recettes
+  clearPage()
+
+  stopSnackbarTimeOut() //FIXME fonctionne?
+
+  // On récupère un tableau de selections de recettes d'après les critères de recherche
+  const recipesSelection = getRecipesFromSearch(e.target.value)
+
+  /**
+   On affiche les cartes résultant de la recherche, via une composition des fonctions listées plus haut:
+   1. On récupère le nombre de recettes trouvées
+   2. On affiche une snackbar avec le nombre de recettes trouvées
+   3. On récupère les cards DOM correspondantes
+   4. On affiche la selection
    */
-  if (e.target.value.length < 3) {
-    DOM.disabled.forEach(selectorCache => selectorCache.classList.remove('hidden'))
-    cardsSectionReset()
-    printError('')
-    return
-  }
+  pipe(
+    getRecipesQuantity,
+    printSnackbar,
+    getRecipesCards,
+    printRecipesCards
+  )(recipesSelection)
 
-  /**
-   * On réinitialise l'affichage des cards recettes
-   */
-  cardsSectionReset()
+  // On réinitialise la liste de tags
+  // clearTagsSection()
 
-  stopSnackbarTimeOut()
+  createTagsListWith(recipesSelection)
 
-  DOM.disabled.forEach(selectorCache => selectorCache.classList.add('hidden'))
-
-  /**
-   * Snackbar signalant le nombre de recettes retournées
-   */ //TODO actualisation
-
-  /**
-   * On récupère un tableau de selections de recettes d'après les critères de recherche
-   */
-  const sortedSelections = getFromSearch(e.target.value)
-  if (!sortedSelections) return
-
-  printSnackbar(sortedSelections)
-
-  /**
-   * On récupère les cards DOM correspondantes
-   */
-  sortedSelections.forEach(recipe => {
-    const recipeCard = recipeCardFactory(recipe)
-
-    /**
-     * On affiche la selection
-     */
-    DOM.cardsSection.appendChild(recipeCard)
-  })
-
-  // tagsSectionReset()
-
-  const printTagsList = e => {
-    if (DOM.searchInput.value.length < 3) return
-
-    const id = {
-      ingredients: () => {
-        getTags(sortedSelections, 'ingredients')
-        selectorChange(DOM.ingredientsSelector)
-      },
-      appareils: () => {
-        getTags(sortedSelections, 'appliance')
-        selectorChange(DOM.appareilsSelector)
-      },
-      ustensiles: () => {
-        getTags(sortedSelections, 'ustensils')
-        selectorChange(DOM.ustensilesSelector)
-      },
-    }
-
-    return id[e.target.parentElement.id]?.() ?? "Ce selecteur n'existe pas"
-  }
-
-  /**
-   * On ouvre le selecteur
-   */
-  ;[...document.querySelectorAll('.select__trigger')].forEach(selector => {
-    addReactionTo('pointerdown').on(selector).withFunction(printTagsList)
-  })
-
-  // getTags(sortedSelections, "appliance")
-  // getTags(sortedSelections, "ustensils")
-  console.log(sortedSelections)
+  console.log(recipesSelection)
 }
+
+// On ouvre le selecteur
+const createTagsListWith = recipesSelection => {
+  console.log('createTagsListWith')
+  console.log(recipesSelection)
+  return [...document.querySelectorAll('.select__trigger')].forEach(
+    selector => {
+      addReactionTo('pointerdown')
+        .on(selector)
+        .withFunction(showTagsList(recipesSelection))
+    }
+  )
+}
+
+export { sortedList, getRecipes }
 
 // ------------------------------------------------------------------------- //
 // ----------------------------EVENT LISTENERS----------------------------- //
 // ------------------------------------------------------------------------- //
 
-/**
- * On écoute les frappes clavier
- */
-// DOM.searchInput.addEventListener('keyup', printRecipes)
+// On écoute les frappes clavier
 addReactionTo('input').on(DOM.searchInput).withFunction(getRecipes)
+
+getRecipes()
