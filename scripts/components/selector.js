@@ -1,22 +1,7 @@
-import { getRecipes } from '../index.js'
 import DOM from '../utils/domElements.js'
 import { addReactionTo } from '../utils/eventListener.js'
-import { getRecipesFromSearch } from './searchBar.js'
-import { getTags } from './tagsList.js'
+import { showTagsList } from './tagsList.js'
 
-/**
- * Tri de l'ordre d'affichage des images selon choix utilisateur
- */
-export const sortBy = medias => {
-  //   return sortingChoice => {
-  //     const choices = {
-  //       //   Titre: () => medias.sort((a, b) => a.title.localeCompare(b.title)),
-  //       //   Popularité: () => medias.sort((a, b) => b.likes - a.likes),
-  //       //   Date: () => medias.sort((a, b) => a.date - b.date),
-  //     }
-  //     return choices[sortingChoice]?.() ?? 'Critère de choix non reconnu'
-  //   }
-}
 
 // --------------------------------------------------------------------------- //
 // ------------------------------------UTILS---------------------------------- //
@@ -30,7 +15,7 @@ export const selectorChange = selector => {
    * Ouverture du selecteur
    */
   if (!document.getElementById(selector.id).classList.contains('open')) {
-    console.log(selector)
+    // console.log(selector)
     ;[...document.querySelectorAll('.select')].forEach(selector =>
       selector.classList.remove('open')
     )
@@ -40,10 +25,9 @@ export const selectorChange = selector => {
      * Fermeture du selecteur
      */
 
-    if (!DOM.selectorInput.activeElement) {
-      // FIXME pas de list à 4 caractères et plus...
-      document.getElementById(selector.id).classList.remove('open')
-    }
+    // if (!DOM.selectorInput.activeElement) {
+     document.getElementById(selector.id).classList.remove('open')
+    // }
   }
 }
 

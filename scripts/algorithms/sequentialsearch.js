@@ -1,5 +1,5 @@
 import { recipes } from '../data/recipes.js'
-import { sortedList } from '../index.js'
+import { sortedList } from '../utils/init.js'
 import { printErrorMessage } from '../utils/utils.js'
 
 // -------------------------------------------------------------------------- ///
@@ -14,7 +14,7 @@ const findInRecipes = obj => recipes.find(recipe => recipe.id === obj.id)
 // ------------------------------------------------------------------------- //
 // ------------------------------------------------------------------------- //
 
-export const sequentialSearch = search => {
+export const sequentialSearch = search => {console.log(sortedList);
   // On initialise un tableau de résultats vide
   const searchResults = []
 

@@ -1,5 +1,5 @@
 import { recipes } from '../data/recipes.js'
-import { sortedList } from '../index.js'
+import { sortedList } from '../utils/init.js'
 import DOM from '../utils/domElements.js'
 import { addReactionTo, removeReactionTo } from '../utils/eventListener.js'
 import {
@@ -8,57 +8,18 @@ import {
   clearTagsSection,
 } from '../utils/utils.js'
 import { selectorChange } from './selector.js'
+import { listAll } from '../algorithms/quickSort.js'
 
-export const getTags = (itemsList = recipes, selector) => {
-  console.log('jjj')
-  //On crée un tableau de tags
-  const selectorList = []
-
-  const formated = str => str.toLowerCase().replace(/&(.)[^;]+;/)
-
-  const alreadyInTheList = selectedTag =>
-    [...document.querySelectorAll('.tag')].some(
-      elem => formated(selectedTag) === formated(elem.textContent)
-    )
-
-  itemsList.forEach(item => {
-    // Si le selecteur est la cha^ne de caractères "appareils"
-    if (typeof item[selector] === 'string') {
-      // Si l'appareil est déjà affiché dans la liste, on ne fait rien
-      if (alreadyInTheList(item[selector])) return
-
-      // Sinon on le pushe dans le tableau selectorList
-      return selectorList.push(item[selector].toLowerCase())
-    }
-    // Si le selecteur est le tableau "ingredients" ou le tableau "ustensiles"
-    if (Array.isArray(item[selector])) {
-      item[selector].forEach(el => {
-        if (typeof el === 'object') {
-          if (alreadyInTheList(el[selector.slice(0, -1)])) return
-          // Si l'ingredient est déjà affiché dans la liste, on ne fait rien
-          console.log(el[selector.slice(0, -1)] === 'Ail')
-          // Sinon on le pushe dans le tableau selectorList
-          // slice(0, -1) est pour avoir ingredient au singulier
-          return selectorList.push(el[selector.slice(0, -1)].toLowerCase())
-        }
-        if (alreadyInTheList(el)) return
-        // Si l'ustensile est déjà affiché dans la liste, on ne fait rien
-
-        // Sinon on le pushe dans le tableau selectorList
-        selectorList.push(el.toLowerCase())
-      })
-    }
-  })
-
+export const getTags = selector => {
   // On affiche les tags
-  printTagsList(selectorList, selector)
+  printTagsList(listAll[selector], selector)
 
   // Les tags sont filtrés en fonction du terme entré par l'utilisateur
   addReactionTo('input')
     .on(DOM.selectorInput)
-    .withFunction(e => filterTags(e, itemsList, selector))
+    .withFunction(e => filterTags(e, listAll[selector], selector))
 
-  return selectorList
+  return listAll.ingredients
 }
 
 // Fonction d'affichage de la liste de tags
@@ -125,7 +86,7 @@ const printTagsList = (selectorList, selector) => {
 
 // Fonction de filtrage des tags
 const filterTags = (e, itemsList, selector) => {
-  const filteredTags = getTags(itemsList, selector).filter(tag => {
+  const filteredTags = getTags(selector).filter(tag => {
     if (tag.indexOf(e.target.value) !== -1) return tag
   })
 
@@ -135,19 +96,19 @@ const filterTags = (e, itemsList, selector) => {
 }
 
 export const showTagsList = sortedSelection => e => {
-  console.log('showTagsList ', sortedSelection)
+  // console.log('showTagsList ', sortedSelection)
   const id = {
     ingredients: () => {
       selectorChange(DOM.ingredientsSelector)
-      return getTags(sortedSelection, 'ingredients')
+      return getTags('ingredients')
     },
     appareils: () => {
       selectorChange(DOM.appareilsSelector)
-      return getTags(sortedSelection, 'appliance')
+      return getTags('appliance')
     },
     ustensiles: () => {
       selectorChange(DOM.ustensilesSelector)
-      return getTags(sortedSelection, 'ustensils')
+      return getTags('ustensils')
     },
   }
 

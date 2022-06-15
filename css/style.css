@@ -324,18 +324,18 @@ label[for=medias-sort] {
   visibility: hidden;
   overflow-x: hidden;
   overflow-y: scroll;
-  position: relative;
+  position: absolute;
 }
 .list-bg_ingredients {
   background-color: #3282f7;
 }
 .list-bg_appareils {
   background-color: #68d9a4;
-  left: -220px;
+  left: 0;
 }
 .list-bg_ustensiles {
   background-color: #ed6454;
-  left: -440px;
+  left: 0;
 }
 
 .hidden {
@@ -512,6 +512,7 @@ label[for=medias-sort] {
 }
 
 .container {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;

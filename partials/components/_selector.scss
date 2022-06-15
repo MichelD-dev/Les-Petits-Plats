@@ -107,7 +107,7 @@
   }
   &:hover {
     cursor: pointer;
-    background-color: rgba($primary-color, .5);
+    background-color: rgba($primary-color, 0.5);
     border-radius: 2px;
   }
   &_last {
@@ -182,17 +182,17 @@ label[for='medias-sort'] {
   visibility: hidden;
   overflow-x: hidden;
   overflow-y: scroll;
-  position: relative;
+  position: absolute;
   &_ingredients {
     background-color: $secondary-color;
   }
   &_appareils {
     background-color: $tertiary-color;
-    left: -($selector-width + $selectors-gap);
+    left: 0;
   }
   &_ustensiles {
     background-color: $quaternary-color;
-    left: -2 * ($selector-width + $selectors-gap);
+    left: 0;
   }
 }
 

@@ -1,5 +1,5 @@
 import { recipes as recipesList } from '../data/recipes.js'
-import { sortedList } from '../index.js'
+import { sortedList } from '../utils/init.js'
 import { printErrorMessage } from '../utils/utils.js'
 
 const defaultCompare = (a, b) => {

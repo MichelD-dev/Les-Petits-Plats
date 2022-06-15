@@ -1,12 +1,12 @@
 import DOM from './utils/domElements.js'
-import { getRecipesFromSearch } from './components/searchBar.js'
+import { getIngredientsTagsFromSearch, getRecipesFromSearch } from './components/searchBar.js'
 import { printSnackbar, stopSnackbarTimeOut } from './components/snackbar.js'
 import recipeCardFactory from './factory/recipeFactory.js'
-import { initiateSortedList } from './algorithms/quickSort.js'
 import { addReactionTo } from './utils/eventListener.js'
 import { clearCardsSection, printErrorMessage, pipe } from './utils/utils.js'
-import { showTagsList } from './components/tagsList.js'
 import { recipes } from './data/recipes.js'
+import { init } from './utils/init.js'
+import { select } from './utils/init.js'
 
 // ---------------------------------------------------------------------------- //
 // ------------------------------- UTILITAIRES -------------------------------- //
@@ -31,15 +31,7 @@ const getRecipesCards = selection => selection.map(recipeCardFactory)
 const printRecipesCards = recipeCards =>
   recipeCards.forEach(recipeCard => DOM.cardsSection.appendChild(recipeCard))
 
-// ---------------------------------------------------------------------------- //
-// ---------------------------- INITIALISATION -------------------------------- //
-// ---------------------------------------------------------------------------- //
-
-// On crée une liste ordonnée de mots clés à partir de la liste de recettes
-const sortedList = initiateSortedList()
-
-// On met le focus dans l'input de recherche à l'ouverture de la page
-DOM.searchInput.focus()
+init()
 
 // ---------------------------------------------------------------------------- //
 // -------------------- FONCTION DE RECHERCHE DE RECETTES --------------------- //
@@ -62,7 +54,8 @@ const getRecipes = (e = null) => {
 
   // On récupère un tableau de selections de recettes d'après les critères de recherche
   const recipesSelection = getRecipesFromSearch(e.target.value)
-
+  const ingredientsTags = getIngredientsTagsFromSearch(e.target.value)
+console.log(ingredientsTags);
   /**
    On affiche les cartes résultant de la recherche, via une composition des fonctions listées plus haut:
    1. On récupère le nombre de recettes trouvées
@@ -80,27 +73,12 @@ const getRecipes = (e = null) => {
   // On réinitialise la liste de tags
   // clearTagsSection()
 
-  createTagsListWith(recipesSelection)
+  select(recipesSelection)
 
   return recipesSelection
 }
 
-// On ouvre le selecteur
-const createTagsListWith = (recipesSelection = recipes) => {
-  console.log('createTagsListWith')
-  console.log(recipesSelection)
-  return [...document.querySelectorAll('.select__trigger')].forEach(
-    selector => {
-      addReactionTo('pointerdown')
-        .on(selector)
-        .withFunction(showTagsList(recipesSelection))
-    }
-  )
-}
-
-createTagsListWith()
-
-export { sortedList, getRecipes }
+export { getRecipes }
 
 // ------------------------------------------------------------------------- //
 // ----------------------------EVENT LISTENERS----------------------------- //
