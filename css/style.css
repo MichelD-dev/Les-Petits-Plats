@@ -1,6 +1,86 @@
 @import url("https://fonts.googleapis.com/css2?family=Lato&family=Roboto&display=swap");
 /* http://meyerweb.com/eric/tools/css/reset/ v2.0 | 20110126 License: none (public domain) */
-html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
   margin: 0;
   padding: 0;
   border: 0;
@@ -10,7 +90,17 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
 }
 
 /* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
   display: block;
 }
 
@@ -19,15 +109,20 @@ body {
   position: relative;
 }
 
-ol, ul {
+ol,
+ul {
   list-style: none;
 }
 
-blockquote, q {
+blockquote,
+q {
   quotes: none;
 }
 
-blockquote:before, blockquote:after, q:before, q:after {
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
   content: "";
   content: none;
 }
@@ -37,8 +132,11 @@ table {
   border-spacing: 0;
 }
 
-*, *:after, *:before {
+*,
+*:after,
+*:before {
   box-sizing: border-box;
+  user-select: none;
 }
 
 .header {
@@ -159,6 +257,8 @@ table {
 }
 .custom-option:hover {
   cursor: pointer;
+  background-color: rgba(231, 231, 231, 0.5);
+  border-radius: 2px;
 }
 .custom-option_last {
   border-radius: 0 0 7px 7px;
@@ -252,7 +352,7 @@ label[for=medias-sort] {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #eee;
+  background-color: #ddd;
   border-radius: 20px;
   border: 8px solid transparent;
   background-clip: content-box;
@@ -365,6 +465,42 @@ label[for=medias-sort] {
 }
 .hidden {
   display: none;
+}
+
+.tags {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.tag {
+  width: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 10px;
+  color: white;
+  margin-bottom: 15px;
+  margin-right: 15px;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  background-color: #3282f7;
+  font-size: 1.2rem;
+}
+.tag > *:first-child {
+  text-align: center;
+  flex-grow: 2;
+  margin-right: 5px;
+}
+.tag_ingredients {
+  background-color: #3282f7;
+}
+.tag_appliance {
+  background-color: #68d9a4;
+}
+.tag_ustensils {
+  background-color: #ed6454;
 }
 
 .error {

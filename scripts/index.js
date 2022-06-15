@@ -1,18 +1,11 @@
+import DOM from './utils/domElements.js'
 import { getRecipesFromSearch } from './components/searchBar.js'
 import { printSnackbar, stopSnackbarTimeOut } from './components/snackbar.js'
 import recipeCardFactory from './factory/recipeFactory.js'
 import { initiateSortedList } from './algorithms/quickSort.js'
-import DOM from './utils/domElements.js'
 import { addReactionTo } from './utils/eventListener.js'
-// import { initTagsList } from './components/tagsList.js'
-import {
-  clearCardsSection,
-  clearTagsSection,
-  printErrorMessage,
-  pipe,
-  execOnce,
-} from './utils/utils.js'
-import { getTags, showTagsList } from './components/tagsList.js'
+import { clearCardsSection, printErrorMessage, pipe } from './utils/utils.js'
+import { showTagsList } from './components/tagsList.js'
 import { recipes } from './data/recipes.js'
 
 // ---------------------------------------------------------------------------- //
@@ -44,8 +37,6 @@ const printRecipesCards = recipeCards =>
 
 // On crée une liste ordonnée de mots clés à partir de la liste de recettes
 const sortedList = initiateSortedList()
-
-// test(recipes)
 
 // On met le focus dans l'input de recherche à l'ouverture de la page
 DOM.searchInput.focus()
@@ -91,11 +82,11 @@ const getRecipes = (e = null) => {
 
   createTagsListWith(recipesSelection)
 
-  console.log(recipesSelection)
+  return recipesSelection
 }
 
 // On ouvre le selecteur
-const createTagsListWith = recipesSelection => {
+const createTagsListWith = (recipesSelection = recipes) => {
   console.log('createTagsListWith')
   console.log(recipesSelection)
   return [...document.querySelectorAll('.select__trigger')].forEach(
@@ -107,6 +98,8 @@ const createTagsListWith = recipesSelection => {
   )
 }
 
+createTagsListWith()
+
 export { sortedList, getRecipes }
 
 // ------------------------------------------------------------------------- //
@@ -115,5 +108,3 @@ export { sortedList, getRecipes }
 
 // On écoute les frappes clavier
 addReactionTo('input').on(DOM.searchInput).withFunction(getRecipes)
-
-getRecipes()

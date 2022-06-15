@@ -7,6 +7,8 @@ const DOM = {
 
   errorMessage: document.querySelector('.error'),
 
+  tagsSection: document.querySelector('.tags'),
+
   selectorInput: document.querySelector('.select__input'),
   selectorArrow: document.querySelector('.arrow'),
 
