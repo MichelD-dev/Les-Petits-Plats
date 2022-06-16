@@ -8,7 +8,6 @@
 
 .select {
   width: $selector-width;
-  // position: absolute;
   &__label {
     font-weight: bold;
   }
@@ -25,10 +24,6 @@
     height: 69px;
     border: none;
     border-radius: 7px;
-    cursor: pointer;
-    // &:focus {
-    //   z-index: 10;
-    // }
     &_ingredients {
       background-color: $secondary-color;
     }
@@ -59,9 +54,6 @@
   }
 }
 
-// #select_ingredients {
-//   left:0;
-// }
 #select_appareils {
   left: 275px;
 }
@@ -72,12 +64,7 @@
 .custom-options {
   max-width: 800px;
   color: white;
-  // position: absolute;
-  // display: flex;
-  // flex-direction: column;
-  // flex-wrap: wrap;
   columns: 3;
-  // max-height: 600px;
   left: 0;
   transition: all 0.5s;
   opacity: 0;
@@ -134,13 +121,13 @@ label[for='medias-sort'] {
 
 .arrow {
   &-container {
-    // background-color: red;
     height: 100%;
     width: 20%;
     display: flex;
     justify-content: center;
     align-items: center;
     padding-left: 10px;
+    cursor: pointer;
   }
   position: relative;
   height: 9.88px;

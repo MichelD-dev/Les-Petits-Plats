@@ -14,7 +14,7 @@ const findInRecipes = obj => recipes.find(recipe => recipe.id === obj.id)
 // ------------------------------------------------------------------------- //
 // ------------------------------------------------------------------------- //
 
-export const sequentialSearch = (search, list = sortedList) => {console.log(list);
+export const sequentialSearch = (search, list = sortedList) => {
   // On initialise un tableau de résultats vide
   const searchResults = []
 
@@ -32,6 +32,7 @@ export const sequentialSearch = (search, list = sortedList) => {console.log(list
     printErrorMessage(
       'Aucune recette ne correspond à votre critère... Vous pouvez chercher "tarte aux pommes", "poisson", etc.'
     )
-console.log([...new Set(searchResults)]);
+  console.log([...new Set(searchResults)])
+
   return [...new Set(searchResults)]
 }

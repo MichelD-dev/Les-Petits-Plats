@@ -1,7 +1,5 @@
-import { recipes } from '../data/recipes.js'
-import { sortedList } from '../utils/init.js'
 import DOM from '../utils/domElements.js'
-import { addReactionTo, removeReactionTo } from '../utils/eventListener.js'
+import { addReactionTo } from '../utils/eventListener.js'
 import {
   capitalize,
   setAttributesFor,
@@ -10,9 +8,8 @@ import {
 } from '../utils/utils.js'
 import { selectorChange } from './selector.js'
 import { listAll } from '../algorithms/quickSort.js'
-import { getRecipesFromSearch } from './searchBar.js'
 
-export const getTags = selector => {
+export const getTags = memoize(selector => {
   const selection =
     selector === 'appliance'
       ? 'appareils'
@@ -20,29 +17,39 @@ export const getTags = selector => {
       ? 'ustensiles'
       : 'ingredients'
 
-  // On affiche les tags
+  // On affiche les tags correspondants au selecteur cliqué
   printTagsList(listAll[selection], selector)
 
-  // Les tags sont filtrés en fonction du terme entré par l'utilisateur
+  // Les tags sont filtrés en fonction du terme entré par l'utilisateur dans l'input selecteur
   addReactionTo('input')
     .on(DOM.selectorInput)
-    .withFunction(() => filterTags(listAll[selection], selector))
+    .withFunction(() =>
+      filterTags(DOM.selectorInput.value, listAll[selection], selector)
+    )
+
+  // Les tags sont filtrés en fonction du terme entré par l'utilisateur dans le selecteur de recherche
+  if (DOM.searchInput.value)
+    filterTags(DOM.searchInput.value, listAll[selection], selector)
 
   return listAll[selection]
-}
+})
 
 // Fonction d'affichage de la liste de tags
 const printTagsList = (selectorList, selector) => {
   const tagsList = [...new Set(selectorList)].sort((a, b) => a.localeCompare(b))
 
+  // Suppression du tag
   const closeTag = tagElement => (tagElement.style.display = 'none')
 
-  clearTagsSection(selector)
+  // Réinitialisation de la liste de tags
+  // clearTagsSection(selector)
 
+  // Selection d'un tag dans la liste
   const selectTag = selectedTag => {
-    //TODO repère selectTag
+    // On affiche le tag choisi
     const tag = tagsList.find(item => item === selectedTag)
 
+    // on évite d'afficher deux fois le même tag
     if (
       [...document.querySelectorAll('.tag')].some(
         elem => capitalize(selectedTag) === elem.textContent
@@ -51,12 +58,13 @@ const printTagsList = (selectorList, selector) => {
       return
     }
 
+    // Création du tag
     const tagElement = document.createElement('div')
     tagElement.classList.add('tag', `tag_${selector}`)
-    
+
     const tagText = document.createElement('span')
     tagText.textContent = capitalize(tag)
-    
+
     const tagClose = document.createElement('span')
     tagClose.classList.add('tag__close')
     tagClose.innerHTML = `<i class="fa-regular fa-circle-xmark fa-xl tag__close"></i>`
@@ -69,8 +77,6 @@ const printTagsList = (selectorList, selector) => {
     tagElement.appendChild(tagClose)
 
     DOM.tagsSection.appendChild(tagElement)
-
-    // getRecipesFromSearch(selectedTag)//FIXME
   }
 
   tagsList.forEach(tag => {
@@ -92,16 +98,16 @@ const printTagsList = (selectorList, selector) => {
 
     addReactionTo('pointerdown')
       .on(item)
-      .withFunction(() => selectTag(tag))
+      .withFunction(() => {
+        selectTag(tag)
+      })
   })
 }
 
-// Fonction de filtrage des tags
-const filterTags = (itemsList, selector) => {
+// Fonction de filtrage des tags en fonction des inputs
+export const filterTags = (userInput, itemsList, selector) => {
   const filteredTags = itemsList.filter(tag => {
-    const input = document.querySelector('.select__input_ingredients')
-
-    if (tag.toLowerCase().includes(input.value.toLowerCase())) return tag
+    if (tag.toLowerCase().includes(userInput.toLowerCase())) return tag
   })
 
   clearTagsSection(selector)
@@ -114,7 +120,8 @@ const filterTags = (itemsList, selector) => {
   printTagsList(filteredTags, selector)
 }
 
-export const showTagsList = e => {
+// Routage en fonction du selecteur cliqué
+export const showTagsList = selector => {
   const id = {
     ingredients: () => {
       selectorChange(DOM.ingredientsSelector)
@@ -129,8 +136,6 @@ export const showTagsList = e => {
       return getTags('ustensils')
     },
   }
-
-  const selector = e.target.parentElement.id
 
   const getSelectedTags = id[selector]?.()
 

@@ -1,20 +1,19 @@
 import {
-  initiateIngredientsTagsList,
   initiateSortedList,
 } from '../algorithms/quickSort.js'
 import { showTagsList } from '../components/tagsList.js'
-import { recipes } from '../data/recipes.js'
 import DOM from './domElements.js'
 import { addReactionTo } from './eventListener.js'
 
 // On crée une liste ordonnée de mots clés à partir de la liste de recettes
 export const sortedList = initiateSortedList()
-export const ingredientsList = initiateIngredientsTagsList()
+console.log(sortedList);
 
 export const select = () => {
+  // Ouverture/fermeture des selecteurs
   ;[...document.querySelectorAll('.arrow-container')].forEach(
     arrow =>
-      (arrow.onclick = e => {
+      (arrow.onclick = () => {
         if (
           document
             .getElementById(`select_${arrow.parentElement.id}`)
@@ -25,13 +24,16 @@ export const select = () => {
             .classList.remove('open')
         }
 
-        return showTagsList(e)
+        // Affichage des tags
+        return showTagsList(arrow.parentElement.id)
       })
   )
+
+  // Affichage des tags lorsqu'on clique dans le selecteur input
   ;[...document.querySelectorAll('.select__input')].forEach(
     selector =>
-      (selector.onclick = e => {
-        return showTagsList(e)
+      (selector.onclick = () => {
+        return showTagsList(selector.parentElement.id)
       })
   )
 }
@@ -39,7 +41,7 @@ export const select = () => {
 export const init = () => {
   // On met le focus dans l'input de recherche à l'ouverture de la page
   DOM.searchInput.focus()
-  select(recipes)
+  select()
 }
 
 /**
@@ -55,5 +57,3 @@ addReactionTo('pointerdown')
       }
     })
   })
-
-// document.querySelector('.tag__close') && (document.querySelector('.tag__close').onclick = console.log('ok'))

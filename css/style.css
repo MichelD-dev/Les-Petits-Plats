@@ -186,7 +186,6 @@ table {
   height: 69px;
   border: none;
   border-radius: 7px;
-  cursor: pointer;
 }
 .select__trigger_ingredients {
   background-color: #3282f7;
@@ -292,6 +291,7 @@ label[for=medias-sort] {
   justify-content: center;
   align-items: center;
   padding-left: 10px;
+  cursor: pointer;
 }
 .arrow::before, .arrow::after {
   content: "";

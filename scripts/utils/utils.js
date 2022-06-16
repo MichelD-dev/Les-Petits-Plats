@@ -32,15 +32,6 @@ export const setAttributesFor = el => attrs =>
   Object.entries(attrs).forEach(([key, value]) => el.setAttribute(key, value))
 
 /**
- * Création d'un tableau d'éléments selectionnés
- */
-// export const getSelectionOf = items => {
-//   const selectedItems = []
-
-//   return () => [...selectedItems, ...items]
-// }
-
-/**
  * Fonction capitalize
  */
 export const capitalize = str => {
@@ -63,13 +54,12 @@ export const memoize = fn => {
   let cache = {}
   return (...args) => {
     let n = args[0]
-    console.log(n)
     // just taking one argument here
     if (n in cache) {
-      console.log('Fetching from cache')
+      console.log(n + ': Fetching from cache')
       return cache[n]
     } else {
-      console.log('Calculating result')
+      console.log(n + ': Calculating result')
       let result = fn(n)
       cache[n] = result
       return result

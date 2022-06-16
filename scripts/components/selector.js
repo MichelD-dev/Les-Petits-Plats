@@ -1,11 +1,3 @@
-import DOM from '../utils/domElements.js'
-import { addReactionTo } from '../utils/eventListener.js'
-import { showTagsList } from './tagsList.js'
-
-// --------------------------------------------------------------------------- //
-// ------------------------------------UTILS---------------------------------- //
-// --------------------------------------------------------------------------- //
-
 /**
  * Changements d'apparence du selecteur sur events
  */
@@ -63,39 +55,39 @@ export const selectorChange = selector => {
  * GESTION DU FOCUS
  * Changement de focus au clavier et maintien du focus dans le selecteur
  */
-const focusInSelector = e => {
-  e.preventDefault()
+// const focusInSelector = e => {
+//   e.preventDefault()
 
   /**
    * On récupère les éléments qui acquerront le focus dans le selecteur
    */
-  const focusableElements = '.select__trigger, .custom-option:not(.selected)'
+  // const focusableElements = '.select__trigger, .custom-option:not(.selected)'
 
   /**
    * On crée un tableau des éléments focusables
    */
-  let focusables = [...DOM.selector.querySelectorAll(focusableElements)]
+//   let focusables = [...DOM.selector.querySelectorAll(focusableElements)]
 
-  let index = focusables.findIndex(
-    elem => elem === DOM.selector.querySelector(':focus')
-  )
+//   let index = focusables.findIndex(
+//     elem => elem === DOM.selector.querySelector(':focus')
+//   )
 
-  e.shiftKey === true ? index-- : index++
+//   e.shiftKey === true ? index-- : index++
 
-  const focusablesNbr = focusables.length
+//   const focusablesNbr = focusables.length
 
-  if (index >= focusablesNbr) {
-    index = 0
-  }
-  if (index < 0) {
-    index = focusablesNbr - 1
-  }
+//   if (index >= focusablesNbr) {
+//     index = 0
+//   }
+//   if (index < 0) {
+//     index = focusablesNbr - 1
+//   }
 
-  let option = focusables[index]
-  option.focus()
+//   let option = focusables[index]
+//   option.focus()
 
-  return focusables
-}
+//   return focusables
+// }
 
 // --------------------------------------------------------------------------- //
 // -------------------------------EVENT LISTENERS----------------------------- //
@@ -116,58 +108,58 @@ const focusInSelector = e => {
 /**
  * Navigation au clavier dans le selecteur
  */
-addReactionTo('keydown')
-  .on(DOM.selectorInput)
-  .withFunction(e => {
-    if (e.key === 'Escape' || e.key === 'Esc') {
-      document.querySelector('.select.open').classList.remove('open')
-      document.querySelector('.select__trigger').focus()
-    }
-    if (e.key === 'Tab' && !!document.querySelector('.select.open')) {
-      focusInSelector(e)
-    }
-  })
+// addReactionTo('keydown')
+//   .on(DOM.selectorInput)
+//   .withFunction(e => {
+//     if (e.key === 'Escape' || e.key === 'Esc') {
+//       document.querySelector('.select.open').classList.remove('open')
+//       document.querySelector('.select__trigger').focus()
+//     }
+//     if (e.key === 'Tab' && !!document.querySelector('.select.open')) {
+//       focusInSelector(e)
+//     }
+//   })
 
 /**
  * Selection
  */
-for (const option of document.getElementsByClassName('custom-option')) {
-  addReactionTo('pointerdown')
-    .on(option)
-    .withFunction(() => {
-      selectDisplaySorting(option)
-    })
-  addReactionTo('keydown')
-    .on(option)
-    .withFunction(e => {
-      if (
-        e.key === 'Enter' &&
-        document.querySelector('.select.open') &&
-        !document.activeElement.classList.contains('select__trigger')
-      ) {
-        selectDisplaySorting(option)
-      }
-    })
-}
+// for (const option of document.getElementsByClassName('custom-option')) {
+//   addReactionTo('pointerdown')
+//     .on(option)
+//     .withFunction(() => {
+//       selectDisplaySorting(option)
+//     })
+  // addReactionTo('keydown')
+  //   .on(option)
+  //   .withFunction(e => {
+  //     if (
+  //       e.key === 'Enter' &&
+  //       document.querySelector('.select.open') &&
+  //       !document.activeElement.classList.contains('select__trigger')
+  //     ) {
+  //       selectDisplaySorting(option)
+  //     }
+  //   })
+// }
 
 /**
  * Récupération des données selon la catégorie sélectionnée
  */
-for (const selected of document.querySelectorAll('.custom-option')) {
-  addReactionTo('pointerdown')
-    .on(selected)
-    .withFunction(() => {
-      const sortingChoice = selected.textContent
-      // getDatas(sortingChoice)
-    })
+// for (const selected of document.querySelectorAll('.custom-option')) {
+//   addReactionTo('pointerdown')
+//     .on(selected)
+//     .withFunction(() => {
+//       const sortingChoice = selected.textContent
+//       // getDatas(sortingChoice)
+//     })
 
-  addReactionTo('keydown')
-    .on(selected)
-    .withFunction(e => {
-      if (e.key === 'Enter') {
-        const sortingChoice = selected.textContent
-        // getDatas(sortingChoice)
-      }
-    })
-}
+  // addReactionTo('keydown')
+  //   .on(selected)
+  //   .withFunction(e => {
+  //     if (e.key === 'Enter') {
+  //       const sortingChoice = selected.textContent
+  //       // getDatas(sortingChoice)
+  //     }
+  //   })
+// }
 

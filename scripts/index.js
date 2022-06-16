@@ -6,7 +6,7 @@ import { addReactionTo } from './utils/eventListener.js'
 import { clearCardsSection, printErrorMessage, pipe } from './utils/utils.js'
 import { recipes } from './data/recipes.js'
 import { init } from './utils/init.js'
-import { select } from './utils/init.js'
+
 
 // ---------------------------------------------------------------------------- //
 // ------------------------------- UTILITAIRES -------------------------------- //
@@ -37,51 +37,45 @@ init()
 // -------------------- FONCTION DE RECHERCHE DE RECETTES --------------------- //
 // ---------------------------------------------------------------------------- //
 
-const getRecipes = (e = null) => {
+const getRecipes = e => {
   /**
    On ne retourne un résultat qu'à partir de trois caractères tapés par l'utilisateur
-   On supprime le message d'erreur quand l'utilisateur revient sur sa frappe
-   On réinitialise l'affichage des cards recettes
-  */
-  if (e?.target.value.length < 3) return clearPage()
+   On réinitialise l'affichage des cards recettes lorsqu'on redescend en dessous de 3 caractères
+   */
+  if (DOM.searchInput.value.length < 3) return clearPage()
 
-  if (!e || e.target.value.length < 3) return createTagsListWith(recipes)
+  // On recrée une liste complète de tags lorsqu'on redescend en dessous de 3 caractères
+  if (!e || DOM.searchInput.value.length < 3) return createTagsListWith(recipes)
 
-  // On réinitialise l'affichage des cards recettes
+  // On initialise l'affichage des cards recettes
   clearPage()
 
   stopSnackbarTimeOut() //FIXME fonctionne?
 
   // On récupère un tableau de selections de recettes d'après les critères de recherche
-  const recipesSelection = getRecipesFromSearch(e.target.value)
+  const recipesSelection = getRecipesFromSearch(DOM.searchInput.value)
 
-  /**
+  printCards(recipesSelection)
+
+  return recipesSelection
+}
+
+/**
    On affiche les cartes résultant de la recherche, via une composition des fonctions listées plus haut:
    1. On récupère le nombre de recettes trouvées
    2. On affiche une snackbar avec le nombre de recettes trouvées
    3. On récupère les cards DOM correspondantes
    4. On affiche la selection
    */
-  pipe(
-    getRecipesQuantity,
-    printSnackbar,
-    getRecipesCards,
-    printRecipesCards
-  )(recipesSelection)
+const printCards = pipe(
+  getRecipesQuantity,
+  printSnackbar,
+  getRecipesCards,
+  printRecipesCards
+)
 
-  // On réinitialise la liste de tags
-  // clearTagsSection()
+export { getRecipes, printCards }
 
-  select(recipesSelection)
-
-  return recipesSelection
-}
-
-export { getRecipes }
-
-// ------------------------------------------------------------------------- //
-// ----------------------------EVENT LISTENERS----------------------------- //
-// ------------------------------------------------------------------------- //
 
 // On écoute les frappes clavier
 addReactionTo('input').on(DOM.searchInput).withFunction(getRecipes)
