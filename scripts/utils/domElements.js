@@ -9,6 +9,8 @@ const DOM = {
 
   tagsSection: document.querySelector('.tags'),
 
+  tagError: document.querySelector('.tags__error'),
+
   selectorInput: document.querySelector('.select__input'),
   selectorArrow: document.querySelector('.arrow'),
 

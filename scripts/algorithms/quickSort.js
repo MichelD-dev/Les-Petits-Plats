@@ -121,9 +121,9 @@ export const listAll = list(
   'appareils',
   'ustensiles'
 )
-console.log(listAll.ingredients)
+
 export const initiateSortedList = () => quickSort(listAll.init)
 export const initiateIngredientsTagsList = () => quickSort(listAll.ingredients)
 // export const initiateIngredientsTagsList = () => {}
-// console.log(initiateSortedList())
-console.log(initiateIngredientsTagsList())
+
+

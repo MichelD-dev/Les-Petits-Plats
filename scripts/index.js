@@ -1,5 +1,5 @@
 import DOM from './utils/domElements.js'
-import { getIngredientsTagsFromSearch, getRecipesFromSearch } from './components/searchBar.js'
+import { getRecipesFromSearch } from './components/searchBar.js'
 import { printSnackbar, stopSnackbarTimeOut } from './components/snackbar.js'
 import recipeCardFactory from './factory/recipeFactory.js'
 import { addReactionTo } from './utils/eventListener.js'
@@ -54,8 +54,7 @@ const getRecipes = (e = null) => {
 
   // On récupère un tableau de selections de recettes d'après les critères de recherche
   const recipesSelection = getRecipesFromSearch(e.target.value)
-  const ingredientsTags = getIngredientsTagsFromSearch(e.target.value)
-console.log(ingredientsTags);
+
   /**
    On affiche les cartes résultant de la recherche, via une composition des fonctions listées plus haut:
    1. On récupère le nombre de recettes trouvées

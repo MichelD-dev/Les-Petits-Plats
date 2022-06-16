@@ -52,39 +52,48 @@
     <!------------------------------------------------------------>
 
     <section class="selectors">
-        <div class="select" id="select_ingredients">
-          <div tabindex="0" class="select__trigger select__trigger_ingredients" id="ingredients">
-            <input class="select__input select__input_ingredients" placeholder="Ingredients"></input>
+      <div class="select" id="select_ingredients">
+        <div tabindex="0" class="select__trigger select__trigger_ingredients" id="ingredients">
+          <input class="select__input select__input_ingredients" placeholder="Ingredients"></input>
+          <div class="arrow-container">
             <div class="arrow"></div>
           </div>
-          <div class="list-bg list-bg_ingredients custom-scrollbar">
-            <ul class="custom-options" id="ingredients-list">
-            </ul>
-          </div>
         </div>
+        <div class="list-bg list-bg_ingredients custom-scrollbar">
+          <p class="tags__error"></p>
+          <ul class="custom-options" id="ingredients-list">
+          </ul>
+        </div>
+      </div>
 
-        <div class="select" id="select_appareils">
-          <div tabindex="0" class="select__trigger select__trigger_appareils" id="appareils">
-            <input class="select__input select__input_appareils" placeholder="Appareils"></input>
+      <div class="select" id="select_appareils">
+        <div tabindex="0" class="select__trigger select__trigger_appareils" id="appareils">
+          <input class="select__input select__input_appareils" placeholder="Appareils"></input>
+          <div class="arrow-container">
             <div class="arrow"></div>
           </div>
-          <div class="list-bg list-bg_appareils">
-            <ul class="custom-options" id="appareils-list">
-            </ul>
-          </div>
         </div>
+        <div class="list-bg list-bg_appareils">
+          <p class="tags__error"></p>
+          <ul class="custom-options" id="appareils-list">
+          </ul>
+        </div>
+      </div>
 
-         <div class="select" id="select_ustensiles">
-          <div tabindex="0" class="select__trigger select__trigger_ustensiles" id="ustensiles">
-            <input class="select__input select__input_ustensiles" placeholder="Ustensiles"></input>
+      <div class="select" id="select_ustensiles">
+        <div tabindex="0" class="select__trigger select__trigger_ustensiles" id="ustensiles">
+          <input class="select__input select__input_ustensiles" placeholder="Ustensiles"></input>
+          <div class="arrow-container">
             <div class="arrow"></div>
           </div>
-          <div class="list-bg list-bg_ustensiles">
-            <ul class="custom-options" id="ustensiles-list">
-            </ul>
-          </div>
         </div>
-      </section>
+        <div class="list-bg list-bg_ustensiles">
+          <p class="tags__error"></p>
+          <ul class="custom-options" id="ustensiles-list">
+          </ul>
+        </div>
+      </div>
+    </section>
 
     <!------------------------------------------------------------>
     <!--------------------------RECETTES------------------------->

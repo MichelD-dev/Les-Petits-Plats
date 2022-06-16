@@ -2,7 +2,6 @@ import DOM from '../utils/domElements.js'
 import { addReactionTo } from '../utils/eventListener.js'
 import { showTagsList } from './tagsList.js'
 
-
 // --------------------------------------------------------------------------- //
 // ------------------------------------UTILS---------------------------------- //
 // --------------------------------------------------------------------------- //
@@ -15,19 +14,10 @@ export const selectorChange = selector => {
    * Ouverture du selecteur
    */
   if (!document.getElementById(selector.id).classList.contains('open')) {
-    // console.log(selector)
     ;[...document.querySelectorAll('.select')].forEach(selector =>
       selector.classList.remove('open')
     )
-    document.getElementById(selector.id).classList.add('open')
-  } else {
-    /**
-     * Fermeture du selecteur
-     */
-
-    // if (!DOM.selectorInput.activeElement) {
-     document.getElementById(selector.id).classList.remove('open')
-    // }
+    return document.getElementById(selector.id).classList.add('open')
   }
 }
 
@@ -181,14 +171,3 @@ for (const selected of document.querySelectorAll('.custom-option')) {
     })
 }
 
-/**
- * On ferme le selecteur lorsque l'utilisateur clique quelque part dans la fenêtre
- */
-addReactionTo('pointerdown')
-  .on(window)
-  .withFunction(e => {
-    const select = document.querySelector('.select')
-    if (!select.contains(e.target)) {
-      select.classList.remove('open')
-    }
-  })

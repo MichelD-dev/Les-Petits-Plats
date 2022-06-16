@@ -6,20 +6,29 @@ import {
   capitalize,
   setAttributesFor,
   clearTagsSection,
+  memoize,
 } from '../utils/utils.js'
 import { selectorChange } from './selector.js'
 import { listAll } from '../algorithms/quickSort.js'
+import { getRecipesFromSearch } from './searchBar.js'
 
 export const getTags = selector => {
+  const selection =
+    selector === 'appliance'
+      ? 'appareils'
+      : selector === 'ustensils'
+      ? 'ustensiles'
+      : 'ingredients'
+
   // On affiche les tags
-  printTagsList(listAll[selector], selector)
+  printTagsList(listAll[selection], selector)
 
   // Les tags sont filtrés en fonction du terme entré par l'utilisateur
   addReactionTo('input')
     .on(DOM.selectorInput)
-    .withFunction(e => filterTags(e, listAll[selector], selector))
+    .withFunction(() => filterTags(listAll[selection], selector))
 
-  return listAll.ingredients
+  return listAll[selection]
 }
 
 // Fonction d'affichage de la liste de tags
@@ -30,7 +39,8 @@ const printTagsList = (selectorList, selector) => {
 
   clearTagsSection(selector)
 
-  const showTag = selectedTag => {
+  const selectTag = selectedTag => {
+    //TODO repère selectTag
     const tag = tagsList.find(item => item === selectedTag)
 
     if (
@@ -43,12 +53,13 @@ const printTagsList = (selectorList, selector) => {
 
     const tagElement = document.createElement('div')
     tagElement.classList.add('tag', `tag_${selector}`)
-
+    
     const tagText = document.createElement('span')
     tagText.textContent = capitalize(tag)
-
+    
     const tagClose = document.createElement('span')
-    tagClose.innerHTML = `<i class="fa-regular fa-circle-xmark fa-xl"></i>`
+    tagClose.classList.add('tag__close')
+    tagClose.innerHTML = `<i class="fa-regular fa-circle-xmark fa-xl tag__close"></i>`
 
     addReactionTo('pointerdown')
       .on(tagClose)
@@ -58,9 +69,10 @@ const printTagsList = (selectorList, selector) => {
     tagElement.appendChild(tagClose)
 
     DOM.tagsSection.appendChild(tagElement)
+
+    // getRecipesFromSearch(selectedTag)//FIXME
   }
 
-  //TODO 'Il n\'y a pas de tag associé à votre recherche'
   tagsList.forEach(tag => {
     const item = document.createElement('li')
     item.classList.add(`custom-option`, `custom-option_${selector}`)
@@ -80,23 +92,29 @@ const printTagsList = (selectorList, selector) => {
 
     addReactionTo('pointerdown')
       .on(item)
-      .withFunction(() => showTag(tag))
+      .withFunction(() => selectTag(tag))
   })
 }
 
 // Fonction de filtrage des tags
-const filterTags = (e, itemsList, selector) => {
-  const filteredTags = getTags(selector).filter(tag => {
-    if (tag.indexOf(e.target.value) !== -1) return tag
+const filterTags = (itemsList, selector) => {
+  const filteredTags = itemsList.filter(tag => {
+    const input = document.querySelector('.select__input_ingredients')
+
+    if (tag.toLowerCase().includes(input.value.toLowerCase())) return tag
   })
 
   clearTagsSection(selector)
 
+  if (filteredTags.length === 0)
+    return (DOM.tagError.textContent =
+      "Il n'y a pas de tag associé à votre recherche")
+
+  DOM.tagError.textContent = ''
   printTagsList(filteredTags, selector)
 }
 
-export const showTagsList = sortedSelection => e => {
-  // console.log('showTagsList ', sortedSelection)
+export const showTagsList = e => {
   const id = {
     ingredients: () => {
       selectorChange(DOM.ingredientsSelector)
@@ -118,15 +136,3 @@ export const showTagsList = sortedSelection => e => {
 
   return getSelectedTags
 }
-
-// On ouvre le selecteur
-// export const initTagsList = recipesSelection => {
-//   console.log('pop')
-//   const showSelectionTagsList = showTagsList(recipesSelection)
-
-//   ;[...document.querySelectorAll('.select__trigger')].forEach(selector => {
-//     addReactionTo('pointerdown')
-//       .on(selector)
-//       .withFunction(howTagsList(recipesSelection))
-//   })
-// }

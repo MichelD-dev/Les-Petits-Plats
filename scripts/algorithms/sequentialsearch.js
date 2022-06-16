@@ -14,13 +14,13 @@ const findInRecipes = obj => recipes.find(recipe => recipe.id === obj.id)
 // ------------------------------------------------------------------------- //
 // ------------------------------------------------------------------------- //
 
-export const sequentialSearch = search => {console.log(sortedList);
+export const sequentialSearch = (search, list = sortedList) => {console.log(list);
   // On initialise un tableau de résultats vide
   const searchResults = []
 
   // On boucle dans la liste d'objets triés
-  for (let i = 0; i < sortedList.length; i++) {
-    const currentObj = sortedList[i]
+  for (let i = 0; i < list.length; i++) {
+    const currentObj = list[i]
 
     // On vérifie si le mot recherché existe dans l'objet de l'itération en cours
     if (isFound(search).in(currentObj))
@@ -30,8 +30,8 @@ export const sequentialSearch = search => {console.log(sortedList);
 
   searchResults.length === 0 &&
     printErrorMessage(
-      'Aucune recette ne correspond à votre critère...Vous pouvez chercher "tarte aux pommes", "poisson", etc.'
+      'Aucune recette ne correspond à votre critère... Vous pouvez chercher "tarte aux pommes", "poisson", etc.'
     )
-
+console.log([...new Set(searchResults)]);
   return [...new Set(searchResults)]
 }
