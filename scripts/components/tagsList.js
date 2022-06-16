@@ -8,6 +8,7 @@ import {
 } from '../utils/utils.js'
 import { selectorChange } from './selector.js'
 import { listAll } from '../algorithms/quickSort.js'
+import { getRecipes } from '../index.js'
 
 export const getTags = memoize(selector => {
   const selection =
@@ -23,9 +24,9 @@ export const getTags = memoize(selector => {
   // Les tags sont filtrés en fonction du terme entré par l'utilisateur dans l'input selecteur
   addReactionTo('input')
     .on(DOM.selectorInput)
-    .withFunction(() =>
+    .withFunction(() => {
       filterTags(DOM.selectorInput.value, listAll[selection], selector)
-    )
+    })
 
   // Les tags sont filtrés en fonction du terme entré par l'utilisateur dans le selecteur de recherche
   if (DOM.searchInput.value)
@@ -46,6 +47,9 @@ const printTagsList = (selectorList, selector) => {
 
   // Selection d'un tag dans la liste
   const selectTag = selectedTag => {
+
+getRecipes(selectedTag, selector)
+
     // On affiche le tag choisi
     const tag = tagsList.find(item => item === selectedTag)
 
