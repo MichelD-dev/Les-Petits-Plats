@@ -1,61 +1,46 @@
 import { recipes } from '../data/recipes.js'
 
+// A l'initialisation, on crée à partir de la liste de recettes initiale 5 listes séparées pour les noms, les descriptions, les ingrédients, les appareils et les ustensiles
 const list = (recipes, ...categories) => {
   let listing = categories.map(category => {
     return recipes.reduce((arr, obj1) => {
       const formatted = str =>
         str
           .toLowerCase()
-          .replace(/[.,/#!$%^&*;:{}=-_`~]/g, '')
+          .replace(/[.,#!$^&*;:(){}=-_`~]/g, '')
           .replace(/\s+/g, ' ')
-          .replace(/^\w/, c => c.toUpperCase())
           .trim()
 
+      // Alternative à un if/else ou un switch
+      // ((pour category = name) => on retourne l'objet { text: formatted(obj1.name), id: obj1.id }
       const choice = {
-        name: formatted(obj1.name),
-        description: formatted(obj1.description),
-        ingredients: obj1.ingredients.map(ingredient =>
-          formatted(ingredient.ingredient)
-        ),
-        appareils: formatted(obj1.appliance),
-        ustensiles: obj1.ustensils.map(ustensile => formatted(ustensile)),
+        name: () => ({ text: formatted(obj1.name), id: obj1.id }),
+        description: () => ({ text: formatted(obj1.description), id: obj1.id }),
+        ingredients: () =>
+          obj1.ingredients.map(ingredient => ({
+            text: formatted(ingredient.ingredient),
+            id: obj1.id,
+          })),
+        appareils: () => ({ text: formatted(obj1.appliance), id: obj1.id }),
+        ustensiles: () =>
+          obj1.ustensils.map(ustensile => ({
+            text: formatted(ustensile),
+            id: obj1.id,
+          })),
       }
+      // ingredients et ustensiles étant des arrays, on "aplatit" les arrays (résultats du reduce) qui les contiennent avec flat()
 
-      return [...arr, choice[category]]
+      // console.log([...arr, choice[category]?.()])
+      return [...arr, choice[category]?.()].flat()
     }, [])
   })
 
   return {
     names: listing[0],
     descriptions: listing[1],
-    ingredients: [...new Set(listing[2].flat())],
-    appareils: [...new Set(listing[3])],
-    ustensiles: [...new Set(listing[4].flat())],
-    init: recipes.reduce((arr, obj1) => {
-      const splitted = str =>
-        str
-          .toLowerCase()
-          .replace(/[.,/#!$%^&*;:{}=-_`~()]/g, '')
-          .replace(/\s+/g, ' ')
-          .trim()
-          .split(' ')
-          .map(element => {
-            if (!element) return
-            return { text: element, id: obj1.id }
-          })
-
-      return [
-        ...arr,
-        splitted(obj1.name),
-        splitted(obj1.description),
-
-        obj1.ingredients
-          .reduce((arr, obj2) => {
-            return [...arr, splitted(obj2.ingredient)]
-          }, [])
-          .map(element => element),
-      ].flat(2)
-    }, []),
+    ingredients: listing[2],
+    appareils: listing[3],
+    ustensiles: listing[4],
   }
 }
 
@@ -65,15 +50,18 @@ const list = (recipes, ...categories) => {
 
 const defaultCompare = (a, b) => a.localeCompare(b)
 
-const quickSort = (unsortedArray, compare = defaultCompare) => {
+//On trie alphabétiquement le tableau d'objets issu de la fonction list
+const quickSort = (unsortedArray, compareByAlphabet = defaultCompare) => {
+  // console.log(unsortedArray)
   // On crée une copie du tableau reçu
   const sortedArray = [...unsortedArray]
 
-  // On vérifie si il s'agit du tri initial ou d'un tri d'éléments de recettes
+  // On vérifie si il s'agit du tableau de recettes initial ou d'un tableau d'éléments de recettes
   const initialArray = typeof sortedArray[0] === 'object'
 
   // On trie récursivement les sous-tableaux
   const recursiveSort = (left, right) => {
+    // console.log(left, right);
     // Si ce sous-tableau est vide, il est trié
     if (right - left < 1) return
 
@@ -82,9 +70,10 @@ const quickSort = (unsortedArray, compare = defaultCompare) => {
     let splitIndex = left
 
     for (let i = left; i < right; i++) {
+      // console.log(sortedArray[i].text, pivotValue.text);
       const sort = initialArray
-        ? compare(sortedArray[i].text, pivotValue.text)
-        : compare(sortedArray[i], pivotValue)
+        ? compareByAlphabet(sortedArray[i].text, pivotValue.text)
+        : compareByAlphabet(sortedArray[i], pivotValue)
       // l'élément est inférieur au pivot
       if (sort === -1) {
         // Si l'élément juste à droite du split index n'est pas celui-ci, on les échange
@@ -113,7 +102,7 @@ const quickSort = (unsortedArray, compare = defaultCompare) => {
 
 /* ---------------------------------------------------------------------- */
 
-export const listAll = list(
+const listAll = list(
   recipes,
   'name',
   'description',
@@ -122,8 +111,47 @@ export const listAll = list(
   'ustensiles'
 )
 
-export const initiateSortedList = () => quickSort(listAll.init)
-export const initiateIngredientsTagsList = () => quickSort(listAll.ingredients)
-// export const initiateIngredientsTagsList = () => {}
+// export const initiateSortedList = () => quickSort(listAll.init)
+const initiateNamesList = () => quickSort(listAll.names)
+const initiateIngredientsList = () => quickSort(listAll.ingredients)
+const initiateDescriptionsList = () => quickSort(listAll.descriptions)
+const initiateUstensilesList = () => quickSort(listAll.ustensiles)
+const initiateAppareilsList = () => quickSort(listAll.appareils)
+const initiateSearchList = () =>
+  quickSort([
+    ...listAll.names,
+    ...listAll.ingredients,
+    ...listAll.descriptions,
+    ...listAll.ustensiles,
+    ...listAll.appareils,
+  ])
 
+// On regroupe les ids correspondant au même text => [{text: 'ail, ids=[30, 26, 29]}]
+function groupBy(array, property) {
+  return array.reduce((acc, current) => {
+    const object_property = current[property]
 
+    let foundElement = acc.find(x => x.text === object_property)
+
+    if (foundElement) {
+      foundElement.ids = [...foundElement.ids, current.id]
+    } else {
+      foundElement = {
+        text: object_property,
+        ids: [current.id],
+      }
+    }
+    let result = [...acc, foundElement]
+
+    return [...new Set(result)]
+  }, [])
+}
+
+export const namesList = groupBy(initiateNamesList(), 'text')
+export const ingredientsList = groupBy(initiateIngredientsList(), 'text')
+export const descriptionsList = groupBy(initiateDescriptionsList(), 'text')
+export const ustensilesList = groupBy(initiateUstensilesList(), 'text')
+export const appareilsList = groupBy(initiateAppareilsList(), 'text')
+export const searchList = groupBy(initiateSearchList(), 'text')
+// console.log(initiateSearchList())
+console.log(searchList)

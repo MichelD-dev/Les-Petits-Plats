@@ -1,31 +1,27 @@
-import {
-  initiateSortedList,
-} from '../algorithms/quickSort.js'
+import { searchList } from '../algorithms/quickSort.js'
 import { showTagsList } from '../components/tagsList.js'
 import DOM from './domElements.js'
 import { addReactionTo } from './eventListener.js'
 
-// On crée une liste ordonnée de mots clés à partir de la liste de recettes
-export const sortedList = initiateSortedList()
-console.log(sortedList);
-
-export const select = () => {
-  // Ouverture/fermeture des selecteurs
+// Ouverture/fermeture des selecteurs
+export const select = (selection = '') => {
   ;[...document.querySelectorAll('.arrow-container')].forEach(
     arrow =>
       (arrow.onclick = () => {
-        if (
-          document
-            .getElementById(`select_${arrow.parentElement.id}`)
-            .classList.contains('open')
-        ) {
-          return document
-            .getElementById(`select_${arrow.parentElement.id}`)
-            .classList.remove('open')
-        }
+        const selector = arrow.parentElement.id
+
+        // if (
+        //   document
+        //     .getElementById(`select_${selector}`)
+        //     .classList.contains('open')
+        // ) {
+        //   return document
+        //     .getElementById(`select_${selector}`)
+        //     .classList.remove('open')
+        // }
 
         // Affichage des tags
-        return showTagsList(arrow.parentElement.id)
+        return showTagsList(selector, selection, DOM.searchInput.value)
       })
   )
 
@@ -33,7 +29,7 @@ export const select = () => {
   ;[...document.querySelectorAll('.select__input')].forEach(
     selector =>
       (selector.onclick = () => {
-        return showTagsList(selector.parentElement.id)
+        return showTagsList(selector.parentElement.id, selection, DOM.searchInput.value)
       })
   )
 }

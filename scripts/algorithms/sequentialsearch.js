@@ -1,38 +1,83 @@
 import { recipes } from '../data/recipes.js'
-import { sortedList } from '../utils/init.js'
 import { printErrorMessage } from '../utils/utils.js'
-
-// -------------------------------------------------------------------------- ///
-// -------------------------------------------------------------------------- ///
-
-const isFound = search => ({
-  in: obj => obj.text.toLowerCase().includes(search.toLowerCase()),
-})
-
-const findInRecipes = obj => recipes.find(recipe => recipe.id === obj.id)
+import {
+  appareilsList,
+  ingredientsList,
+  searchList,
+  ustensilesList,
+} from './quickSort.js'
 
 // ------------------------------------------------------------------------- //
 // ------------------------------------------------------------------------- //
 
-export const sequentialSearch = (search, list = sortedList) => {
+export const sequentialSearch = (userInput = '', list = searchList) => {
   // On initialise un tableau de résultats vide
-  const searchResults = []
+  const recipesSelection = []
+  const ingredients = []
+  const appareils = []
+  let ustensiles = []
+  let recipesIds = []
 
   // On boucle dans la liste d'objets triés
-  for (let i = 0; i < list.length; i++) {
-    const currentObj = list[i]
+  for (const element of list) {
+    if (element.text.includes(userInput)) {
+      // On récupère un tableau des ids correspondantes à la recherche
+      recipesIds = [...new Set([...recipesIds, ...element.ids])]
+    }
 
-    // On vérifie si le mot recherché existe dans l'objet de l'itération en cours
-    if (isFound(search).in(currentObj))
-      // Si c'est le cas, on recherche la recette correspondante via l'id contenu dans l'objet, et on inclut cette recette dans le tableau de résultats
-      searchResults.push(findInRecipes(currentObj))
+    // On boucle dans ce tableau d'ids
+    for (const id of recipesIds) {
+      // On boucle dans la liste de recettes initiale
+      for (const recipe of recipes) {
+        // On récupère (une fois) les recettes correspondant aux ids retenues
+        if (id === recipe.id && !recipesSelection.includes(recipe)) {
+          // On récupère le tableau de recettes correspondant
+          recipesSelection.push(recipe)
+        }
+      }
+
+      // On boucle dans la liste totale d'ingredients
+      for (const ingredient of ingredientsList) {
+        // On boucle dans les tableaux d'ids de chaque ingrédient
+        for (const ingredientId of ingredient.ids) {
+          // On récupère (une fois) les ingredients correspondants aux ids retenues
+          if (id === ingredientId && !ingredients.includes(ingredient.text)) {
+            // On récupère le tableau d'ingredients correspondants
+            ingredients.push(ingredient.text)
+          }
+        }
+      }
+
+      // On boucle dans la liste totale d'appareils
+      for (const appareil of appareilsList) {
+        // On boucle dans les tableaux d'ids de chaque appareil
+        for (const appareilId of appareil.ids) {
+          // On récupère (une fois) les appareils correspondants aux ids retenues
+          if (id === appareilId && !appareils.includes(appareil.text)) {
+            // On récupère le tableau d'appareils correspondants
+            appareils.push(appareil.text)
+          }
+        }
+      }
+
+      // On boucle dans la liste totale d'ustensiles
+      for (const ustensile of ustensilesList) {
+        // On boucle dans les tableaux d'ids de chaque ustensile
+        for (const ustensileId of ustensile.ids) {
+          // On récupère (une fois) les ustensiles correspondants aux ids retenues
+          if (id === ustensileId && !ustensiles.includes(ustensile.text)) {
+            // On récupère le tableau d'ustensiles correspondants
+            ustensiles.push(ustensile.text)
+          }
+        }
+      }
+    }
   }
 
-  searchResults.length === 0 &&
+  recipesSelection.length === 0 &&
     printErrorMessage(
       'Aucune recette ne correspond à votre critère... Vous pouvez chercher "tarte aux pommes", "poisson", etc.'
     )
-  console.log([...new Set(searchResults)])
 
-  return [...new Set(searchResults)]
+  return { recipesSelection, ingredients, appareils, ustensiles }
 }

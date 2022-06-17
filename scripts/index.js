@@ -5,7 +5,8 @@ import recipeCardFactory from './factory/recipeFactory.js'
 import { addReactionTo } from './utils/eventListener.js'
 import { clearCardsSection, printErrorMessage, pipe } from './utils/utils.js'
 import { recipes } from './data/recipes.js'
-import { init } from './utils/init.js'
+import { init, select } from './utils/init.js'
+import { getTags } from './components/tagsList.js'
 
 // ---------------------------------------------------------------------------- //
 // ------------------------------- UTILITAIRES -------------------------------- //
@@ -15,7 +16,7 @@ import { init } from './utils/init.js'
 const deleteErrorMessage = printErrorMessage
 
 // Fonction de reset de la page
-const clearPage = pipe(clearCardsSection, deleteErrorMessage)
+export const clearPage = pipe(clearCardsSection, deleteErrorMessage)
 
 // Fonction renvoyant le nombre de recettes trouvées
 const getRecipesQuantity = selection => ({
@@ -25,6 +26,11 @@ const getRecipesQuantity = selection => ({
 
 // Fonction de récupération des cards DOM correspondantes aux recettes selectionnées
 const getRecipesCards = selection => selection.map(recipeCardFactory)
+
+// Fonction de récupération des tags associés à la selection de recettes
+const getTagss = selection => {
+  return selection
+}
 
 // Fonction d'affichage de la selection de cartes de recettes
 const printRecipesCards = recipeCards =>
@@ -74,23 +80,26 @@ const getRecipes = (tag = null, selector = '') => {
    */
   if (DOM.searchInput.value.length < 3) return clearPage()
 
-  // On recrée une liste complète de tags lorsqu'on redescend en dessous de 3 caractères
-  if (!DOM.searchInput.value || DOM.searchInput.value.length < 3)
-    return createTagsListWith(recipes)
-
   // On initialise l'affichage des cards recettes
   clearPage()
 
-  stopSnackbarTimeOut() //FIXME fonctionne?
+  // stopSnackbarTimeOut() //FIXME fonctionne?
 
   // On récupère un tableau de selections de recettes d'après les critères de recherche
-  const recipesSelection = getRecipesFromSearch(DOM.searchInput.value)
+  const { recipesSelection, ingredients } = getRecipesFromSearch(DOM.searchInput.value)
 
-  if (typeof tag === 'string')
-    return updateSelectionWithTags(recipesSelection, tag)
+  // select(recipesSelection)
+
+  // select(DOM.searchInput.value)
+
+  // const updateTagsListWithInput = () => {}
+
+  // select(ingredients)
+
+  // if (typeof tag === 'string')
+  //   return updateSelectionWithTags(recipesSelection, tag)
 
   printCards(recipesSelection)
-
   return recipesSelection
 }
 
@@ -101,8 +110,9 @@ const getRecipes = (tag = null, selector = '') => {
    3. On récupère les cards DOM correspondantes
    4. On affiche la selection
    */
-const printCards = pipe(
+export const printCards = pipe(
   getRecipesQuantity,
+  getTagss,
   printSnackbar,
   getRecipesCards,
   printRecipesCards

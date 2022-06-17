@@ -5,51 +5,23 @@ export const selectorChange = selector => {
   /**
    * Ouverture du selecteur
    */
-  if (!document.getElementById(selector.id).classList.contains('open')) {
-    ;[...document.querySelectorAll('.select')].forEach(selector =>
+  const selectorInput =
+    [...document.querySelectorAll('.select__input')].find(
+      selectInput => document.activeElement === selectInput
+    ) ?? ''
+
+  // On ne permet la fermeture des tags que sur la flêche, pas le selectorInput
+  if (
+    document.getElementById(selector.id).classList.contains('open') &&
+    !selectorInput
+  ) {
+    return [...document.querySelectorAll('.select')].forEach(selector => {
       selector.classList.remove('open')
-    )
-    return document.getElementById(selector.id).classList.add('open')
+    })
   }
+  document.getElementById(selector.id).classList.add('open')
 }
 
-/**
- * Affichage de l'option selectionnée
- */
-// const selectDisplaySorting = option => {
-//   for (const hidden of document.querySelectorAll(
-//     '.custom-option.hidden, .select__trigger'
-//   )) {
-//     hidden.classList.remove('hidden')
-//     document
-//       .querySelector('.select__trigger')
-//       .classList.add('no-btm-border-radius')
-//   }
-//   if (!option.classList.contains('selected')) {
-//     option.parentNode
-//       .querySelector('.custom-option.selected')
-//       .removeAttribute('aria-selected')
-//     option.parentNode
-//       .querySelector('.custom-option.selected')
-//       .classList.remove('selected')
-
-//     option.classList.add('selected')
-//     option.setAttribute('aria-selected', true)
-//     option.classList.add('hidden')
-//     setTimeout(() => {
-//       document
-//         .querySelector('.select__trigger')
-//         .classList.remove('no-btm-border-radius')
-//     }, 200)
-
-//     option
-//       .closest('.select')
-//       .querySelector('.select__trigger span').textContent = option.textContent
-//     document
-//       .querySelector('.select__trigger')
-//       .setAttribute('aria-activedescendant', `${option.textContent}`)
-//   }
-// }
 
 /**
  * GESTION DU FOCUS
@@ -58,14 +30,14 @@ export const selectorChange = selector => {
 // const focusInSelector = e => {
 //   e.preventDefault()
 
-  /**
-   * On récupère les éléments qui acquerront le focus dans le selecteur
-   */
-  // const focusableElements = '.select__trigger, .custom-option:not(.selected)'
+/**
+ * On récupère les éléments qui acquerront le focus dans le selecteur
+ */
+// const focusableElements = '.select__trigger, .custom-option:not(.selected)'
 
-  /**
-   * On crée un tableau des éléments focusables
-   */
+/**
+ * On crée un tableau des éléments focusables
+ */
 //   let focusables = [...DOM.selector.querySelectorAll(focusableElements)]
 
 //   let index = focusables.findIndex(
@@ -129,17 +101,17 @@ export const selectorChange = selector => {
 //     .withFunction(() => {
 //       selectDisplaySorting(option)
 //     })
-  // addReactionTo('keydown')
-  //   .on(option)
-  //   .withFunction(e => {
-  //     if (
-  //       e.key === 'Enter' &&
-  //       document.querySelector('.select.open') &&
-  //       !document.activeElement.classList.contains('select__trigger')
-  //     ) {
-  //       selectDisplaySorting(option)
-  //     }
-  //   })
+// addReactionTo('keydown')
+//   .on(option)
+//   .withFunction(e => {
+//     if (
+//       e.key === 'Enter' &&
+//       document.querySelector('.select.open') &&
+//       !document.activeElement.classList.contains('select__trigger')
+//     ) {
+//       selectDisplaySorting(option)
+//     }
+//   })
 // }
 
 /**
@@ -153,13 +125,12 @@ export const selectorChange = selector => {
 //       // getDatas(sortingChoice)
 //     })
 
-  // addReactionTo('keydown')
-  //   .on(selected)
-  //   .withFunction(e => {
-  //     if (e.key === 'Enter') {
-  //       const sortingChoice = selected.textContent
-  //       // getDatas(sortingChoice)
-  //     }
-  //   })
+// addReactionTo('keydown')
+//   .on(selected)
+//   .withFunction(e => {
+//     if (e.key === 'Enter') {
+//       const sortingChoice = selected.textContent
+//       // getDatas(sortingChoice)
+//     }
+//   })
 // }
-

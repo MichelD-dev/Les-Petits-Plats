@@ -1,19 +1,19 @@
 import { recipes as recipesList } from '../data/recipes.js'
-import { sortedList } from '../utils/init.js'
+import { searchList } from './quickSort.js'
 import { printErrorMessage } from '../utils/utils.js'
 
-const defaultCompare = (a, b) => {
+const defaultCompare = (a, b) => {console.log(a, b);
   if (b.includes(a)) return 0
   return a > b ? 1 : a < b ? -1 : 0
 }
 
-export const binarySearch = (
+export const binarySearch = ( 
   search,
-  array = sortedList,
+  array = searchList,
   compare = defaultCompare,
   left = 0,
   right = array.length - 1
-) => {
+) => {console.log(array);
   const searchFrom = middle => {
     let tab = []
 
@@ -60,7 +60,7 @@ export const binarySearch = (
   printErrorMessage('')
 
   const middle = Math.floor((left + right) / 2)
-  const comparison = compare(search, array[middle].text)
+  const comparison = compare(search, array[middle])
 
   console.log(array[middle])
   if (comparison === 0) return [...new Set(searchFrom(middle))]
