@@ -1,136 +1,98 @@
+import {
+  addClass,
+  getElement,
+  getElements,
+  removeClass,
+} from '../factory/helpers.js'
+import { tagsFactory } from '../factory/tagsFactory.js'
+import { formatted, on } from '../helpers.js'
+import { tagsView } from '../views/tagsView.js'
+
 /**
  * Changements d'apparence du selecteur sur events
  */
-export const selectorChange = selector => {
+const selectorChange = selector => {
   /**
    * Ouverture du selecteur
    */
-  const selectorInput =
-    [...document.querySelectorAll('.select__input')].find(
-      selectInput => document.activeElement === selectInput
-    ) ?? ''
-
-  // On ne permet la fermeture des tags que sur la flêche, pas le selectorInput
-  if (
-    document.getElementById(selector.id).classList.contains('open') &&
-    !selectorInput
-  ) {
-    return [...document.querySelectorAll('.select')].forEach(selector => {
-      selector.classList.remove('open')
-    })
-  }
-  document.getElementById(selector.id).classList.add('open')
+  // On ferme les selecteurs potentiellement ouverts
+  getElements('.select').forEach(removeClass('open'))
+  // Puis on ouvre le selecteur cliqué
+  addClass('open')(getElement(`#${selector.id}`))
 }
 
+export const openSelector = allTags => selector => {
+  selector.onclick = () => {
+    const category = selector.parentElement.id
+    const categorySelector = getElement(`#${`select_${category}`}`)
+
+    // On vérifie si un des selecteurs a acquis le focus sur son input
+    const selectorInput = getElements('.select__input').find(
+      selectInput => document.activeElement === selectInput
+    )
+
+    // On ne permet la fermeture des tags que sur la flêche, pas le selectorInput
+    if (categorySelector.classList.contains('open') && !selectorInput)
+      return removeClass('open')(categorySelector)
+
+    // Routage en fonction du selecteur cliqué
+    const id = {
+      ingredients: () => {
+        // Ouverture du selecteur
+        selectorChange(getElement('#select_ingredients'))
+        // On affiche les tags correspondants au selecteur cliqué
+        return tagsFactory(allTags[0])('ingredients')
+      },
+      appareils: () => {
+        // Ouverture du selecteur
+        selectorChange(getElement('#select_appareils'))
+        // On affiche les tags correspondants au selecteur cliqué
+        return tagsFactory(allTags[1])('appliance')
+      },
+      ustensiles: () => {
+        // Ouverture du selecteur
+        selectorChange(getElement('#select_ustensiles'))
+        // On affiche les tags correspondants au selecteur cliqué
+        return tagsFactory(allTags[2])('ustensils')
+      },
+    }
+    id[category]?.() ?? 'Selecteur non reconnu'
+  }
+}
+
+export const onSelect = allTags => {
+  // Ouverture/fermeture des selecteurs par la flêche
+  getElements('.arrow-container').forEach(openSelector(allTags))
+
+  // Ouverture des selecteurs par l'input
+  getElements('.select__input').forEach(selector => {
+    on('pointerdown')(selector)(() => openSelector(allTags)(selector))
+    on('input')(selector)(() => filteredByTagsInput(allTags.flat())(selector))
+  })
+}
 
 /**
- * GESTION DU FOCUS
- * Changement de focus au clavier et maintien du focus dans le selecteur
+ * On ferme le selecteur lorsque l'utilisateur clique quelque part dans la fenêtre
  */
-// const focusInSelector = e => {
-//   e.preventDefault()
+on('pointerdown')(window)(e => {
+  if (e.target.classList.contains('tag__close')) return
 
-/**
- * On récupère les éléments qui acquerront le focus dans le selecteur
- */
-// const focusableElements = '.select__trigger, .custom-option:not(.selected)'
+  getElements('.select').forEach(select => {
+    if (!select.contains(e.target)) removeClass('open')(select)
+  })
+})
 
-/**
- * On crée un tableau des éléments focusables
- */
-//   let focusables = [...DOM.selector.querySelectorAll(focusableElements)]
+const filteredByTagsInput = allTags => selector => {
+  const filteredTags = allTags.filter(tag =>
+    tag.includes(formatted(selector.value))
+  )
 
-//   let index = focusables.findIndex(
-//     elem => elem === DOM.selector.querySelector(':focus')
-//   )
-
-//   e.shiftKey === true ? index-- : index++
-
-//   const focusablesNbr = focusables.length
-
-//   if (index >= focusablesNbr) {
-//     index = 0
-//   }
-//   if (index < 0) {
-//     index = focusablesNbr - 1
-//   }
-
-//   let option = focusables[index]
-//   option.focus()
-
-//   return focusables
-// }
-
-// --------------------------------------------------------------------------- //
-// -------------------------------EVENT LISTENERS----------------------------- //
-// --------------------------------------------------------------------------- //
-
-/**
- * On ouvre le selecteur avec le clavier
- */
-// addReactionTo('keydown')
-//   .on('.select-wrapper')
-//   .withFunction(e => {
-//     if (e.key === 'Enter') {
-//       selectorChange(DOM.ingredientsSelector)
-//       document.querySelector('.select__trigger').focus()
-//     }
-//   })
-
-/**
- * Navigation au clavier dans le selecteur
- */
-// addReactionTo('keydown')
-//   .on(DOM.selectorInput)
-//   .withFunction(e => {
-//     if (e.key === 'Escape' || e.key === 'Esc') {
-//       document.querySelector('.select.open').classList.remove('open')
-//       document.querySelector('.select__trigger').focus()
-//     }
-//     if (e.key === 'Tab' && !!document.querySelector('.select.open')) {
-//       focusInSelector(e)
-//     }
-//   })
-
-/**
- * Selection
- */
-// for (const option of document.getElementsByClassName('custom-option')) {
-//   addReactionTo('pointerdown')
-//     .on(option)
-//     .withFunction(() => {
-//       selectDisplaySorting(option)
-//     })
-// addReactionTo('keydown')
-//   .on(option)
-//   .withFunction(e => {
-//     if (
-//       e.key === 'Enter' &&
-//       document.querySelector('.select.open') &&
-//       !document.activeElement.classList.contains('select__trigger')
-//     ) {
-//       selectDisplaySorting(option)
-//     }
-//   })
-// }
-
-/**
- * Récupération des données selon la catégorie sélectionnée
- */
-// for (const selected of document.querySelectorAll('.custom-option')) {
-//   addReactionTo('pointerdown')
-//     .on(selected)
-//     .withFunction(() => {
-//       const sortingChoice = selected.textContent
-//       // getDatas(sortingChoice)
-//     })
-
-// addReactionTo('keydown')
-//   .on(selected)
-//   .withFunction(e => {
-//     if (e.key === 'Enter') {
-//       const sortingChoice = selected.textContent
-//       // getDatas(sortingChoice)
-//     }
-//   })
-// }
+  tagsFactory(filteredTags)(selector.parentElement.id)
+  // list
+  //   .filter(item => item.text.includes(formatted(tagInput)))
+  //   .forEach(
+  //     foundItem =>
+  //       (recipesIds3 = [...new Set([...recipesIds3, foundItem.ids].flat())])
+  //   )
+  // return recipesIds3
+}

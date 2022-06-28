@@ -13,11 +13,9 @@ import {
 export const sequentialSearch = (userInput = '', list = searchList) => {
   // On initialise un tableau de résultats vide
   const recipesSelection = []
-  const ingredients = []
-  const appareils = []
-  let ustensiles = []
-  let recipesIds = []
 
+  // On initialise un tableau de résultats vide
+  let recipesIds = []
   // On boucle dans la liste d'objets triés
   for (const element of list) {
     if (element.text.includes(userInput)) {
@@ -36,6 +34,8 @@ export const sequentialSearch = (userInput = '', list = searchList) => {
         }
       }
 
+      // On initialise un tableau de résultats vide
+      const ingredients = []
       // On boucle dans la liste totale d'ingredients
       for (const ingredient of ingredientsList) {
         // On boucle dans les tableaux d'ids de chaque ingrédient
@@ -48,6 +48,8 @@ export const sequentialSearch = (userInput = '', list = searchList) => {
         }
       }
 
+      // On initialise un tableau de résultats vide
+      const appareils = []
       // On boucle dans la liste totale d'appareils
       for (const appareil of appareilsList) {
         // On boucle dans les tableaux d'ids de chaque appareil
@@ -60,6 +62,8 @@ export const sequentialSearch = (userInput = '', list = searchList) => {
         }
       }
 
+      // On initialise un tableau de résultats vide
+      let ustensiles = []
       // On boucle dans la liste totale d'ustensiles
       for (const ustensile of ustensilesList) {
         // On boucle dans les tableaux d'ids de chaque ustensile

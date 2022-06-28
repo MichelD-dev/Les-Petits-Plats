@@ -152,6 +152,7 @@ table {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 4%;
+  row-gap: 50px;
   margin-top: 80px;
   width: 100%;
 }

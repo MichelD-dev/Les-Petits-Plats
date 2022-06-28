@@ -1,12 +1,13 @@
-import DOM from './domElements.js'
+import { getElement } from '../factory/helpers.js'
 
 /**
  * Fonction de réinitialisation de la grille d'images
  */
-export const clearCardsSection = () => {
-  while (DOM.cardsSection.firstChild) {
-    DOM.cardsSection.removeChild(DOM.cardsSection.lastChild)
+export const clearCardsSection = selection => {
+  while (getElement('.recipes').firstChild) {
+    getElement('.recipes').removeChild(getElement('.recipes').lastChild)
   }
+  return selection
 }
 
 /**
@@ -20,11 +21,12 @@ export const clearTagsSection = selector => {
       ? 'ustensiles'
       : 'ingredients'
 
-  while (DOM[select].firstChild) {
-    DOM[select].removeChild(DOM[select].lastChild)
+  const tagsList = getElement(`#${select}-list`)
+
+  while (tagsList.firstChild) {
+    tagsList.removeChild(tagsList.lastChild)
   }
 }
-
 /**
  * Définition d'attributs en une ligne d'un élément du DOM
  */
@@ -37,11 +39,11 @@ export const setAttributesFor = el => attrs =>
 export const capitalize = str => {
   if (typeof str !== 'string') return ''
 
-  return str.replace(/^\w/, c => c.toUpperCase())
+  return str.replace(/^\w/, str => str.toUpperCase())
 }
 
-export const printErrorMessage = message =>
-  (DOM.errorMessage.textContent = message)
+export const printErrorMessage = (message = '') =>
+  (getElement('.error').textContent = message)
 
 export const pipe =
   (...fns) =>

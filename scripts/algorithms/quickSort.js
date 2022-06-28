@@ -155,3 +155,4 @@ export const appareilsList = groupBy(initiateAppareilsList(), 'text')
 export const searchList = groupBy(initiateSearchList(), 'text')
 // console.log(initiateSearchList())
 console.log(searchList)
+
