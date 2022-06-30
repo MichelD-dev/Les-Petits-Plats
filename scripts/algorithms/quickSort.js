@@ -1,39 +1,34 @@
 import { recipes } from '../data/recipes.js'
+import { formatted } from '../helpers.js'
 
 // A l'initialisation, on crée à partir de la liste de recettes initiale 5 listes séparées pour les noms, les descriptions, les ingrédients, les appareils et les ustensiles
 const list = (recipes, ...categories) => {
-  let listing = categories.map(category => {
-    return recipes.reduce((arr, obj1) => {
-      const formatted = str =>
-        str
-          .toLowerCase()
-          .replace(/[.,#!$^&*;:(){}=-_`~]/g, '')
-          .replace(/\s+/g, ' ')
-          .trim()
-
-      // Alternative à un if/else ou un switch
-      // ((pour category = name) => on retourne l'objet { text: formatted(obj1.name), id: obj1.id }
-      const choice = {
-        name: () => ({ text: formatted(obj1.name), id: obj1.id }),
-        description: () => ({ text: formatted(obj1.description), id: obj1.id }),
-        ingredients: () =>
-          obj1.ingredients.map(ingredient => ({
-            text: formatted(ingredient.ingredient),
-            id: obj1.id,
-          })),
-        appareils: () => ({ text: formatted(obj1.appliance), id: obj1.id }),
-        ustensiles: () =>
-          obj1.ustensils.map(ustensile => ({
-            text: formatted(ustensile),
-            id: obj1.id,
-          })),
-      }
-      // ingredients et ustensiles étant des arrays, on "aplatit" les arrays (résultats du reduce) qui les contiennent avec flat()
-
-      // console.log([...arr, choice[category]?.()])
-      return [...arr, choice[category]?.()].flat()
-    }, [])
+  // Alternative à un if/else ou un switch
+  // ((pour category = name) => on retourne l'objet { text: formatted(obj.name), id: obj.id }
+  const choice = obj => ({
+    name: () => ({ text: formatted(obj.name), id: obj.id }),
+    description: () => ({ text: formatted(obj.description), id: obj.id }),
+    ingredients: () =>
+      obj.ingredients.map(ingredient => ({
+        text: formatted(ingredient.ingredient),
+        id: obj.id,
+      })),
+    appareils: () => ({ text: formatted(obj.appliance), id: obj.id }),
+    ustensiles: () =>
+      obj.ustensils.map(ustensile => ({
+        text: formatted(ustensile),
+        id: obj.id,
+      })),
   })
+
+  const listing = categories.map(category =>
+    recipes.reduce(
+      // J'appelle la fonction choice()avec chaque objet recette en argument, qui me renvoie un objet, dont chaque clé renvoie à une méthode, que j'appelle et elle me revoie un objet { text: formatted(obj.name), id: obj.id }
+      // ingredients et ustensiles étant des arrays, on "aplatit" les arrays (résultats du reduce) qui les contiennent, avec flat()
+      (arr, obj) => [...arr, choice(obj)[category]()].flat(),
+      []
+    )
+  )
 
   return {
     names: listing[0],
@@ -52,7 +47,6 @@ const defaultCompare = (a, b) => a.localeCompare(b)
 
 //On trie alphabétiquement le tableau d'objets issu de la fonction list
 const quickSort = (unsortedArray, compareByAlphabet = defaultCompare) => {
-  // console.log(unsortedArray)
   // On crée une copie du tableau reçu
   const sortedArray = [...unsortedArray]
 
@@ -61,7 +55,6 @@ const quickSort = (unsortedArray, compareByAlphabet = defaultCompare) => {
 
   // On trie récursivement les sous-tableaux
   const recursiveSort = (left, right) => {
-    // console.log(left, right);
     // Si ce sous-tableau est vide, il est trié
     if (right - left < 1) return
 
@@ -70,10 +63,10 @@ const quickSort = (unsortedArray, compareByAlphabet = defaultCompare) => {
     let splitIndex = left
 
     for (let i = left; i < right; i++) {
-      // console.log(sortedArray[i].text, pivotValue.text);
       const sort = initialArray
         ? compareByAlphabet(sortedArray[i].text, pivotValue.text)
         : compareByAlphabet(sortedArray[i], pivotValue)
+
       // l'élément est inférieur au pivot
       if (sort === -1) {
         // Si l'élément juste à droite du split index n'est pas celui-ci, on les échange
@@ -82,19 +75,23 @@ const quickSort = (unsortedArray, compareByAlphabet = defaultCompare) => {
           sortedArray[splitIndex] = sortedArray[i]
           sortedArray[i] = temp
         }
+
         // On déplace le split index d'un rang vers la droite
         // augmentant la taille du sous-tableau d'éléments inférieurs d'un rang
         splitIndex++
       }
       // On laisse les éléments égaux ou plus grands que le pivot à leur place
     }
+
     // On déplace le pivot à l'endroit de la séparation entre les sous-tableaux
     sortedArray[right] = sortedArray[splitIndex]
     sortedArray[splitIndex] = pivotValue
+
     // On trie récursivement les deux sous-tableaux
     recursiveSort(left, splitIndex - 1)
     recursiveSort(splitIndex + 1, right)
   }
+
   // On trie le tableau complet
   recursiveSort(0, unsortedArray.length - 1)
   return sortedArray
@@ -111,7 +108,6 @@ const listAll = list(
   'ustensiles'
 )
 
-// export const initiateSortedList = () => quickSort(listAll.init)
 const initiateNamesList = () => quickSort(listAll.names)
 const initiateIngredientsList = () => quickSort(listAll.ingredients)
 const initiateDescriptionsList = () => quickSort(listAll.descriptions)
@@ -153,6 +149,5 @@ export const descriptionsList = groupBy(initiateDescriptionsList(), 'text')
 export const ustensilesList = groupBy(initiateUstensilesList(), 'text')
 export const appareilsList = groupBy(initiateAppareilsList(), 'text')
 export const searchList = groupBy(initiateSearchList(), 'text')
-// console.log(initiateSearchList())
-console.log(searchList)
 
+console.log(searchList)

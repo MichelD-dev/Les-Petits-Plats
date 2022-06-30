@@ -83,16 +83,9 @@ on('pointerdown')(window)(e => {
 })
 
 const filteredByTagsInput = allTags => selector => {
-  const filteredTags = allTags.filter(tag =>
-    tag.includes(formatted(selector.value))
-  )
+  const tagInput = tag => tag.includes(formatted(selector.value))
+
+  const filteredTags = allTags.filter(tagInput)
 
   tagsFactory(filteredTags)(selector.parentElement.id)
-  // list
-  //   .filter(item => item.text.includes(formatted(tagInput)))
-  //   .forEach(
-  //     foundItem =>
-  //       (recipesIds3 = [...new Set([...recipesIds3, foundItem.ids].flat())])
-  //   )
-  // return recipesIds3
 }

@@ -24,10 +24,10 @@ const initialTags = Object.freeze(getTags())
 // On place le focus sur le champ de recherche à l'initialisation
 getElement('.search__form_searchbar').focus()
 
-// On initialise un tableau de tags selectionnés
-let selectedTags = []
-
 export const app = (userEvent = () => {}) => {
+  // On initialise un tableau de tags selectionnés
+  let selectedTags = []
+
   // On place l'event reçu dans un HOF Stop() pour pouvoir retirer l'eventListener après l'actualisation de la recherche
   const stop = userEvent(() => {
     // On récupère la frappe de l'utilisateur

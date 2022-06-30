@@ -6,8 +6,7 @@ import { tagsView } from '../views/tagsView.js'
 import { addAttributes, addClass, append, element, text } from './helpers.js'
 
 export const tagsFactory = tagsList => selector => {
-  // Création des tags
-  const tags = tagsList.map(tag => {
+  const createTag = tag => {
     const tagElement = pipe(
       addClass(`custom-option`, `custom-option_${selector}`),
       addAttributes({
@@ -31,7 +30,10 @@ export const tagsFactory = tagsList => selector => {
     // ------------------------------------------------------------------------- //
 
     return tagElement
-  })
+  }
+
+  // Création des tags
+  const tags = tagsList.map(createTag)
 
   // Affichage des tags
   tagsView(tags)(selector)
