@@ -2,7 +2,7 @@ import { searchList } from './algorithms/quickSort.js'
 import { filterRecipes } from './components/recipesFilter.js'
 import { getRecipesFromSearch } from './components/searchBar.js'
 import { onSelect } from './components/selector.js'
-import { getTags} from './components/tagsList.js'
+import { getTags } from './components/tagsList.js'
 import { getElement, getElements } from './factory/helpers.js'
 import {
   clearPage,
@@ -61,13 +61,14 @@ export const app = (userEvent = () => {}) => {
     // On initialise un nouveau state
     let newState = []
 
-    ids.forEach(id => {
-      // Pour chacun de ces ids, on récupère la recette correspondante et la place dans le nouveau state
-      let recipe = initialState.find(el => el.id === id)
-      newState = [...newState, recipe]
+    ids &&
+      ids.forEach(id => {
+        // Pour chacun de ces ids, on récupère la recette correspondante et la place dans le nouveau state
+        let recipe = initialState.find(el => el.id === id)
+        newState = [...newState, recipe]
 
-      return newState
-    })
+        return newState
+      })
 
     // Récupération des tags associés à la recherche utilisateur
     const allTags = searchInput ? getTags(searchInput) : initialTags

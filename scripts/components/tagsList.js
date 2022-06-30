@@ -10,6 +10,7 @@ import {
   append,
   element,
   getElement,
+  getElements,
   text,
 } from '../factory/helpers.js'
 import { capitalize } from '../utils/utils.js'
@@ -62,6 +63,14 @@ export const getTags = (searchInput = '') => {
 // ------------------------------------------------------
 
 export const selectTag = (category, selectedTag) => {
+  // On évite de selectionner deux fois le même tag
+  if (
+    getElements('.tag').find(
+      tag => tag.children[0].textContent.toLowerCase() === selectedTag
+    )
+  )
+    return
+
   // Création du tag
   const tagElement = addClass('tag', `tag_${category}`)(element('div'))
 
