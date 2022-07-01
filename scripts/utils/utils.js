@@ -42,13 +42,13 @@ export const capitalize = str => {
   return str.replace(/^\w/, str => str.toUpperCase())
 }
 
-export const printErrorMessage = (message = '') =>
-  (getElement('.error').textContent = message)
+export const printErrorMessage = (message = '') => {
+  (getElement('.error').textContent = message)}
 
 export const pipe =
   (...fns) =>
   x =>
-    fns.reduce((y, f) => f(y), x)
+    fns.reduce((y, fn) => fn(y), x)
 
 export const flip = fn => b => a => fn(a)(b)
 

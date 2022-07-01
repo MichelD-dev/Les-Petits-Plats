@@ -63,21 +63,23 @@ export const getTags = (searchInput = '') => {
 // ------------------------------------------------------
 
 export const selectTag = (category, selectedTag) => {
+  const isAlreadySelected = tag =>
+    tag.children[0].textContent.toLowerCase() === selectedTag
+
   // On évite de selectionner deux fois le même tag
-  if (
-    getElements('.tag').find(
-      tag => tag.children[0].textContent.toLowerCase() === selectedTag
-    )
-  )
-    return
+  if (getElements('.tag').find(isAlreadySelected)) return
 
   // Création du tag
-  const tagText = append(text(capitalize(selectedTag)))(element('span'))
+  const tagText = pipe(
+    capitalize,
+    text,
+    flip(append)(element('span'))
+  )(selectedTag)
 
   const tagClose = addClass('tag__close')(element('span'))
   tagClose.innerHTML = `<i class="fa-regular fa-circle-xmark fa-xl tag__close"></i>`
 
-  const tagElement = pipe(
+  pipe(
     addClass('tag', `tag_${category}`),
     append(tagText),
     append(tagClose),
@@ -86,7 +88,7 @@ export const selectTag = (category, selectedTag) => {
 
   // Suppression du tag
   const removeTag = on('pointerdown')(tagClose)
-  removeTag(() => tagElement.remove())
+  removeTag(() => tagClose.parentElement.remove())
 
   // On rafraîchit la liste de cartes recettes à la suppression d'un tag
   app(removeTag)

@@ -41,6 +41,11 @@ const appendChildren = children => element => {
   return element
 }
 
+export const tap = fn => arg => {
+  fn(arg)
+  return arg
+}
+
 export {
   getElement,
   getElements,

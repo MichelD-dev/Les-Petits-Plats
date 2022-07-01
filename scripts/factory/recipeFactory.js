@@ -5,6 +5,7 @@ import {
   appendChildren,
   element,
   insert,
+  tap,
   text,
 } from './helpers.js'
 
@@ -33,9 +34,12 @@ const recipeCardFactory = recipe => {
     ingredient.insertAdjacentElement('afterbegin', ingredientName)
     append(ingredient)(ingredients)
   })
+  
+ 
 
   const cookingTime = pipe(
     addClass('recipe-card__right__duration'),
+    // tap(console.log), //FIXME
     append(text(`${recipe.time} min`)),
     insert(`<i class="fa-regular fa-clock"></i> `)('afterbegin')
   )(element('h2'))

@@ -62,21 +62,25 @@ export { printSnackbar, formatted, clearPage, on }
 // --------------------------------- FILTERS ----------------------------------- //
 // ----------------------------------------------------------------------------- //
 
-// A partir de la recherche utilisateur, on récupère les mots clés ou expressions correspondants dans la liste créée à l'initialisation
 export const searchByKeyword = list => searchInput => {
   let recipesIds = []
+
+  const isPositiveSearch = item => item.text.includes(formatted(searchInput))
+
+  const getRecipesIds = foundItem =>
+    (recipesIds = [...new Set([...recipesIds, foundItem.ids].flat())])
+
   if (searchInput) {
     list
-      .filter(item => item.text.includes(formatted(searchInput)))
+      // A partir de la recherche utilisateur, on récupère les mots clés ou expressions correspondants dans la liste créée à l'initialisation
+      .filter(isPositiveSearch)
       // puis on stocke les ids de recettes correspondants
-      .forEach(
-        foundItem =>
-          (recipesIds = [...new Set([...recipesIds, foundItem.ids].flat())])
-      )
+      .forEach(getRecipesIds)
 
     return recipesIds
   }
 }
+
 let foundItemIds = []
 let recipesIds2 = []
 // On filtre en fonction des tags selectionnés
