@@ -50,6 +50,8 @@ export const pipe =
   x =>
     fns.reduce((y, f) => f(y), x)
 
+export const flip = fn => b => a => fn(a)(b)
+
 // a simple memoize function that takes in a function
 // and returns a memoized function
 export const memoize = fn => {

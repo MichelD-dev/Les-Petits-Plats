@@ -6,7 +6,6 @@ import {
 } from '../factory/helpers.js'
 import { tagsFactory } from '../factory/tagsFactory.js'
 import { formatted, on } from '../helpers.js'
-import { tagsView } from '../views/tagsView.js'
 
 /**
  * Changements d'apparence du selecteur sur events
@@ -40,19 +39,19 @@ export const openSelector = allTags => selector => {
       ingredients: () => {
         // Ouverture du selecteur
         selectorChange(getElement('#select_ingredients'))
-        // On affiche les tags correspondants au selecteur cliqué
+        // On crée les tags correspondants au selecteur cliqué
         return tagsFactory(allTags[0])('ingredients')
       },
       appareils: () => {
         // Ouverture du selecteur
         selectorChange(getElement('#select_appareils'))
-        // On affiche les tags correspondants au selecteur cliqué
+        // On crée les tags correspondants au selecteur cliqué
         return tagsFactory(allTags[1])('appliance')
       },
       ustensiles: () => {
         // Ouverture du selecteur
         selectorChange(getElement('#select_ustensiles'))
-        // On affiche les tags correspondants au selecteur cliqué
+        // On crée les tags correspondants au selecteur cliqué
         return tagsFactory(allTags[2])('ustensils')
       },
     }
@@ -82,10 +81,12 @@ on('pointerdown')(window)(e => {
   })
 })
 
+//
 const filteredByTagsInput = allTags => selector => {
   const tagInput = tag => tag.includes(formatted(selector.value))
 
   const filteredTags = allTags.filter(tagInput)
 
+  // On recrée les tags restants après filtrage
   tagsFactory(filteredTags)(selector.parentElement.id)
 }

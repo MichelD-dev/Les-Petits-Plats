@@ -13,7 +13,7 @@ import {
   getElements,
   text,
 } from '../factory/helpers.js'
-import { capitalize } from '../utils/utils.js'
+import { capitalize, flip, pipe } from '../utils/utils.js'
 import { app } from '../index.js'
 
 export const getTags = (searchInput = '') => {
@@ -72,17 +72,17 @@ export const selectTag = (category, selectedTag) => {
     return
 
   // Création du tag
-  const tagElement = addClass('tag', `tag_${category}`)(element('div'))
-
   const tagText = append(text(capitalize(selectedTag)))(element('span'))
 
   const tagClose = addClass('tag__close')(element('span'))
   tagClose.innerHTML = `<i class="fa-regular fa-circle-xmark fa-xl tag__close"></i>`
 
-  append(tagText)(tagElement)
-  append(tagClose)(tagElement)
-
-  append(tagElement)(getElement('.tags'))
+  const tagElement = pipe(
+    addClass('tag', `tag_${category}`),
+    append(tagText),
+    append(tagClose),
+    flip(append)(getElement('.tags'))
+  )(element('div'))
 
   // Suppression du tag
   const removeTag = on('pointerdown')(tagClose)

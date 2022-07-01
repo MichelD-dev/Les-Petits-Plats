@@ -32,7 +32,7 @@ const formatted = str => {
       .toLowerCase()
       // On enlève les accents et les caractères spéciaux
       .normalize('NFD')
-      .replace(/([\u0300-\u036f]|[^0-9a-zA-Z\s])/g, '')
+      .replace(/([\u0300-\u036f]|[^0-9a-zA-Z'\s])/g, '')
       // On reduit les espaces de plus d'un caractère
       .replace(/\s+/g, ' ')
       .trim()
@@ -63,8 +63,8 @@ export { printSnackbar, formatted, clearPage, on }
 // ----------------------------------------------------------------------------- //
 
 // A partir de la recherche utilisateur, on récupère les mots clés ou expressions correspondants dans la liste créée à l'initialisation
-let recipesIds = []
 export const searchByKeyword = list => searchInput => {
+  let recipesIds = []
   if (searchInput) {
     list
       .filter(item => item.text.includes(formatted(searchInput)))
@@ -98,9 +98,9 @@ export const filteredByTagsSelect = list => {
 
             // return recipesIds2
           })
-          
-          console.log(recipesIds2)
-          console.log(foundItemIds)
+
+        console.log(recipesIds2)
+        console.log(foundItemIds)
         const arraysMerge = recipesIds2.filter(
           obj => foundItemIds.indexOf(obj) !== -1
         )
