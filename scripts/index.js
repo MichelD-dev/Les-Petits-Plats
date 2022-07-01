@@ -52,9 +52,9 @@ export const app = (userEvent = () => {}) => {
     }
 
     const recipesIds = searchByKeyword(searchList)(searchInput)
-    console.log(searchInput, recipesIds)
+    // console.log(searchInput, recipesIds)
     const recipesIds2 = filteredByTagsSelect(searchList)(selectedTags)
-    // console.log(selectedTags, recipesIds2)
+    // console.log(selectedTags, recipesIds2) //FIXME
 
     const ids = filterRecipes(recipesIds)(recipesIds2)
 

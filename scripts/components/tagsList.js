@@ -11,6 +11,7 @@ import {
   element,
   getElement,
   getElements,
+  tap,
   text,
 } from '../factory/helpers.js'
 import { capitalize, flip, pipe } from '../utils/utils.js'
@@ -81,8 +82,9 @@ export const selectTag = (category, selectedTag) => {
 
   pipe(
     addClass('tag', `tag_${category}`),
+    // tap(console.log), //FIXME
     append(tagText),
-    append(tagClose),
+    append(tagClose), 
     flip(append)(getElement('.tags'))
   )(element('div'))
 
@@ -91,7 +93,7 @@ export const selectTag = (category, selectedTag) => {
   removeTag(() => tagClose.parentElement.remove())
 
   // On rafraîchit la liste de cartes recettes à la suppression d'un tag
-  app(removeTag)
+  app(removeTag) //FIXME
 
   return selectedTag
 }

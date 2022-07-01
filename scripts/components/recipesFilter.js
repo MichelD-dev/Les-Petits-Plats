@@ -11,9 +11,9 @@ export const filterRecipes =
     if (recipesIds.length) add(recipesIds)
     if (recipesIds2.length) add(recipesIds2)
 
-    console.log(recipesArray)
+    // console.log(recipesArray)
 
-    console.log(recipesIds, recipesIds2)
+    // console.log(recipesIds, recipesIds2)
 
     // Fonction permettant de merger les arrays contenus dans l'array global en évitant les doublons
     ids =

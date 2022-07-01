@@ -81,37 +81,30 @@ export const searchByKeyword = list => searchInput => {
   }
 }
 
-let foundItemIds = []
-let recipesIds2 = []
 // On filtre en fonction des tags selectionnés
+let recipesIds2 = []
 export const filteredByTagsSelect = list => {
   return selectedTags => {
     if (selectedTags.length) {
       selectedTags.forEach(tag => {
+        let foundItemIds = []
         list
           .filter(item => item.text.includes(formatted(tag)))
           .forEach(foundItem => {
             foundItemIds = [...new Set([...foundItemIds, ...foundItem.ids])]
-            console.log(foundItemIds)
-
-            if (recipesIds2.length === 0) {
-              recipesIds2 = foundItemIds
-              // console.log(recipesIds2)
-              return recipesIds2
-            }
-
-            // return recipesIds2
+            // console.log(foundItem, foundItemIds)
+            return foundItemIds
           })
+
+        if (recipesIds2.length === 0) return recipesIds2 = foundItemIds
 
         console.log(recipesIds2)
         console.log(foundItemIds)
-        const arraysMerge = recipesIds2.filter(
+        recipesIds2 = recipesIds2.filter(
           obj => foundItemIds.indexOf(obj) !== -1
         )
-        console.log(arraysMerge)
-        recipesIds2 = arraysMerge.length !== 0 ? arraysMerge : recipesIds2
-        // console.log(recipesIds2)
       })
+      console.log(recipesIds2)
       return recipesIds2
     }
   }
