@@ -1,3 +1,4 @@
+import { recipes } from '../data/recipes.js'
 import { getRecipesFromSearch } from './searchBar.js'
 import {
   appareilsList,
@@ -17,8 +18,13 @@ import {
 import { capitalize, flip, pipe } from '../utils/utils.js'
 import { app } from '../index.js'
 
-export const getTags = (searchInput = '') => {
-  const { recipesSelection } = getRecipesFromSearch(searchInput)
+export const getTags = (searchInput = null) => {
+  const recipesSelection =
+  searchInput
+    ? getRecipesFromSearch(searchInput).recipesSelection
+    :
+    recipes
+
   const searchedRecipesIds = recipesSelection.map(recipe => recipe.id)
 
   const categories = {
@@ -84,7 +90,7 @@ export const selectTag = (category, selectedTag) => {
     addClass('tag', `tag_${category}`),
     // tap(console.log), //FIXME
     append(tagText),
-    append(tagClose), 
+    append(tagClose),
     flip(append)(getElement('.tags'))
   )(element('div'))
 

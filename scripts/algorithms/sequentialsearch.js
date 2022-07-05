@@ -16,6 +16,7 @@ export const sequentialSearch = (userInput = '', list = searchList) => {
 
   // On initialise un tableau de résultats vide
   let recipesIds = []
+
   // On boucle dans la liste d'objets triés
   for (const element of list) {
     if (element.text.includes(userInput)) {
@@ -29,10 +30,12 @@ export const sequentialSearch = (userInput = '', list = searchList) => {
       for (const recipe of recipes) {
         // On récupère (une fois) les recettes correspondant aux ids retenues
         if (id === recipe.id && !recipesSelection.includes(recipe)) {
-          // On récupère le tableau de recettes correspondant
+          // On remplit notre tableau de recettes avec le résultat
           recipesSelection.push(recipe)
         }
       }
+
+      // ------------------------ Création des listes de tags -------------------------- //
 
       // On initialise un tableau de résultats vide
       const ingredients = []
@@ -42,7 +45,7 @@ export const sequentialSearch = (userInput = '', list = searchList) => {
         for (const ingredientId of ingredient.ids) {
           // On récupère (une fois) les ingredients correspondants aux ids retenues
           if (id === ingredientId && !ingredients.includes(ingredient.text)) {
-            // On récupère le tableau d'ingredients correspondants
+            // On remplit notre tableau d'ingredients avec le résultat
             ingredients.push(ingredient.text)
           }
         }
@@ -56,7 +59,7 @@ export const sequentialSearch = (userInput = '', list = searchList) => {
         for (const appareilId of appareil.ids) {
           // On récupère (une fois) les appareils correspondants aux ids retenues
           if (id === appareilId && !appareils.includes(appareil.text)) {
-            // On récupère le tableau d'appareils correspondants
+            // On remplit notre tableau d'appareils avec le résultat
             appareils.push(appareil.text)
           }
         }
@@ -70,7 +73,7 @@ export const sequentialSearch = (userInput = '', list = searchList) => {
         for (const ustensileId of ustensile.ids) {
           // On récupère (une fois) les ustensiles correspondants aux ids retenues
           if (id === ustensileId && !ustensiles.includes(ustensile.text)) {
-            // On récupère le tableau d'ustensiles correspondants
+            // On remplit notre tableau d'ustensiles avec le résultat
             ustensiles.push(ustensile.text)
           }
         }
@@ -82,6 +85,6 @@ export const sequentialSearch = (userInput = '', list = searchList) => {
     printErrorMessage(
       'Aucune recette ne correspond à votre critère... Vous pouvez chercher "tarte aux pommes", "poisson", etc.'
     )
-
+console.log(recipesSelection);
   return { recipesSelection, ingredients, appareils, ustensiles }
 }

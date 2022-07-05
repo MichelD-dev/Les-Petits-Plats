@@ -35,7 +35,7 @@ export const openSelector = allTags => selector => {
       return removeClass('open')(categorySelector)
 
     // Routage en fonction du selecteur cliqué
-    const id = {
+    const id = {// FIXME reduire en allTags.map(fns(arg1, arg2))
       ingredients: () => {
         // Ouverture du selecteur
         selectorChange(getElement('#select_ingredients'))

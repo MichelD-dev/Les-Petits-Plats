@@ -5,7 +5,7 @@ const snackbarTimeOut = () => setTimeout(removeSnackBar, 3000)
 
 const stopSnackbarTimeOut = () => clearTimeout(snackbarTimeOut)
 
-const printSnackbar = selection => {
+const printSnackbar = selection => {// FIXME deux fois printSnackBar ???????
   pipe(
     removeClass('hidden')(getElement('#snackbar')),
     addClass('snackbar')(getElement('#snackbar')),

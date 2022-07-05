@@ -6,9 +6,25 @@ import { text } from './factory/helpers.js'
 import { getElement } from './factory/helpers.js'
 import { clearCardsSection, pipe, printErrorMessage } from './utils/utils.js'
 
+// Fonction permettant de rendre immutable un objet ET AUSSI les objets/arrays qu'il contient
+export const deepFreeze = obj => {
+  // Retrieve the property names defined on obj
+  var propNames = Object.getOwnPropertyNames(obj)
+
+  // Freeze properties before freezing self
+   propNames.forEach(name => {
+    const prop = obj[name]
+    // Freeze prop if it is an object
+    if (typeof prop == 'object' && prop !== null) deepFreeze(prop)
+  })
+
+  // Freeze self (no-op if already frozen)
+  return Object.freeze(obj)
+}
+
 // Affichage de la snackbar
 const printSnackbar = selection => {
-  pipe(
+  const createSnackBar = pipe(
     removeClass('hidden'),
     addClass('snackbar'),
     append(
@@ -18,7 +34,9 @@ const printSnackbar = selection => {
         }`
       )
     )
-  )(getElement('#snackbar'))
+  )
+
+  createSnackBar(getElement('#snackbar'))
 
   // fadeOut snackbar et arrêt de son timeOut après 3 secondes
   stopSnackbarTimeOut()
@@ -96,7 +114,7 @@ export const filteredByTagsSelect = list => {
             return foundItemIds
           })
 
-        if (recipesIds2.length === 0) return recipesIds2 = foundItemIds
+        if (recipesIds2.length === 0) return (recipesIds2 = foundItemIds)
 
         console.log(recipesIds2)
         console.log(foundItemIds)
