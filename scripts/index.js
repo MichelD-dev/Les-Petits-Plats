@@ -18,16 +18,17 @@ import { getRecipesFromSearch } from './components/searchBar.js'
 
 // On récupère un tableau de selections de recettes initial, qui sera notre state initial immutable
 const initialState = deepFreeze(recipes)
-
+// console.log(initialState);
 // On récupère une liste initiale immutable de tags
 const initialTags = deepFreeze(getTags())
-
+// console.log(initialTags);
 // On place le focus sur le champ de recherche à l'initialisation
+//FIXME les passer en arguments
 getElement('.search__form_searchbar').focus()
 
 let selectedTags = []
 
-export const app = (userEvent = () => {}) => {console.log('ok');
+export const app = userEvent => {
   // On initialise un tableau de tags selectionnés
 
   // On place l'event reçu dans un HOF Stop() pour pouvoir retirer l'eventListener après l'actualisation de la recherche
@@ -39,9 +40,9 @@ export const app = (userEvent = () => {}) => {console.log('ok');
 
     // On récupère les tags selectionnés
     const tags = getElements('.tag')
-// console.log(tags[tags.length - 1].textContent);
+    // console.log(tags[tags.length - 1].textContent);
     // Et on les place dans le tableau créé plus haut
-    
+
     selectedTags =
       tags.length === 0
         ? []
@@ -75,43 +76,39 @@ export const app = (userEvent = () => {}) => {console.log('ok');
     //     return newState
     //   })
 
+    newState = searchInput ? getRecipesFromSearch(searchInput) : recipes
+
     // Récupération des tags associés à la recherche utilisateur
-    const allTags = searchInput ? getTags(searchInput) : initialTags
+    const allTags = searchInput ? getTags(searchInput, newState) : initialTags
     onSelect(allTags)
 
     // let userEvent = userSearch || tagSelect || tagInput
     app(userEvent)
 
-    newState = searchInput
-      ? getRecipesFromSearch(searchInput).recipesSelection
-      : recipes
-
-    // console.log(newState)
     // if (selectedTags) {
     //   newState.filter(recipe => recipe.ingredients.forEach(obj => obj.ingredient.includes() )
     //     )
     // }
-let arr1 = []
-  arr1 = [...arr1, 
-      ...new Set(
-        newState
-          .map(recipe => recipe.ingredients.map(obj => obj.ingredient.toLowerCase()).flat(2))
-          .flat(2)
-      ),
-    ]
-    console.log(arr1)
+    // let arr1 = []
+    //   arr1 = [...arr1,
+    //       ...new Set(
+    //         newState
+    //           .map(recipe => recipe.ingredients.map(obj => obj.ingredient.toLowerCase()).flat(2))
+    //           .flat(2)
+    //       ),
+    //     ]
+    //     console.log(arr1)
 
-    const arr2 = selectedTags
-console.log(arr2);
+    //     const arr2 = selectedTags
+    // console.log(arr2);
 
-const arrays = [arr1, arr2]
-    const result = arrays.shift().filter(function (v) {
-      return arrays.every(function (a) {
-        return a.indexOf(v) !== -1
-      })
-    })
-console.log(result);
-
+    // const arrays = [arr1, arr2]
+    //     const result = arrays.shift().filter(function (v) {
+    //       return arrays.every(function (a) {
+    //         return a.indexOf(v) !== -1
+    //       })
+    //     })
+    // console.log(result);
 
     /**
    On affiche les cartes résultant de la recherche, via une composition de fonctions listées dans le fichier helpers.js:
@@ -146,4 +143,4 @@ onSelect(initialTags)
 // Action de l'utilisateur
 let userEvent = userSearch || tagSelect || tagInput
 
-userEvent && app(userEvent)
+app(userEvent)

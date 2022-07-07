@@ -18,51 +18,88 @@ import {
 import { capitalize, flip, pipe } from '../utils/utils.js'
 import { app } from '../index.js'
 
-export const getTags = (searchInput = null) => {
-  const recipesSelection =
-  searchInput
-    ? getRecipesFromSearch(searchInput).recipesSelection
-    :
-    recipes
+export const getTags = (searchInput = null, recipesSelection = recipes) => {
+  // const recipesSelection =
+  // searchInput
+  //   ? getRecipesFromSearch(searchInput)
+  //   :
+  //   recipes
+  console.log(recipesSelection)
+  // const searchedRecipesIds = recipesSelection.map(recipe => recipe.id)
+console.log(appareilsList);
 
-  const searchedRecipesIds = recipesSelection.map(recipe => recipe.id)
 
+
+  // console.log(ingredientsList)
   const categories = {
     ingredients: ingredientsList,
     appareils: appareilsList,
     ustensiles: ustensilesList,
   }
-
+  
+  let ingredientsTags = []
+  let ustensilesTags = []
+  let appareilsTags = []
   let allTags = []
-
+  
   for (const category in categories) {
     let tags = []
     let tagsIdsList = []
-    for (const value of categories[category]) {
+    let result = []
+    const cat =
+    category === 'appareils'
+    ? 'appliance'
+    : category === 'ustensiles'
+    ? 'ustensils'
+    : 'ingredients'
+    categories[category].forEach(tag => {
       // Les tags sont filtrés en fonction du terme entré par l'utilisateur dans le selecteur de recherche
-      if (searchInput) {
-        tagsIdsList = [
-          ...new Set([
-            ...tagsIdsList,
-            ...value.ids.filter(id => searchedRecipesIds.indexOf(id) !== -1),
-          ]),
-        ]
-        tagsIdsList.forEach(id =>
-          categories[category].forEach(tag => {
-            if (tag.ids.includes(id) && !tags.includes(tag.text)) {
-              tags.push(tag.text)
-            }
+      // console.log(categories, category);
+      {
+        if (searchInput) {
+          recipesSelection.forEach(recipe => {
+            recipe.ingredients.forEach(ingr => {
+              if (result.includes(ingr.ingredient.toLowerCase())) return
+              result.push(ingr.ingredient.toLowerCase())
+              console.log(ingredientsTags)
+              ingredientsTags= result.sort((a, b) => a.localeCompare(b))
+            })
           })
-        )
-        tags.sort((a, b) => a.localeCompare(b))
-      } else {
-        // Liste de tags originelle
-        tags = [...tags, value.text]
+        } else {
+          // Liste de tags originelle
+         tags = [...tags, tag]
+        }
       }
-    }
+      // {
+        if (searchInput) {
+      //     recipesSelection.forEach(recipe => {
+      //       if (result.includes(recipe.appliance.toLowerCase())) return
+      //       result.push(recipe.appliance.toLowerCase())
+      //       appareilsTags = result.sort((a, b) => a.localeCompare(b))
+      //     })
+        } else {
+          // Liste de tags originelle
+          tags = [...tags, tag]
+        }
+      // }
+      // {
+        if (searchInput) {
+        //   recipesSelection.forEach(recipe => {
+        //     recipe.ustensils.forEach(appareil => {
+        //       result.push(appareil.toLowerCase())
+        //       ustensilesTags = result.sort((a, b) => a.localeCompare(b))
+        //     })
+        //   })
+        } else {
+          // Liste de tags originelle
+          tags = [...tags, tag]
+        }
+      // }
+    })
     // Listes de tags originelles
     allTags = [...allTags, tags]
   }
+  console.log(allTags)
 
   return allTags
 }

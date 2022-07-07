@@ -1,41 +1,62 @@
 import { recipes } from '../data/recipes.js'
-import { formatted } from '../helpers.js'
 
-// A l'initialisation, on crée à partir de la liste de recettes initiale 5 listes séparées pour les noms, les descriptions, les ingrédients, les appareils et les ustensiles
 const list = (recipes, ...categories) => {
-  // Alternative à un if/else ou un switch
-  // ((pour category = name) => on retourne l'objet { text: formatted(obj.name), id: obj.id }
-  const choice = obj => ({
-    name: () => ({ text: formatted(obj.name), id: obj.id }),
-    description: () => ({ text: formatted(obj.description), id: obj.id }),
-    ingredients: () =>
-      obj.ingredients.map(ingredient => ({
-        text: formatted(ingredient.ingredient),
-        id: obj.id,
-      })),
-    appareils: () => ({ text: formatted(obj.appliance), id: obj.id }),
-    ustensiles: () =>
-      obj.ustensils.map(ustensile => ({
-        text: formatted(ustensile),
-        id: obj.id,
-      })),
+  let listing = categories.map(category => {
+    return recipes.reduce((arr, obj1) => {
+      const formatted = str =>
+        str
+          .toLowerCase()
+          .replace(/[.,/#!$%^&*;:{}=-_`~]/g, '')
+          .replace(/\s+/g, ' ')
+          .replace(/^\w/, c => c.toUpperCase())
+          .trim()
+
+      const choice = {
+        name: formatted(obj1.name),
+        description: formatted(obj1.description),
+        ingredients: obj1.ingredients.map(ingredient =>
+          formatted(ingredient.ingredient)
+        ),
+        appareils: formatted(obj1.appliance),
+        ustensiles: obj1.ustensils.map(ustensile => formatted(ustensile)),
+      }
+
+      return [...arr, choice[category]]
+    }, [])
   })
 
-  const listing = categories.map(category =>
-    recipes.reduce(
-      // J'appelle la fonction choice()avec chaque objet recette en argument, qui me renvoie un objet, dont chaque clé renvoie à une méthode, que j'appelle et elle me revoie un objet { text: formatted(obj.name), id: obj.id }
-      // ingredients et ustensiles étant des arrays, on "aplatit" les arrays (résultats du reduce) qui les contiennent, avec flat()
-      (arr, obj) => [...arr, choice(obj)[category]()].flat(),
-      []
-    )
-  )
-
   return {
+    //FIXME supprimer les doublons
     names: listing[0],
     descriptions: listing[1],
-    ingredients: listing[2],
-    appareils: listing[3],
-    ustensiles: listing[4],
+    ingredients: [...new Set(listing[2].flat())],
+    appareils: [...new Set(listing[3])],
+    ustensiles: [...new Set(listing[4].flat())],
+    init: recipes.reduce((arr, obj1) => {
+      const splitted = str =>
+        str
+          .toLowerCase()
+          .replace(/[.,/#!$%^&*;:{}=-_`~()]/g, '')
+          .replace(/\s+/g, ' ')
+          .trim()
+          .split(' ')
+          .map(element => {
+            if (!element) return
+            return { text: element, id: obj1.id }
+          })
+
+      return [
+        ...arr,
+        splitted(obj1.name),
+        splitted(obj1.description),
+
+        obj1.ingredients
+          .reduce((arr, obj2) => {
+            return [...arr, splitted(obj2.ingredient)]
+          }, [])
+          .map(element => element),
+      ].flat(2)
+    }, []),
   }
 }
 
@@ -45,12 +66,11 @@ const list = (recipes, ...categories) => {
 
 const defaultCompare = (a, b) => a.localeCompare(b)
 
-//On trie alphabétiquement le tableau d'objets issu de la fonction list
-const quickSort = (unsortedArray, compareByAlphabet = defaultCompare) => {
+const quickSort = (unsortedArray, compare = defaultCompare) => {
   // On crée une copie du tableau reçu
   const sortedArray = [...unsortedArray]
 
-  // On vérifie si il s'agit du tableau de recettes initial ou d'un tableau d'éléments de recettes
+  // On vérifie si il s'agit du tri initial ou d'un tri d'éléments de recettes
   const initialArray = typeof sortedArray[0] === 'object'
 
   // On trie récursivement les sous-tableaux
@@ -64,9 +84,8 @@ const quickSort = (unsortedArray, compareByAlphabet = defaultCompare) => {
 
     for (let i = left; i < right; i++) {
       const sort = initialArray
-        ? compareByAlphabet(sortedArray[i].text, pivotValue.text)
-        : compareByAlphabet(sortedArray[i], pivotValue)
-
+        ? compare(sortedArray[i].text, pivotValue.text)
+        : compare(sortedArray[i], pivotValue)
       // l'élément est inférieur au pivot
       if (sort === -1) {
         // Si l'élément juste à droite du split index n'est pas celui-ci, on les échange
@@ -75,23 +94,19 @@ const quickSort = (unsortedArray, compareByAlphabet = defaultCompare) => {
           sortedArray[splitIndex] = sortedArray[i]
           sortedArray[i] = temp
         }
-
         // On déplace le split index d'un rang vers la droite
         // augmentant la taille du sous-tableau d'éléments inférieurs d'un rang
         splitIndex++
       }
       // On laisse les éléments égaux ou plus grands que le pivot à leur place
     }
-
     // On déplace le pivot à l'endroit de la séparation entre les sous-tableaux
     sortedArray[right] = sortedArray[splitIndex]
     sortedArray[splitIndex] = pivotValue
-
     // On trie récursivement les deux sous-tableaux
     recursiveSort(left, splitIndex - 1)
     recursiveSort(splitIndex + 1, right)
   }
-
   // On trie le tableau complet
   recursiveSort(0, unsortedArray.length - 1)
   return sortedArray
@@ -99,7 +114,7 @@ const quickSort = (unsortedArray, compareByAlphabet = defaultCompare) => {
 
 /* ---------------------------------------------------------------------- */
 
-const listAll = list(
+export const listAll = list(
   recipes,
   'name',
   'description',
@@ -108,46 +123,14 @@ const listAll = list(
   'ustensiles'
 )
 
-const initiateNamesList = () => quickSort(listAll.names)
-const initiateIngredientsList = () => quickSort(listAll.ingredients)
-const initiateDescriptionsList = () => quickSort(listAll.descriptions)
-const initiateUstensilesList = () => quickSort(listAll.ustensiles)
-const initiateAppareilsList = () => quickSort(listAll.appareils)
-const initiateSearchList = () =>
-  quickSort([
-    ...listAll.names,
-    ...listAll.ingredients,
-    ...listAll.descriptions,
-    ...listAll.ustensiles,
-    ...listAll.appareils,
-  ])
+export const searchList = quickSort(listAll.init).filter(
+  (obj, index, self) =>
+    index ===
+    self.findIndex(item => item.text === obj.text && item.id === obj.id)
+)
+export const ingredientsList = quickSort(listAll.ingredients)
+export const appareilsList = quickSort(listAll.appareils)
+export const ustensilesList = quickSort(listAll.ustensiles)
+// export const initiateIngredientsTagsList = () => {}
 
-// On regroupe les ids correspondant au même text => [{text: 'ail, ids=[30, 26, 29]}]
-function groupBy(array, property) {
-  return array.reduce((acc, current) => {
-    const object_property = current[property]
-
-    let foundElement = acc.find(x => x.text === object_property)
-
-    if (foundElement) {
-      foundElement.ids = [...foundElement.ids, current.id]
-    } else {
-      foundElement = {
-        text: object_property,
-        ids: [current.id],
-      }
-    }
-    let result = [...acc, foundElement]
-
-    return [...new Set(result)]
-  }, [])
-}
-
-export const namesList = groupBy(initiateNamesList(), 'text')
-export const ingredientsList = groupBy(initiateIngredientsList(), 'text')
-export const descriptionsList = groupBy(initiateDescriptionsList(), 'text')
-export const ustensilesList = groupBy(initiateUstensilesList(), 'text')
-export const appareilsList = groupBy(initiateAppareilsList(), 'text')
-export const searchList = groupBy(initiateSearchList(), 'text')
-
-console.log(searchList)
+console.log(searchList);
