@@ -113,7 +113,6 @@ const quickSort = (unsortedArray, compare = defaultCompare) => {
 }
 
 /* ---------------------------------------------------------------------- */
-
 export const listAll = list(
   recipes,
   'name',
@@ -121,7 +120,8 @@ export const listAll = list(
   'ingredients',
   'appareils',
   'ustensiles'
-)
+  )
+
 
 export const searchList = quickSort(listAll.init).filter(
   (obj, index, self) =>

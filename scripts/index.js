@@ -28,7 +28,7 @@ getElement('.search__form_searchbar').focus()
 
 let selectedTags = []
 
-export const app = userEvent => {
+export const app = (userEvent )=> {
   // On initialise un tableau de tags selectionnés
 
   // On place l'event reçu dans un HOF Stop() pour pouvoir retirer l'eventListener après l'actualisation de la recherche
@@ -79,7 +79,7 @@ export const app = userEvent => {
     newState = searchInput ? getRecipesFromSearch(searchInput) : recipes
 
     // Récupération des tags associés à la recherche utilisateur
-    const allTags = searchInput ? getTags(searchInput, newState) : initialTags
+    const allTags = newState.length ? getTags(searchInput, newState) : initialTags
     onSelect(allTags)
 
     // let userEvent = userSearch || tagSelect || tagInput
