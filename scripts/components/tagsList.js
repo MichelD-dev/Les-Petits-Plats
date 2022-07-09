@@ -5,7 +5,7 @@ import {
   ingredientsList,
   ustensilesList,
 } from '../algorithms/quickSort.js'
-import { on } from '../helpers.js'
+import { deepFreeze, on } from '../helpers.js'
 import {
   addClass,
   append,
@@ -18,17 +18,18 @@ import {
 import { capitalize, flip, pipe } from '../utils/utils.js'
 import { app } from '../index.js'
 
-export const getTags = (searchInput = null, recipesSelection = recipes) => {
+export const getTags = (
+  searchInput = null,
+  recipesSelection = deepFreeze(recipes)
+) => {
   // const recipesSelection =
   // searchInput
   //   ? getRecipesFromSearch(searchInput)
   //   :
   //   recipes
-  console.log(recipesSelection)
+  // console.log(recipesSelection)
   // const searchedRecipesIds = recipesSelection.map(recipe => recipe.id)
-console.log(appareilsList);
-
-
+  // console.log(appareilsList)
 
   // console.log(ingredientsList)
   const categories = {
@@ -36,70 +37,42 @@ console.log(appareilsList);
     appareils: appareilsList,
     ustensiles: ustensilesList,
   }
-  
+
   let ingredientsTags = []
   let ustensilesTags = []
   let appareilsTags = []
   let allTags = []
-  
+
   for (const category in categories) {
-    let tags = []
     let tagsIdsList = []
     let result = []
     const cat =
-    category === 'appareils'
-    ? 'appliance'
-    : category === 'ustensiles'
-    ? 'ustensils'
-    : 'ingredients'
+      category === 'appareils'
+        ? 'appliance'
+        : category === 'ustensiles'
+        ? 'ustensils'
+        : 'ingredients'
     categories[category].forEach(tag => {
       // Les tags sont filtrés en fonction du terme entré par l'utilisateur dans le selecteur de recherche
-      // console.log(categories, category);
-      {
+          {
         if (searchInput) {
           recipesSelection.forEach(recipe => {
             recipe.ingredients.forEach(ingr => {
               if (result.includes(ingr.ingredient.toLowerCase())) return
               result.push(ingr.ingredient.toLowerCase())
               console.log(ingredientsTags)
-              ingredientsTags= result.sort((a, b) => a.localeCompare(b))
+              ingredientsTags = result.sort((a, b) => a.localeCompare(b))
             })
           })
         } else {
           // Liste de tags originelle
-         tags = [...tags, tag]
+          categories[category] = [...categories[category], tag]
         }
       }
-      // {
-        if (searchInput) {
-      //     recipesSelection.forEach(recipe => {
-      //       if (result.includes(recipe.appliance.toLowerCase())) return
-      //       result.push(recipe.appliance.toLowerCase())
-      //       appareilsTags = result.sort((a, b) => a.localeCompare(b))
-      //     })
-        } else {
-          // Liste de tags originelle
-          tags = [...tags, tag]
-        }
-      // }
-      // {
-        if (searchInput) {
-        //   recipesSelection.forEach(recipe => {
-        //     recipe.ustensils.forEach(appareil => {
-        //       result.push(appareil.toLowerCase())
-        //       ustensilesTags = result.sort((a, b) => a.localeCompare(b))
-        //     })
-        //   })
-        } else {
-          // Liste de tags originelle
-          tags = [...tags, tag]
-        }
-      // }
     })
     // Listes de tags originelles
-    allTags = [...allTags, tags]
+    allTags = [...allTags, categories[category]]
   }
-  console.log(allTags)
 
   return allTags
 }

@@ -1,4 +1,5 @@
 import { recipes } from '../data/recipes.js'
+import { deepFreeze } from '../helpers.js'
 
 const list = (recipes, ...categories) => {
   let listing = categories.map(category => {
@@ -114,14 +115,13 @@ const quickSort = (unsortedArray, compare = defaultCompare) => {
 
 /* ---------------------------------------------------------------------- */
 export const listAll = list(
-  recipes,
+  deepFreeze(recipes),
   'name',
   'description',
   'ingredients',
   'appareils',
   'ustensiles'
-  )
-
+)
 
 export const searchList = quickSort(listAll.init).filter(
   (obj, index, self) =>
@@ -133,4 +133,5 @@ export const appareilsList = quickSort(listAll.appareils)
 export const ustensilesList = quickSort(listAll.ustensiles)
 // export const initiateIngredientsTagsList = () => {}
 
-console.log(searchList);
+console.log(searchList)
+

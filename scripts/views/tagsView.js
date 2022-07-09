@@ -1,5 +1,5 @@
-import { append, getElement } from '../factory/helpers.js'
-import { clearTagsSection } from '../utils/utils.js'
+import { append, filter, forEach, getElement } from '../factory/helpers.js'
+import { clearTagsSection, pipe } from '../utils/utils.js'
 
 // Fonction d'affichage de la liste de tags
 export const tagsView = tags => selector => {
@@ -13,15 +13,28 @@ export const tagsView = tags => selector => {
     ustensils: getElement('#ustensiles-list'),
   }
 
-  // ------------------------ Helpers ---------------------------------------- //
-
+  // On définit à quelle catégorie appartient chaque tag via sa classe
   const tagsCategory = tag =>
     tag.classList.contains(`custom-option_${selector}`)
+
+  // On filtre les tags par catégorie
+  const filterByCategories = filter(tagsCategory)
+
+  // Affectation de chaque tag à la liste correspondant à sa catégorie
   const appendTag = tag => append(tag)(choice[selector])
+
+  // On execute cette affectation pour tous les tags
+  const appendToCategoryLists = forEach(appendTag)
 
   // ------------------------------------------------------------------------- //
 
-  tags.filter(tagsCategory).forEach(appendTag)
+  //Composition des fonctions définies précédemment
+  const createTagsLists = pipe(filterByCategories, appendToCategoryLists)
+
+  // On crée les listes de tags
+  createTagsLists(tags)
+
+  // tags.filter(tagsCategory).forEach(appendTag)
 
   // if (tagsList.length === 0)
   //   return (getElement('.tags__error').textContent =

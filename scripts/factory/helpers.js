@@ -5,6 +5,12 @@ const element = tag => document.createElement(tag)
 
 const text = content => document.createTextNode(content)
 
+const filter = category => array => array.filter(category)
+
+const forEach = fn => array => array.forEach(fn)
+
+const map = fn => array => array.map(fn)
+
 const insert = icon => location => element => {
   element.insertAdjacentHTML(location, icon)
   return element
@@ -47,6 +53,9 @@ export const tap = fn => arg => {
 }
 
 export {
+  map,
+  filter,
+  forEach,
   getElement,
   getElements,
   element,

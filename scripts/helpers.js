@@ -12,7 +12,7 @@ export const deepFreeze = obj => {
   var propNames = Object.getOwnPropertyNames(obj)
 
   // Freeze properties before freezing self
-   propNames.forEach(name => {
+  propNames.forEach(name => {
     const prop = obj[name]
     // Freeze prop if it is an object
     if (typeof prop == 'object' && prop !== null) deepFreeze(prop)
@@ -24,6 +24,8 @@ export const deepFreeze = obj => {
 
 // Affichage de la snackbar
 const printSnackbar = selection => {
+  if (!selection) return []
+
   const createSnackBar = pipe(
     removeClass('hidden'),
     addClass('snackbar'),
@@ -41,6 +43,15 @@ const printSnackbar = selection => {
   // fadeOut snackbar et arrêt de son timeOut après 3 secondes
   stopSnackbarTimeOut()
 
+  return selection
+}
+
+export const clearErrorMessage = selection => {
+  printErrorMessage(
+    selection.length === 0
+      ? 'Aucune recette ne correspond à votre critère...Vous pouvez chercher "tarte aux pommes", "poisson", etc.'
+      : ''
+  )
   return selection
 }
 

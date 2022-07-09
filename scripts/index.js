@@ -5,6 +5,7 @@ import { onSelect } from './components/selector.js'
 import { getTags } from './components/tagsList.js'
 import { getElement, getElements } from './factory/helpers.js'
 import {
+  clearErrorMessage,
   clearPage,
   deepFreeze,
   filteredByTagsSelect,
@@ -12,12 +13,10 @@ import {
   printSnackbar,
   searchByKeyword,
 } from './helpers.js'
-import { pipe } from './utils/utils.js'
+import { pipe, printErrorMessage } from './utils/utils.js'
 import { cardsView } from './views/cardsView.js'
 import { getRecipesFromSearch } from './components/searchBar.js'
 
-// On récupère un tableau de selections de recettes initial, qui sera notre state initial immutable
-const initialState = deepFreeze(recipes)
 // console.log(initialState);
 // On récupère une liste initiale immutable de tags
 const initialTags = deepFreeze(getTags())
@@ -28,7 +27,7 @@ getElement('.search__form_searchbar').focus()
 
 let selectedTags = []
 
-export const app = (userEvent )=> {
+export const app = userEvent => {
   // On initialise un tableau de tags selectionnés
 
   // On place l'event reçu dans un HOF Stop() pour pouvoir retirer l'eventListener après l'actualisation de la recherche
@@ -76,10 +75,10 @@ export const app = (userEvent )=> {
     //     return newState
     //   })
 
-    newState = searchInput ? getRecipesFromSearch(searchInput) : recipes
-
     // Récupération des tags associés à la recherche utilisateur
-    const allTags = newState.length ? getTags(searchInput, newState) : initialTags
+    const allTags = newState.length
+      ? getTags(searchInput, newState)
+      : initialTags
     onSelect(allTags)
 
     // let userEvent = userSearch || tagSelect || tagInput
@@ -116,9 +115,15 @@ export const app = (userEvent )=> {
    2. On affiche une snackbar avec le nombre de recettes trouvées
    3. On affiche la selection de recettes
    */
-    const createCardsView = pipe(printSnackbar, clearPage, cardsView)
+    const createCardsView = pipe(
+      getRecipesFromSearch,
+      printSnackbar,
+      clearPage,
+      clearErrorMessage,
+      cardsView
+    )
 
-    createCardsView(newState)
+    createCardsView(searchInput)
 
     // On retire l'eventListener
     stop()

@@ -1,7 +1,8 @@
-import { recipes as recipesList } from '../data/recipes.js'
-
-import { printErrorMessage } from '../utils/utils.js'
+import { recipes } from '../data/recipes.js'
+import { deepFreeze } from '../helpers.js'
 import { searchList } from './quickSort.js'
+
+const recipesList = deepFreeze(recipes)
 
 const defaultCompare = (a, b) => {
   if (b.includes(a)) return 0
@@ -10,7 +11,7 @@ const defaultCompare = (a, b) => {
 
 export const binarySearch = (
   search,
-  array = searchList,
+  array = deepFreeze(searchList),
   compare = defaultCompare,
   left = 0,
   right = array.length - 1
@@ -51,19 +52,12 @@ export const binarySearch = (
     ]
   }
 
-  if (left > right) {
-    printErrorMessage(
-      'Aucune recette ne correspond à votre critère...Vous pouvez chercher "tarte aux pommes", "poisson", etc.'
-    )
-    return
-  }
-
-  printErrorMessage('')
+  if (left > right) return
 
   const middle = Math.floor((left + right) / 2)
   const comparison = compare(search, array[middle].text)
 
-  console.log(array[middle])
+  // console.log(array[middle])
   if (comparison === 0) return [...new Set(searchFrom(middle))]
 
   const newRange = comparison === -1 ? [left, middle - 1] : [middle + 1, right]
