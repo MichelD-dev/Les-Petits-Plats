@@ -1,11 +1,27 @@
 import { selectTag } from '../components/tagsList.js'
 import { on } from '../helpers.js'
 import { app } from '../index.js'
-import { capitalize, pipe } from '../utils/utils.js'
+import { capitalize, getSelector, pipe } from '../utils/utils.js'
 import { tagsView } from '../views/tagsView.js'
-import { addAttributes, addClass, append, element, text } from './helpers.js'
+import {
+  addAttributes,
+  addClass,
+  append,
+  element,
+  getElement,
+  getElements,
+  map,
+  text,
+  trace,
+} from './helpers.js'
 
 export const tagsFactory = tagsList => selector => {
+  const selectedTags = [...getElements('.tag')].map(tag =>
+    tag.textContent.toLowerCase()
+  )
+
+  const newTagsList = tagsList.filter(tag => !selectedTags.includes(tag))
+
   const createTag = tag => {
     const tagElement = pipe(
       addClass(`custom-option`, `custom-option_${selector}`),
@@ -20,11 +36,13 @@ export const tagsFactory = tagsList => selector => {
 
     // Selection d'un tag
     const tagSelect = on('pointerdown')(tagElement)
+
     tagSelect(() => {
       selectTag(selector, tag)
+      getElement(`.select__input_${getSelector(selector)}`).value = ''
     })
 
-    // Actualisation de la liste de recettes d'après les tags selectionnés
+    // Actualisation des listes de recettes et de tags d'après les tags selectionnés
     app(tagSelect)
 
     // ------------------------------------------------------------------------- //
@@ -33,7 +51,8 @@ export const tagsFactory = tagsList => selector => {
   }
 
   // Création des tags
-  const tags = tagsList.map(createTag)
+  const createTags = map(createTag)
+  const tags = createTags(newTagsList)
 
   // Affichage des tags
   tagsView(tags)(selector)

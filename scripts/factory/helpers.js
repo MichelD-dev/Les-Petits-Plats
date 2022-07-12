@@ -47,9 +47,9 @@ const appendChildren = children => element => {
   return element
 }
 
-export const tap = fn => arg => {
-  fn(arg)
-  return arg
+export const trace = label => value => {
+  console.log(`${label}: ${value}`)
+  return value
 }
 
 export {

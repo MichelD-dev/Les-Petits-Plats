@@ -9,6 +9,7 @@ import {
 } from './helpers.js'
 
 const recipeCardFactory = recipe => {
+  // console.log(recipe);
   /**
    * Création des éléments médias du DOM
    */

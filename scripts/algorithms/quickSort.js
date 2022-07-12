@@ -6,11 +6,13 @@ const list = (recipes, ...categories) => {
     return recipes.reduce((arr, obj1) => {
       const formatted = str =>
         str
-          .toLowerCase()
-          .replace(/[.,/#!$%^&*;:{}=-_`~]/g, '')
-          .replace(/\s+/g, ' ')
-          .replace(/^\w/, c => c.toUpperCase())
-          .trim()
+        .toLowerCase()
+      // On enlève les accents et les caractères spéciaux
+      .normalize('NFD')
+      .replace(/([\u0300-\u036f]|[^0-9a-zA-Z'%()\s])/g, '')
+      // On reduit les espaces de plus d'un caractère
+      .replace(/\s+/g, ' ')
+      .trim()
 
       const choice = {
         name: formatted(obj1.name),
@@ -65,7 +67,7 @@ const list = (recipes, ...categories) => {
 /* ---------------------------------------------------------------------- */
 /* ---------------------------------------------------------------------- */
 
-const defaultCompare = (a, b) => a.localeCompare(b)
+const defaultCompare = (a, b) => new Intl.Collator('fr').compare(a, b)
 
 const quickSort = (unsortedArray, compare = defaultCompare) => {
   // On crée une copie du tableau reçu
@@ -134,4 +136,3 @@ export const ustensilesList = quickSort(listAll.ustensiles)
 // export const initiateIngredientsTagsList = () => {}
 
 console.log(searchList)
-

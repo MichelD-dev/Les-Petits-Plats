@@ -1,14 +1,14 @@
 import { recipes } from './data/recipes.js'
 import { searchList } from './algorithms/quickSort.js'
 import { filterRecipes } from './components/recipesFilter.js'
-import { onSelect } from './components/selector.js'
+import { onSelect, updateTagsList } from './components/selector.js'
 import { getTags } from './components/tagsList.js'
-import { getElement, getElements } from './factory/helpers.js'
+import { getElement, getElements, trace } from './factory/helpers.js'
 import {
   clearErrorMessage,
   clearPage,
   deepFreeze,
-  filteredByTagsSelect,
+  formatted,
   on,
   printSnackbar,
   searchByKeyword,
@@ -16,36 +16,28 @@ import {
 import { pipe, printErrorMessage } from './utils/utils.js'
 import { cardsView } from './views/cardsView.js'
 import { getRecipesFromSearch } from './components/searchBar.js'
+import { tagsFactory } from './factory/tagsFactory.js'
 
 // console.log(initialState);
 // On récupère une liste initiale immutable de tags
 const initialTags = deepFreeze(getTags())
-// console.log(initialTags);
+// console.log(initialTags)
 // On place le focus sur le champ de recherche à l'initialisation
 //FIXME les passer en arguments
 getElement('.search__form_searchbar').focus()
 
+// On initialise un tableau de tags selectionnés
 let selectedTags = []
 
 export const app = userEvent => {
-  // On initialise un tableau de tags selectionnés
-
   // On place l'event reçu dans un HOF Stop() pour pouvoir retirer l'eventListener après l'actualisation de la recherche
   const stop = userEvent(() => {
     const MIN_SEARCH_LENGTH = 3
 
     // On récupère la frappe de l'utilisateur
     const searchInput = getElement('.search__form_searchbar').value
-
-    // On récupère les tags selectionnés
-    const tags = getElements('.tag')
-    // console.log(tags[tags.length - 1].textContent);
-    // Et on les place dans le tableau créé plus haut
-
-    selectedTags =
-      tags.length === 0
-        ? []
-        : [...selectedTags, tags[tags.length - 1].textContent.toLowerCase()]
+    // const tagSelect = getElement('.tag')?.children[0].textContent
+    // const tagInput = getElement('.select__input').value
 
     // En dessous de trois caractères, on réinitialise la page (en cas de recherche effectuée précédemment)
     if (searchInput && searchInput.length < MIN_SEARCH_LENGTH) {
@@ -56,74 +48,68 @@ export const app = userEvent => {
       return
     }
 
-    // const recipesIds = searchByKeyword(searchList)(searchInput)
-    // console.log(searchInput, recipesIds)
-    // const recipesIds2 = filteredByTagsSelect(searchList)(selectedTags)
-    // console.log(selectedTags, recipesIds2)
+    // On récupère les tags selectionnés
+    const tags = getElements('.tag')
 
-    // const ids = filterRecipes(recipesIds)(recipesIds2)
+    // Et on les place dans le tableau créé plus haut
+    selectedTags =
+      tags.length !== 0 ? tags.map(tag => tag.textContent.toLowerCase()) : []
 
-    // On initialise un nouveau state
-    let newState = []
-
-    // ids &&
-    //   ids.forEach(id => {
-    //     // Pour chacun de ces ids, on récupère la recette correspondante et la place dans le nouveau state
-    //     let recipe = initialState.find(el => el.id === id)
-    //     newState = [...newState, recipe]
-
-    //     return newState
-    //   })
-
-    // Récupération des tags associés à la recherche utilisateur
-    const allTags = newState.length
-      ? getTags(searchInput, newState)
-      : initialTags
-    onSelect(allTags)
-
-    // let userEvent = userSearch || tagSelect || tagInput
     app(userEvent)
 
-    // if (selectedTags) {
-    //   newState.filter(recipe => recipe.ingredients.forEach(obj => obj.ingredient.includes() )
-    //     )
-    // }
-    // let arr1 = []
-    //   arr1 = [...arr1,
-    //       ...new Set(
-    //         newState
-    //           .map(recipe => recipe.ingredients.map(obj => obj.ingredient.toLowerCase()).flat(2))
-    //           .flat(2)
-    //       ),
-    //     ]
-    //     console.log(arr1)
+    const recipesSelection = getRecipesFromSearch(formatted(searchInput))
 
-    //     const arr2 = selectedTags
-    // console.log(arr2);
+    // Récupération des tags associés à la recherche utilisateur
+    const updateRecipesSelection = tags => selection => {
+      const newSelection = []
 
-    // const arrays = [arr1, arr2]
-    //     const result = arrays.shift().filter(function (v) {
-    //       return arrays.every(function (a) {
-    //         return a.indexOf(v) !== -1
-    //       })
-    //     })
-    // console.log(result);
+      // console.log(tags);
+      // console.log(selection);
+
+      selection.forEach(recipe => {
+        const ingredients = recipe.ingredients.map(ingredient =>
+          ingredient.ingredient.toLowerCase()
+        )
+        const appareils = recipe.appliance.toLowerCase()
+        const ustensiles = recipe.ustensils.map(ustensile =>
+          ustensile.toLowerCase()
+        )
+
+        const recipesTags = [...ingredients, appareils, ...ustensiles]
+
+        if (
+          tags.every(tag => recipesTags.includes(tag)) &&
+          !newSelection.includes(recipe)
+        ) {
+          newSelection.push(recipe)
+        }
+      })
+
+      if (!newSelection.length || !tags) return selection
+
+      onSelect(getTags(searchInput, newSelection))
+
+      return newSelection
+    }
+
+    const selector = getElement('.select').children[0].id
 
     /**
-   On affiche les cartes résultant de la recherche, via une composition de fonctions listées dans le fichier helpers.js:
-   1. On récupère le nombre de recettes trouvées
+     On affiche les cartes résultant de la recherche, via une composition de fonctions listées dans le fichier helpers.js:
+     1. On récupère le nombre de recettes trouvées
    2. On affiche une snackbar avec le nombre de recettes trouvées
    3. On affiche la selection de recettes
    */
-    const createCardsView = pipe(
-      getRecipesFromSearch,
-      printSnackbar,
-      clearPage,
+    const createUI = pipe(
       clearErrorMessage,
+      updateRecipesSelection(selectedTags),
+      updateTagsList(selector),
+      // printSnackbar,
+      clearPage,
       cardsView
     )
 
-    createCardsView(searchInput)
+    createUI(recipesSelection)
 
     // On retire l'eventListener
     stop()
@@ -134,18 +120,19 @@ export const app = userEvent => {
 const userSearch = on('input')(getElement('.search__form_searchbar'))
 
 // EventListener onclick sur la liste de tags
-let tagSelect
-if (getElement('.select').classList.contains('open')) {
-  tagSelect = on('pointerdown')(getElement('.tag'))
-}
+// let tagSelect
+// if (getElement('.select').classList.contains('open')) {
+const tagSelect = on('pointerdown')(getElement('.tag'))
+// }
 
 // EventListener onInput sur un selecteur de tags
-const tagInput = on('input')(getElement('.select__input'))
+const tagInput = on('keyup')(getElement('.select__input'))
 
 // Action à l'ouverture d'un selecteur
 onSelect(initialTags)
 
 // Action de l'utilisateur
 let userEvent = userSearch || tagSelect || tagInput
+// console.log(userEvent)
 
 app(userEvent)

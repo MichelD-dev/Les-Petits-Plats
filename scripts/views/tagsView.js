@@ -1,4 +1,10 @@
-import { append, filter, forEach, getElement } from '../factory/helpers.js'
+import {
+  append,
+  filter,
+  forEach,
+  getElement,
+  trace,
+} from '../factory/helpers.js'
 import { clearTagsSection, pipe } from '../utils/utils.js'
 
 // Fonction d'affichage de la liste de tags
@@ -29,7 +35,11 @@ export const tagsView = tags => selector => {
   // ------------------------------------------------------------------------- //
 
   //Composition des fonctions définies précédemment
-  const createTagsLists = pipe(filterByCategories, appendToCategoryLists)
+  const createTagsLists = pipe(
+    // trace('init'),
+    filterByCategories,
+    appendToCategoryLists
+  )
 
   // On crée les listes de tags
   createTagsLists(tags)

@@ -6,6 +6,7 @@ import {
 } from '../factory/helpers.js'
 import { tagsFactory } from '../factory/tagsFactory.js'
 import { formatted, on } from '../helpers.js'
+import { getTags } from './tagsList.js'
 
 /**
  * Changements d'apparence du selecteur sur events
@@ -35,11 +36,13 @@ export const openSelector = allTags => selector => {
       return removeClass('open')(categorySelector)
 
     // Routage en fonction du selecteur cliqué
-    const id = {// FIXME reduire en allTags.map(fns(arg1, arg2))
+    const id = {
+      // FIXME reduire en allTags.map(fns(arg1, arg2))
       ingredients: () => {
         // Ouverture du selecteur
         selectorChange(getElement('#select_ingredients'))
         // On crée les tags correspondants au selecteur cliqué
+
         return tagsFactory(allTags[0])('ingredients')
       },
       appareils: () => {
@@ -66,7 +69,7 @@ export const onSelect = allTags => {
   // Ouverture des selecteurs par l'input
   getElements('.select__input').forEach(selector => {
     on('pointerdown')(selector)(() => openSelector(allTags)(selector))
-    on('input')(selector)(() => filteredByTagsInput(allTags.flat())(selector))
+    on('input')(selector)(() => filteredByTagsInput(allTags)(selector))
   })
 }
 
@@ -81,12 +84,30 @@ on('pointerdown')(window)(e => {
   })
 })
 
-//
+//On actualise la liste de tags après selection d'un tag
+export const updateTagsList = selector => selection => {
+  const filteredTags = getTags(null, selection)
+  tagsFactory(filteredTags)(selector)
+
+  return selection
+}
+
 const filteredByTagsInput = allTags => selector => {
   const tagInput = tag => tag.includes(formatted(selector.value))
 
-  const filteredTags = allTags.filter(tagInput)
-
   // On recrée les tags restants après filtrage
-  tagsFactory(filteredTags)(selector.parentElement.id)
+  if (selector.parentElement.id === 'ingredients') {
+    const filteredTags = allTags[0].filter(tagInput)
+    tagsFactory(filteredTags)(selector.parentElement.id)
+  }
+
+  if (selector.parentElement.id === 'appareils') {
+    const filteredTags = allTags[1].filter(tagInput)
+    tagsFactory(filteredTags)('appliance')
+  }
+
+  if (selector.parentElement.id === 'ustensiles') {
+    const filteredTags = allTags[2].filter(tagInput)
+    tagsFactory(filteredTags)('ustensils')
+  }
 }

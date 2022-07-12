@@ -5,85 +5,88 @@ import {
   ingredientsList,
   ustensilesList,
 } from '../algorithms/quickSort.js'
-import { deepFreeze, on } from '../helpers.js'
+import { deepFreeze, formatted, on } from '../helpers.js'
 import {
   addClass,
   append,
   element,
   getElement,
   getElements,
-  tap,
+  removeClass,
   text,
 } from '../factory/helpers.js'
-import { capitalize, flip, pipe } from '../utils/utils.js'
+import { capitalize, flip, getSelector, pipe } from '../utils/utils.js'
 import { app } from '../index.js'
+import { tagsFactory } from '../factory/tagsFactory.js'
 
 export const getTags = (
   searchInput = null,
   recipesSelection = deepFreeze(recipes)
 ) => {
-  // const recipesSelection =
-  // searchInput
-  //   ? getRecipesFromSearch(searchInput)
-  //   :
-  //   recipes
-  // console.log(recipesSelection)
-  // const searchedRecipesIds = recipesSelection.map(recipe => recipe.id)
-  // console.log(appareilsList)
-
-  // console.log(ingredientsList)
-  const categories = {
-    ingredients: ingredientsList,
-    appareils: appareilsList,
-    ustensiles: ustensilesList,
-  }
-
   let ingredientsTags = []
   let ustensilesTags = []
   let appareilsTags = []
   let allTags = []
 
-  for (const category in categories) {
-    let tagsIdsList = []
-    let result = []
-    const cat =
-      category === 'appareils'
-        ? 'appliance'
-        : category === 'ustensiles'
-        ? 'ustensils'
-        : 'ingredients'
-    categories[category].forEach(tag => {
-      // Les tags sont filtrés en fonction du terme entré par l'utilisateur dans le selecteur de recherche
-          {
-        if (searchInput) {
-          recipesSelection.forEach(recipe => {
-            recipe.ingredients.forEach(ingr => {
-              if (result.includes(ingr.ingredient.toLowerCase())) return
-              result.push(ingr.ingredient.toLowerCase())
-              console.log(ingredientsTags)
-              ingredientsTags = result.sort((a, b) => a.localeCompare(b))
-            })
-          })
-        } else {
+  // Les tags sont filtrés en fonction du terme entré par l'utilisateur dans le selecteur de recherche
+  {
+    if (searchInput) {
+      recipesSelection.forEach(recipe => {
+        recipe.ingredients.forEach(ingr => {
+          if (
+            ingredientsList.includes(ingr.ingredient.toLowerCase()) &&
+            !ingredientsTags.includes(ingr.ingredient.toLowerCase())
+          ) {
+            ingredientsTags.push(ingr.ingredient.toLowerCase())
+          }
+          ingredientsTags.sort((a, b) => a.localeCompare(b))
           // Liste de tags originelle
-          categories[category] = [...categories[category], tag]
-        }
-      }
-    })
-    // Listes de tags originelles
-    allTags = [...allTags, categories[category]]
-  }
+          if (!ingredientsTags.length) return ingredientsList
 
-  return allTags
+          return ingredientsTags
+        })
+
+        recipe.ustensils.forEach(ustensile => {
+          if (
+            ustensilesList.includes(ustensile.toLowerCase()) &&
+            !ustensilesTags.includes(ustensile.toLowerCase())
+          ) {
+            ustensilesTags.push(ustensile.toLowerCase())
+          }
+          ustensilesTags.sort((a, b) => a.localeCompare(b))
+          // Liste de tags originelle
+          if (!ustensilesTags.length) return ustensilesList
+
+          return ustensilesTags
+        })
+
+        if (
+          appareilsList.includes(recipe.appliance.toLowerCase()) &&
+          !appareilsTags.includes(recipe.appliance.toLowerCase())
+        ) {
+          appareilsTags.push(recipe.appliance.toLowerCase())
+        }
+        appareilsTags.sort((a, b) => a.localeCompare(b))
+        // Liste de tags originelle
+        if (!appareilsTags.length) return appareilsList
+
+        return appareilsTags
+      })
+      allTags = [...allTags, ingredientsTags, appareilsTags, ustensilesTags]
+
+      return allTags
+    }
+    return [ingredientsList, appareilsList, ustensilesList]
+  }
 }
 
 // ------------------------------------------------------
 
 export const selectTag = (category, selectedTag) => {
+  // On évite de selectionner deux fois le même tag
   const isAlreadySelected = tag =>
     tag.children[0].textContent.toLowerCase() === selectedTag
 
-  // On évite de selectionner deux fois le même tag
   if (getElements('.tag').find(isAlreadySelected)) return
 
   // Création du tag
@@ -98,18 +101,23 @@ export const selectTag = (category, selectedTag) => {
 
   pipe(
     addClass('tag', `tag_${category}`),
-    // tap(console.log), //FIXME
     append(tagText),
     append(tagClose),
     flip(append)(getElement('.tags'))
   )(element('div'))
 
-  // Suppression du tag
+  // // Suppression du tag
   const removeTag = on('pointerdown')(tagClose)
-  removeTag(() => tagClose.parentElement.remove())
+  removeTag(() => {
+    tagClose.parentElement.remove()
 
-  // On rafraîchit la liste de cartes recettes à la suppression d'un tag
-  app(removeTag) //FIXME
+    // On ferme le selecteur adéquat
+    const selector = getElement(`#select_${getSelector(category)}`)
+    removeClass('open')(selector)
+  })
+
+  // // On rafraîchit la liste de cartes recettes à la suppression d'un tag
+  app(removeTag)
 
   return selectedTag
 }

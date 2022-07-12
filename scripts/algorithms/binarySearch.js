@@ -56,7 +56,7 @@ export const binarySearch = (
 
   const middle = Math.floor((left + right) / 2)
   const comparison = compare(search, array[middle].text)
-
+console.log(search, array[middle].text)
   // console.log(array[middle])
   if (comparison === 0) return [...new Set(searchFrom(middle))]
 

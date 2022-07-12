@@ -525,6 +525,9 @@ label[for=medias-sort] {
 .tag_ustensils {
   background-color: #ed6454;
 }
+.tag_selected {
+  background-color: rgba(50, 130, 247, 0.5);
+}
 
 .error {
   color: red;

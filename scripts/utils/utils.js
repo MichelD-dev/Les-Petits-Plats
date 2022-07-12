@@ -11,17 +11,23 @@ export const clearCardsSection = selection => {
 }
 
 /**
- * Fonction de réinitialisation de la liste de tags
+ * Traduction: appliance => appareils, ustensils => ustensiles
  */
-export const clearTagsSection = selector => {
-  const select = //FIXME rendre générique
+export const getSelector = selector => {
+  const select =
     selector === 'appliance'
       ? 'appareils'
       : selector === 'ustensils'
       ? 'ustensiles'
       : 'ingredients'
+  return select
+}
 
-  const tagsList = getElement(`#${select}-list`)
+/**
+ * Fonction de réinitialisation de la liste de tags
+ */
+export const clearTagsSection = selector => {
+  const tagsList = getElement(`#${getSelector(selector)}-list`)
 
   while (tagsList.firstChild) {
     tagsList.removeChild(tagsList.lastChild)
@@ -43,7 +49,8 @@ export const capitalize = str => {
 }
 
 export const printErrorMessage = (message = '') => {
-  (getElement('.error').textContent = message)}
+  getElement('.error').textContent = message
+}
 
 export const pipe =
   (...fns) =>
@@ -60,10 +67,10 @@ export const memoize = fn => {
     let n = args[0]
     // just taking one argument here
     if (n in cache) {
-      console.log(n + ': Fetching from cache')
+      // console.log(n + ': Fetching from cache')
       return cache[n]
     } else {
-      console.log(n + ': Calculating result')
+      // console.log(n + ': Calculating result')
       let result = fn(n)
       cache[n] = result
       return result
