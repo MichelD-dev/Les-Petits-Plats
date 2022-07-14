@@ -42,7 +42,7 @@ const printSnackbar = selection => {
 
   // fadeOut snackbar et arrêt de son timeOut après 3 secondes
   stopSnackbarTimeOut()
-// console.log(selection);
+
   return selection
 }
 
@@ -80,7 +80,6 @@ const clearPage = pipe(clearCardsSection, deleteErrorMessage)
 
 // Simplification de l'eventListener
 const on = evt => element => fn => {
-  // console.log(element);
   element.addEventListener(evt, fn)
   // On retourne une fonction permettant de retirer l'eventListener après l'avoir utilisé, pour ne pas les cumuler
   return () => element.removeEventListener(evt, fn)
@@ -109,32 +108,3 @@ export const searchByKeyword = list => searchInput => {
     return recipesIds
   }
 }
-
-// On filtre en fonction des tags selectionnés
-// let recipesIds2 = []
-// export const filteredByTagsSelect = list => {
-//   return selectedTags => {
-//     if (selectedTags.length) {
-//       selectedTags.forEach(tag => {
-//         let foundItemIds = []
-//         list
-//           .filter(item => item.text.includes(formatted(tag)))
-//           .forEach(foundItem => {
-//             foundItemIds = [...new Set([...foundItemIds, ...foundItem.ids])]
-//             // console.log(foundItem, foundItemIds)
-//             return foundItemIds
-//           })
-
-//         if (recipesIds2.length === 0) return (recipesIds2 = foundItemIds)
-
-//         console.log(recipesIds2)
-//         console.log(foundItemIds)
-//         recipesIds2 = recipesIds2.filter(
-//           obj => foundItemIds.indexOf(obj) !== -1
-//         )
-//       })
-//       console.log(recipesIds2)
-//       return recipesIds2
-//     }
-//   }
-// }

@@ -1,6 +1,3 @@
-import { recipes } from './data/recipes.js'
-import { searchList } from './algorithms/quickSort.js'
-import { filterRecipes } from './components/recipesFilter.js'
 import { onSelect, updateTagsList } from './components/selector.js'
 import { getTags } from './components/tagsList.js'
 import { getElement, getElements, trace } from './factory/helpers.js'
@@ -16,12 +13,11 @@ import {
 import { pipe, printErrorMessage } from './utils/utils.js'
 import { cardsView } from './views/cardsView.js'
 import { getRecipesFromSearch } from './components/searchBar.js'
-import { tagsFactory } from './factory/tagsFactory.js'
 
-// console.log(initialState);
+
 // On récupère une liste initiale immutable de tags
 const initialTags = deepFreeze(getTags())
-// console.log(initialTags)
+
 // On place le focus sur le champ de recherche à l'initialisation
 //FIXME les passer en arguments
 getElement('.search__form_searchbar').focus()
@@ -40,7 +36,7 @@ export const app = userEvent => {
     // const tagInput = getElement('.select__input').value
 
     // En dessous de trois caractères, on réinitialise la page (en cas de recherche effectuée précédemment)
-    if (searchInput && searchInput.length < MIN_SEARCH_LENGTH) {
+    if (!searchInput || searchInput.length < MIN_SEARCH_LENGTH) {
       // On réactualise la liste de tags
       onSelect(initialTags)
       // On réinitialise la page
@@ -62,10 +58,6 @@ export const app = userEvent => {
     // Récupération des tags associés à la recherche utilisateur
     const updateRecipesSelection = tags => selection => {
       const newSelection = []
-
-      // console.log(tags);
-      // console.log(selection);
-
       selection.forEach(recipe => {
         const ingredients = recipe.ingredients.map(ingredient =>
           ingredient.ingredient.toLowerCase()
@@ -104,7 +96,7 @@ export const app = userEvent => {
       clearErrorMessage,
       updateRecipesSelection(selectedTags),
       updateTagsList(selector),
-      // printSnackbar,
+      printSnackbar,
       clearPage,
       cardsView
     )
@@ -133,6 +125,5 @@ onSelect(initialTags)
 
 // Action de l'utilisateur
 let userEvent = userSearch || tagSelect || tagInput
-// console.log(userEvent)
 
 app(userEvent)

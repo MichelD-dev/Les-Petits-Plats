@@ -133,6 +133,5 @@ export const searchList = quickSort(listAll.init).filter(
 export const ingredientsList = quickSort(listAll.ingredients)
 export const appareilsList = quickSort(listAll.appareils)
 export const ustensilesList = quickSort(listAll.ustensiles)
-// export const initiateIngredientsTagsList = () => {}
 
 console.log(searchList)

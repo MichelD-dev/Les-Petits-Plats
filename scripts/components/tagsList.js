@@ -1,5 +1,4 @@
 import { recipes } from '../data/recipes.js'
-import { getRecipesFromSearch } from './searchBar.js'
 import {
   appareilsList,
   ingredientsList,
@@ -17,7 +16,6 @@ import {
 } from '../factory/helpers.js'
 import { capitalize, flip, getSelector, pipe } from '../utils/utils.js'
 import { app } from '../index.js'
-import { tagsFactory } from '../factory/tagsFactory.js'
 
 export const getTags = (
   searchInput = null,
