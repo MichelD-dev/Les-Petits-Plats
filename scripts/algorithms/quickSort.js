@@ -27,11 +27,7 @@ const list = (recipes, ...categories) => {
     ustensiles: [...new Set(listing[4].flat())],
     init: recipes.reduce((arr, obj1) => {
       const splitted = str =>
-        str
-          .toLowerCase()
-          .replace(/[.,/#!$%^&*;:{}=-_`~()]/g, '')
-          .replace(/\s+/g, ' ')
-          .trim()
+        formatted(str) //FIXME parenthèses nécessaires ailleurs
           .split(' ')
           .map(element => {
             if (!element) return

@@ -61,7 +61,7 @@ const formatted = str => {
       .toLowerCase()
       // On enlève les accents et les caractères spéciaux
       .normalize('NFD')
-      .replace(/([\u0300-\u036f]|[^0-9a-zA-Zà'%\s()])/g, '')
+      .replace(/([\u0300-\u036f]|[^0-9a-zA-Zà'%\s])/g, '')
       // On reduit les espaces de plus d'un caractère
       .replace(/\s+/g, ' ')
       .trim()

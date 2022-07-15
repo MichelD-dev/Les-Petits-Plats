@@ -1,6 +1,6 @@
 import { onSelect, updateTagsList } from './components/selector.js'
 import { getTags } from './components/tagsList.js'
-import { getElement, getElements, trace } from './factory/helpers.js'
+import { getElement, getElements, map, trace } from './factory/helpers.js'
 import {
   clearErrorMessage,
   clearPage,
@@ -54,10 +54,23 @@ export const app = userEvent => {
 
     app(userEvent)
 
-    const userAction =
-      searchInput.length > 2 ? formatted(searchInput) : formatted(tagSelect)
+    const toto = () => {
+      if (searchInput.length > 2) {
+        const test = formatted(searchInput)
+          .split(' ')
+          .filter(str => (str.length >= 2 ? str : ''))
+          .map(str => getRecipesFromSearch(formatted(str)))
 
-    const recipesSelection = getRecipesFromSearch(userAction)
+        const recipesSelection = test
+          .shift()
+          .filter(v => test.every(a => a.indexOf(v) !== -1))
+        return recipesSelection
+      } else {
+        const recipesSelection = getRecipesFromSearch(formatted(tagSelect))
+        return recipesSelection
+      }
+    }
+    const recipesSelection = toto()
 
     // Récupération des tags associés à la recherche utilisateur
     const updateRecipesSelection = tags => selection => {
