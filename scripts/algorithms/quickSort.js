@@ -1,19 +1,9 @@
 import { recipes } from '../data/recipes.js'
-import { deepFreeze } from '../helpers.js'
+import { deepFreeze, formatted } from '../helpers.js'
 
 const list = (recipes, ...categories) => {
-  let listing = categories.map(category => {
-    return recipes.reduce((arr, obj1) => {
-      const formatted = str =>
-        str
-        .toLowerCase()
-      // On enlève les accents et les caractères spéciaux
-      .normalize('NFD')
-      .replace(/([\u0300-\u036f]|[^0-9a-zA-Z'%()\s])/g, '')
-      // On reduit les espaces de plus d'un caractère
-      .replace(/\s+/g, ' ')
-      .trim()
-
+  const listing = categories.map(category =>
+    recipes.reduce((arr, obj1) => {
       const choice = {
         name: formatted(obj1.name),
         description: formatted(obj1.description),
@@ -26,7 +16,7 @@ const list = (recipes, ...categories) => {
 
       return [...arr, choice[category]]
     }, [])
-  })
+  )
 
   return {
     //FIXME supprimer les doublons
@@ -54,9 +44,7 @@ const list = (recipes, ...categories) => {
         splitted(obj1.description),
 
         obj1.ingredients
-          .reduce((arr, obj2) => {
-            return [...arr, splitted(obj2.ingredient)]
-          }, [])
+          .reduce((arr, obj2) => [...arr, splitted(obj2.ingredient)], [])
           .map(element => element),
       ].flat(2)
     }, []),

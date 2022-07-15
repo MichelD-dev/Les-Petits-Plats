@@ -14,7 +14,6 @@ import { pipe, printErrorMessage } from './utils/utils.js'
 import { cardsView } from './views/cardsView.js'
 import { getRecipesFromSearch } from './components/searchBar.js'
 
-
 // On récupère une liste initiale immutable de tags
 const initialTags = deepFreeze(getTags())
 
@@ -32,11 +31,13 @@ export const app = userEvent => {
 
     // On récupère la frappe de l'utilisateur
     const searchInput = getElement('.search__form_searchbar').value
-    // const tagSelect = getElement('.tag')?.children[0].textContent
-    // const tagInput = getElement('.select__input').value
+    const tagSelect = getElement('.tag')?.children[0].textContent
 
     // En dessous de trois caractères, on réinitialise la page (en cas de recherche effectuée précédemment)
-    if (!searchInput || searchInput.length < MIN_SEARCH_LENGTH) {
+    if (
+      (!searchInput || searchInput.length < MIN_SEARCH_LENGTH) &&
+      !tagSelect
+    ) {
       // On réactualise la liste de tags
       onSelect(initialTags)
       // On réinitialise la page
@@ -53,12 +54,15 @@ export const app = userEvent => {
 
     app(userEvent)
 
-    const recipesSelection = getRecipesFromSearch(formatted(searchInput))
+    const userAction =
+      searchInput.length > 2 ? formatted(searchInput) : formatted(tagSelect)
+
+    const recipesSelection = getRecipesFromSearch(userAction)
 
     // Récupération des tags associés à la recherche utilisateur
     const updateRecipesSelection = tags => selection => {
       const newSelection = []
-      selection.forEach(recipe => {
+      selection?.forEach(recipe => {
         const ingredients = recipe.ingredients.map(ingredient =>
           ingredient.ingredient.toLowerCase()
         )
@@ -85,11 +89,10 @@ export const app = userEvent => {
     }
 
     const selector = getElement('.select').children[0].id
-
     /**
      On affiche les cartes résultant de la recherche, via une composition de fonctions listées dans le fichier helpers.js:
      1. On récupère le nombre de recettes trouvées
-   2. On affiche une snackbar avec le nombre de recettes trouvées
+     2. On affiche une snackbar avec le nombre de recettes trouvées
    3. On affiche la selection de recettes
    */
     const createUI = pipe(
@@ -118,12 +121,12 @@ const tagSelect = on('pointerdown')(getElement('.tag'))
 // }
 
 // EventListener onInput sur un selecteur de tags
-const tagInput = on('keyup')(getElement('.select__input'))
+// const tagInput = on('keyup')(getElement('.select__input'))
 
 // Action à l'ouverture d'un selecteur
 onSelect(initialTags)
 
 // Action de l'utilisateur
-let userEvent = userSearch || tagSelect || tagInput
+let userEvent = userSearch || tagSelect
 
 app(userEvent)

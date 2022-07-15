@@ -44,7 +44,11 @@ export const binarySearch = (
     const foundRecipe = recipesList.filter(
       recipe => recipe.id === array[middle].id
     )
-
+// console.log([
+//   ...foundRecipe,
+//   ...searchLeftFrom(middle),
+//   ...searchRightFrom(middle),
+// ]);
     return [
       ...foundRecipe,
       ...searchLeftFrom(middle),
