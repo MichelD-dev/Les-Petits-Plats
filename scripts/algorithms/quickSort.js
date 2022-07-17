@@ -73,6 +73,7 @@ const quickSort = (unsortedArray, compare = defaultCompare) => {
       const sort = initialArray
         ? compare(sortedArray[i].text, pivotValue.text)
         : compare(sortedArray[i], pivotValue)
+        
       // l'élément est inférieur au pivot
       if (sort === -1) {
         // Si l'élément juste à droite du split index n'est pas celui-ci, on les échange
@@ -81,21 +82,26 @@ const quickSort = (unsortedArray, compare = defaultCompare) => {
           sortedArray[splitIndex] = sortedArray[i]
           sortedArray[i] = temp
         }
+
         // On déplace le split index d'un rang vers la droite
         // augmentant la taille du sous-tableau d'éléments inférieurs d'un rang
         splitIndex++
       }
       // On laisse les éléments égaux ou plus grands que le pivot à leur place
     }
+
     // On déplace le pivot à l'endroit de la séparation entre les sous-tableaux
     sortedArray[right] = sortedArray[splitIndex]
     sortedArray[splitIndex] = pivotValue
+
     // On trie récursivement les deux sous-tableaux
     recursiveSort(left, splitIndex - 1)
     recursiveSort(splitIndex + 1, right)
   }
+
   // On trie le tableau complet
   recursiveSort(0, unsortedArray.length - 1)
+
   return sortedArray
 }
 

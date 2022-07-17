@@ -12,7 +12,7 @@ export const filterRecipes =
     if (recipesIds2.length) add(recipesIds2)
 
     // Fonction permettant de merger les arrays contenus dans l'array global en évitant les doublons
-    ids =
+    ids = //FIXME c'est la même que mergeRecipesResults dans index.js
       recipesArray.length &&
       recipesArray.shift().reduce((res, v) => {
         if (

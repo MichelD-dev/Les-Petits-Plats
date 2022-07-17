@@ -6,6 +6,7 @@ import {
 } from '../factory/helpers.js'
 import { tagsFactory } from '../factory/tagsFactory.js'
 import { formatted, on } from '../helpers.js'
+import { getSelector } from '../utils/utils.js'
 import { getTags } from './tagsList.js'
 
 /**
@@ -23,7 +24,7 @@ const selectorChange = selector => {
 
 export const openSelector = allTags => selector => {
   selector.onclick = () => {
-    const category = selector.parentElement.id
+    const category = getSelector(selector.parentElement.id)
     const categorySelector = getElement(`#${`select_${category}`}`)
 
     // On vérifie si un des selecteurs a acquis le focus sur son input
@@ -38,25 +39,26 @@ export const openSelector = allTags => selector => {
     // Routage en fonction du selecteur cliqué
     const id = {
       // FIXME reduire en allTags.map(fns(arg1, arg2))
-      ingredients: () => {
+      // FIXME ou avec bind?
+      ingredients: () => (
         // Ouverture du selecteur
-        selectorChange(getElement('#select_ingredients'))
+        selectorChange(getElement('#select_ingredients')),
         // On crée les tags correspondants au selecteur cliqué
 
-        return tagsFactory(allTags[0])('ingredients')
-      },
-      appareils: () => {
+        tagsFactory(allTags[0])('ingredients')
+      ),
+      appareils: () => (
         // Ouverture du selecteur
-        selectorChange(getElement('#select_appareils'))
+        selectorChange(getElement('#select_appareils')),
         // On crée les tags correspondants au selecteur cliqué
-        return tagsFactory(allTags[1])('appliance')
-      },
-      ustensiles: () => {
+        tagsFactory(allTags[1])('appliance')
+      ),
+      ustensiles: () => (
         // Ouverture du selecteur
-        selectorChange(getElement('#select_ustensiles'))
+        selectorChange(getElement('#select_ustensiles')),
         // On crée les tags correspondants au selecteur cliqué
-        return tagsFactory(allTags[2])('ustensils')
-      },
+        tagsFactory(allTags[2])('ustensils')
+      ),
     }
     id[category]?.() ?? 'Selecteur non reconnu'
   }
@@ -86,6 +88,8 @@ on('pointerdown')(window)(e => {
 
 //On actualise la liste de tags après selection d'un tag
 export const updateTagsList = selector => selection => {
+  if (!selector) return selection
+
   const filteredTags = getTags(null, selection)
   tagsFactory(filteredTags)(selector)
 

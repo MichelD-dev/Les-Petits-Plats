@@ -5,23 +5,23 @@ const snackbarTimeOut = () => setTimeout(removeSnackBar, 3000)
 
 const stopSnackbarTimeOut = () => clearTimeout(snackbarTimeOut)
 
-const printSnackbar = selection => {// FIXME deux fois printSnackBar ???????
-  pipe(
-    removeClass('hidden')(getElement('#snackbar')),
-    addClass('snackbar')(getElement('#snackbar')),
-    append(
-      text(
-        `Votre recherche a retourné ${selection.length} recette${
-          selection.length === 1 ? '' : 's'
-        }`
-      )
-    )
-  )(selection)
+// const printSnackbar = selection => {// FIXME deux fois printSnackBar ???????
+//   pipe(
+//     removeClass('hidden')(getElement('#snackbar')),
+//     addClass('snackbar')(getElement('#snackbar')),
+//     append(
+//       text(
+//         `Votre recherche a retourné ${selection.length} recette${
+//           selection.length === 1 ? '' : 's'
+//         }`
+//       )
+//     )
+//   )(selection)
 
-  snackbarTimeOut()
+//   snackbarTimeOut()
 
-  return selection
-}
+//   return selection
+// }
 
 const removeSnackBar = () => {
   //FIXME usage?
@@ -29,4 +29,6 @@ const removeSnackBar = () => {
   removeClass('snackbar')(getElement('#snackbar'))
 }
 
-export { printSnackbar, stopSnackbarTimeOut }
+export {
+  //  printSnackbar,
+    stopSnackbarTimeOut }

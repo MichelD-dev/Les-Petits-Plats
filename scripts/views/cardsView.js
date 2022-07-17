@@ -16,11 +16,6 @@ const printCards = forEach(appendCard)
 // ------------------------------------------------------------------------- //
 
 //Composition des fonctions définies précédemment
-export const cardsView = pipe(
-//   trace('cardsView'),
-  clearPage,
-  createRecipesCards,
-  printCards
-)
+export const cardsView = pipe(clearPage, createRecipesCards, printCards)
 
 // TODO intersection Observer?

@@ -84,6 +84,7 @@ const on = evt => element => fn => {
   // On retourne une fonction permettant de retirer l'eventListener après l'avoir utilisé, pour ne pas les cumuler
   return () => element.removeEventListener(evt, fn)
 }
+
 export { printSnackbar, formatted, clearPage, on }
 
 // ----------------------------------------------------------------------------- //

@@ -22,10 +22,10 @@ const initialTags = deepFreeze(getTags())
 getElement('.search__form_searchbar').focus()
 
 // On initialise un tableau de tags selectionnés
-let selectedTags = []
+// let selectedTags = []
 
-export const app = userEvent => {
-  // On place l'event reçu dans un HOF Stop() pour pouvoir retirer l'eventListener après l'actualisation de la recherche
+export const app = (userEvent, selectedTags = []) => {
+  // On place l'event reçu dans un HOF Stop() pour pouvoir retirer l'eventListener après chaque frappe
   const stop = userEvent(() => {
     const MIN_SEARCH_LENGTH = 3
 
@@ -54,28 +54,29 @@ export const app = userEvent => {
 
     app(userEvent)
 
-    const toto = () => {
-      if (searchInput.length > 2) {
-        const test = formatted(searchInput)
-          .split(' ')
-          .filter(str => (str.length >= 2 ? str : ''))
-          .map(str => getRecipesFromSearch(formatted(str)))
+    const formatInput = input => {
+      return formatted(input)
+        .split(' ')
+        .filter(str => (str.length >= 2 ? str : ''))
+    } //FIXME Filter est censé renvoyer un booléen...
 
-        const recipesSelection = test
-          .shift()
-          .filter(v => test.every(a => a.indexOf(v) !== -1))
-        return recipesSelection
-      } else {
-        const recipesSelection = getRecipesFromSearch(formatted(tagSelect))
-        return recipesSelection
-      }
+    const getRecipesByKeywords = arr =>
+      arr
+        .map(str => getRecipesFromSearch(formatted(str)))
+        .filter(arr => arr !== undefined && arr.length !== 0)
+
+    // On extrait le 1er tableau de recettes [[], [], []] => [][[], []] et on récupère ceux de ses objets qui se retrouvent dans le reste des tableaux
+    const mergeRecipesResults = recipes => {
+      if (!recipes.length) return recipes
+      return recipes
+        .shift()
+        .filter(v => recipes.every(a => a.indexOf(v) !== -1))
     }
-    const recipesSelection = toto()
-
     // Récupération des tags associés à la recherche utilisateur
-    const updateRecipesSelection = tags => selection => {
+
+    const updateResult = tags => selection => {
       const newSelection = []
-      selection?.forEach(recipe => {
+      selection.forEach(recipe => {
         const ingredients = recipe.ingredients.map(ingredient =>
           ingredient.ingredient.toLowerCase()
         )
@@ -101,7 +102,8 @@ export const app = userEvent => {
       return newSelection
     }
 
-    const selector = getElement('.select').children[0].id
+    const selector = getElement('.open')?.children[0].id
+
     /**
      On affiche les cartes résultant de la recherche, via une composition de fonctions listées dans le fichier helpers.js:
      1. On récupère le nombre de recettes trouvées
@@ -109,15 +111,27 @@ export const app = userEvent => {
    3. On affiche la selection de recettes
    */
     const createUI = pipe(
+      // trace('result1'),
+      formatInput,
+      // trace('result2'),
+      getRecipesByKeywords,
+      // trace('result3'),
+      mergeRecipesResults,
+      // trace('result4'),
       clearErrorMessage,
-      updateRecipesSelection(selectedTags),
+      // trace('result5'),
+      updateResult(selectedTags),
+      // trace('result6'),
       updateTagsList(selector),
-      printSnackbar,
+      // trace('result7'),
       clearPage,
+      // trace('result8'),
+      printSnackbar,
+      // trace('result9'),
       cardsView
     )
-
-    createUI(recipesSelection)
+    // FIXME jus de citron input: 9 results vs tag 4: inputs...
+    createUI(searchInput.length > 2 ? searchInput : tagSelect)
 
     // On retire l'eventListener
     stop()

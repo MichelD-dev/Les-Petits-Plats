@@ -15,12 +15,16 @@ import {
   trace,
 } from './helpers.js'
 
-export const tagsFactory = tagsList => selector => {
+export const tagsFactory = tagsList => selector => {console.log(selector);
   const selectedTags = [...getElements('.tag')].map(tag =>
     tag.textContent.toLowerCase()
   )
 
-  const newTagsList = tagsList.filter(tag => !selectedTags.includes(tag))
+  let newTagsList = tagsList.filter(tag => !selectedTags.includes(tag))
+
+  if (newTagsList.length === 0) {
+    getElement(`.tags__error_${selector}`).textContent =
+      "Il n'y a pas de tag associé à votre recherche"}
 
   const createTag = tag => {
     const tagElement = pipe(

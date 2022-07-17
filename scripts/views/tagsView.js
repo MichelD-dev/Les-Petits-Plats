@@ -46,7 +46,5 @@ export const tagsView = tags => selector => {
 
   // tags.filter(tagsCategory).forEach(appendTag)
 
-  // if (tagsList.length === 0)
-  //   return (getElement('.tags__error').textContent =
-  //     "Il n'y a pas de tag associé à votre recherche")
+
 }

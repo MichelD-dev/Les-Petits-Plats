@@ -11,46 +11,34 @@ const forEach = fn => array => array.forEach(fn)
 
 const map = fn => array => array.map(fn)
 
-const insert = icon => location => element => {
-  element.insertAdjacentHTML(location, icon)
-  return element
-}
+const insert = icon => location => element => (
+  element.insertAdjacentHTML(location, icon), element
+)
 
-const addAttributes = attributes => element => {
-  Object.entries(attributes).forEach(([key, value]) => {
+const addAttributes = attributes => element => (
+  Object.entries(attributes).forEach(([key, value]) =>
     element.setAttribute(key, value)
-  })
-  return element
-}
+  ),
+  element
+)
 
 const addClass =
   (...classNames) =>
-  element => {
-    element.classList.add(...classNames)
-    return element
-  }
+  element => (element.classList.add(...classNames), element)
 
 const removeClass =
   (...classNames) =>
-  element => {
-    element.classList.remove(...classNames)
-    return element
-  }
+  element => (element.classList.remove(...classNames), element)
 
-const append = node => element => {
-  element.appendChild(node)
-  return element
-}
+const append = node => element => (element.appendChild(node), element)
 
-const appendChildren = children => element => {
-  children.forEach(child => element.append(child))
-  return element
-}
+const appendChildren = children => element => (
+  forEach(child => element.append(child))(children), element
+)
 
-export const trace = label => value => {
-  console.log(`${label}: ${value}`)
-  return value
-}
+const tap = f => x => (f(x), x)
+
+export const trace = label => tap(console.log.bind(console, label + ':'))
 
 export {
   map,
