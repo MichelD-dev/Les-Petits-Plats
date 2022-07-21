@@ -28,7 +28,7 @@ export const getSelector = selector => {
  */
 export const clearTagsSection = selector => {
   const tagsList = getElement(`#${getSelector(selector)}-list`)
-// TODO recursion
+  // TODO recursion
   while (tagsList.firstChild) {
     tagsList.removeChild(tagsList.lastChild)
   }
@@ -63,28 +63,18 @@ export const flip = fn => b => a => fn(a)(b)
 // a simple memoize function that takes in a function
 // and returns a memoized function
 export const memoize = fn => {
-  const cache = new Map();
+  let cache = {}
   return (...args) => {
-    const strX = JSON.stringify(args);
-    if (!cache.has(strX)) {
-      cache.set(strX, fn(...args));
+    let n = args[0]
+    // just taking one argument here
+    if (n in cache) {
+      // console.log(n + ': Fetching from cache')
+      return cache[n]
+    } else {
+      // console.log(n + ': Calculating result')
+      let result = fn(n)
+      cache[n] = result
+      return result
     }
-    return cache.get(strX);
-  };
-
-
-  // let cache = {}
-  // return (...args) => {
-  //   let n = args[0]
-  //   // just taking one argument here
-  //   if (n in cache) {
-  //     // console.log(n + ': Fetching from cache')
-  //     return cache[n]
-  //   } else {
-  //     // console.log(n + ': Calculating result')
-  //     let result = fn(n)
-  //     cache[n] = result
-  //     return result
-  //   }
-  // }
+  }
 }

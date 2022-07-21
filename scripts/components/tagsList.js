@@ -28,7 +28,7 @@ export const getTags = (
 
   // Les tags sont filtrés en fonction du terme entré par l'utilisateur dans le selecteur de recherche
   {
-    if (searchInput) {
+    // if (searchInput) {
       recipesSelection.forEach(recipe => {
         recipe.ingredients.forEach(ingr => {
           if (
@@ -73,8 +73,8 @@ export const getTags = (
       allTags = [...allTags, ingredientsTags, appareilsTags, ustensilesTags]
 
       return allTags
-    }
-    return [ingredientsList, appareilsList, ustensilesList]
+    // }
+    // return [ingredientsList, appareilsList, ustensilesList]
   }
 }
 

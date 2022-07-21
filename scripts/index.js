@@ -130,7 +130,7 @@ export const app = (userEvent, selectedTags = []) => {
       // trace('result9'),
       cardsView
     )
-    // FIXME jus de citron input: 9 results vs tag 4: inputs...
+ 
     createUI(searchInput.length > 2 ? searchInput : tagSelect)
 
     // On retire l'eventListener

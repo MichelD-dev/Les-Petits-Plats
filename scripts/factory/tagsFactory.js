@@ -15,7 +15,7 @@ import {
   trace,
 } from './helpers.js'
 
-export const tagsFactory = tagsList => selector => {console.log(selector);
+export const tagsFactory = tagsList => selector => {
   const selectedTags = [...getElements('.tag')].map(tag =>
     tag.textContent.toLowerCase()
   )
