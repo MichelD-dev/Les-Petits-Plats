@@ -4,10 +4,10 @@ import { sequentialSearch3 } from '../algorithms/sequentialsearch3.js'
 import { memoize } from '../utils/utils.js'
 
 // Boucles for
-const getRecipesFromSearch = memoize(sequentialSearch)
+// const getRecipesFromSearch = memoize(sequentialSearch)
 
 // boucle forEach  + méthode filter
-// const getRecipesFromSearch = memoize(sequentialSearch2)
+const getRecipesFromSearch = memoize(sequentialSearch2)
 
 // Recherche recursive
 // const getRecipesFromSearch = memoize(sequentialSearch3)
