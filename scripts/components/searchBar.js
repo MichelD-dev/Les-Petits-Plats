@@ -7,9 +7,9 @@ import { memoize } from '../utils/utils.js'
 // const getRecipesFromSearch = memoize(sequentialSearch)
 
 // boucle forEach  + méthode filter
-const getRecipesFromSearch = memoize(sequentialSearch2)
+// const getRecipesFromSearch = memoize(sequentialSearch2)
 
 // Recherche recursive
-// const getRecipesFromSearch = memoize(sequentialSearch3)
+const getRecipesFromSearch = memoize(sequentialSearch3)
 
 export { getRecipesFromSearch }
