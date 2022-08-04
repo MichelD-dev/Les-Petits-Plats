@@ -16,10 +16,6 @@ const selectorChange = selector => {
 
 export const openSelector = allTags => selector => {
   selector.onclick = () => {
-    // On remplace le texte du placeholder à l'ouverture du selecteur
-    selector.previousElementSibling.placeholder = 'Rechercher'
-    M.addClasses('select__input_dimmed')(selector.previousElementSibling)
-
     const category = getSelector(selector.parentElement.id)
     const categorySelector = M.getElement(`#${`select_${category}`}`)
 
@@ -27,6 +23,12 @@ export const openSelector = allTags => selector => {
     const selectorInput = M.find(
       selectInput => document.activeElement === selectInput
     )(M.getElements('.select__input'))
+
+    // On remplace le texte du placeholder à l'ouverture du selecteur par 'rechercher
+    if (selector !== selectorInput) {
+      selector.previousElementSibling.placeholder = 'Rechercher'
+      M.addClasses('select__input_dimmed')(selector.previousElementSibling)
+    }
 
     // On ne permet la fermeture des tags que sur la flêche, pas le selectorInput
     if (categorySelector.classList.contains('open') && !selectorInput) {
@@ -62,7 +64,7 @@ export const onSelect = allTags => {
 on('pointerdown')(window)(e => {
   M.forEach(select => {
     if (!select.contains(e.target)) {
-       // On rétablit le texte du placeholder à la fermeture du selecteur
+      // On rétablit le texte du placeholder à la fermeture du selecteur
       const tagInput = select.firstElementChild.firstElementChild
 
       tagInput.placeholder = tagInput.parentElement.id
