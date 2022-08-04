@@ -1,3 +1,4 @@
+@charset "UTF-8";
 @import url("https://fonts.googleapis.com/css2?family=Lato&family=Roboto&display=swap");
 /* http://meyerweb.com/eric/tools/css/reset/ v2.0 | 20110126 License: none (public domain) */
 html,
@@ -152,8 +153,14 @@ table {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 4%;
+  row-gap: 50px;
   margin-top: 80px;
   width: 100%;
+}
+@media screen and (max-width: 1380px) {
+  .recipes {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 @media screen and (max-width: 900px) {
   .recipes {
@@ -212,6 +219,10 @@ table {
 }
 .select__input:focus::placeholder {
   opacity: 0;
+}
+.select__input_dimmed {
+  opacity: 0.6;
+  color: #c7bebe;
 }
 
 #select_appareils {
@@ -404,11 +415,20 @@ label[for=medias-sort] {
 }
 
 .recipe-card {
+  font-size: 14.4px;
+  font-family: "Lato", sans-serif;
   height: 364px;
   width: 380px;
   border-radius: 5px;
   overflow: hidden;
   margin: auto;
+  opacity: 0;
+  transition: opacity 150ms ease-in;
+  cursor: pointer;
+}
+.recipe-card:hover {
+  transition: all 0.1s linear;
+  opacity: 0.7;
 }
 .recipe-card__image {
   height: 178px;
@@ -418,6 +438,7 @@ label[for=medias-sort] {
   height: 186px;
   background: #e7e7e7;
   display: flex;
+  gap: 20px;
   padding: 20px;
 }
 .recipe-card__left {
@@ -426,6 +447,7 @@ label[for=medias-sort] {
 }
 .recipe-card__left__title {
   padding-bottom: 20px;
+  font-size: 18px;
 }
 .recipe-card__right {
   width: 189px;
@@ -435,9 +457,11 @@ label[for=medias-sort] {
 .recipe-card__right__duration {
   align-self: flex-end;
   padding-bottom: 20px;
+  font-size: 16.2px;
+  font-weight: 600;
 }
 .recipe-card__right__description {
-  height: 109px;
+  height: 85px;
   display: -webkit-box;
   -webkit-line-clamp: 7;
   -webkit-box-orient: vertical;
@@ -451,6 +475,10 @@ label[for=medias-sort] {
   padding-right: 5px;
 }
 
+.fadein {
+  opacity: 1;
+}
+
 .snackbar {
   background: #3282f7;
   color: white;
@@ -461,26 +489,32 @@ label[for=medias-sort] {
   border-radius: 5px;
   font-weight: 600;
   letter-spacing: 1.2px;
-  animation: fade 3s forwards;
   font-family: "Roboto", sans-serif;
+  opacity: 0;
 }
 
-@keyframes fade {
+@keyframes fadeIn {
   0% {
     opacity: 0;
   }
-  30% {
+  100% {
     opacity: 0.9;
   }
-  80% {
+}
+@keyframes fadeOut {
+  0% {
     opacity: 0.9;
   }
   100% {
     opacity: 0;
   }
 }
-.hidden {
-  display: none;
+.fade-in {
+  animation: fadeIn 0.5s forwards;
+}
+
+.fade-out {
+  animation: fadeOut 0.5s forwards;
 }
 
 .tags {
@@ -532,6 +566,11 @@ label[for=medias-sort] {
   font-size: 1.2rem;
   padding-bottom: 20px;
 }
+.error-tag {
+  z-index: 10;
+  position: relative;
+  top: -20px;
+}
 
 .container {
   position: relative;
@@ -542,6 +581,20 @@ label[for=medias-sort] {
   max-width: 90vw;
   margin: auto;
   margin-top: 50px;
+}
+
+/**
+ * Cache un élément, mais le laisse apparent pour un screen reader
+ */
+.visually-hidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
 }
 
 /*# sourceMappingURL=style.css.map */

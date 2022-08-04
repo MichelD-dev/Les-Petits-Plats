@@ -45,11 +45,14 @@
     font-size: 1.1rem;
     &::placeholder {
       color: white;
-      // font-weight: bold;
       font-size: 1.1rem;
     }
     &:focus::placeholder {
       opacity: 0;
+    }
+    &_dimmed {
+      opacity: .6;
+      color: #c7bebe;
     }
   }
 }
@@ -195,17 +198,6 @@ label[for='medias-sort'] {
 .hidden {
   display: none;
 }
-
-//   .visually-hidden {
-//     border: 0;
-//     clip: rect(0 0 0 0);
-//     height: 1px;
-//     overflow: hidden;
-//     padding: 0;
-//     position: absolute;
-//     white-space: nowrap;
-//     width: 1px;
-//   }
 
 /* custom scrollbar */
 ::-webkit-scrollbar {

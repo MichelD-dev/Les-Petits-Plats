@@ -1,24 +1,34 @@
-import DOM from '../utils/domElements.js'
+import * as M from '../factory/helpers.js'
 
-const snackbarTimeOut = () => setTimeout(removeSnackBar, 3000)
+let snackbarTimeOut = setTimeout(() => {
+  M.addClasses('fade-out')(M.getElement('#snackbar'))
+  M.removeClasses('fade-in')(M.getElement('#snackbar'))
+}, 3000)
 
-const stopSnackbarTimeOut = () => clearTimeout(snackbarTimeOut)
+export const printSnackbar = selection => {
+  const snackBar = M.getElement('#snackbar')
 
-const printSnackbar = ({selection, recipesQuantity}) => {
-  DOM.snackbar.classList.remove('hidden')
-  DOM.snackbar.classList.add('snackbar')
-  DOM.snackbar.textContent = `Votre recherche a retourné ${recipesQuantity} recette${
-    recipesQuantity === 1 ? '' : 's'
-  }`
+  if (!selection) return []
 
-  snackbarTimeOut()
+  snackBar.textContent = ''
+
+  M.append(
+    M.text(
+      `Votre recherche a retourné ${selection.length} recette${
+        selection.length === 1 ? '' : 's'
+      }`
+    )
+  )(snackBar)
+
+  M.addClasses('fade-in')(snackBar)
+  M.removeClasses('fade-out')(snackBar)
+
+  clearTimeout(snackbarTimeOut)
+
+  snackbarTimeOut = setTimeout(() => {
+    M.addClasses('fade-out')(snackBar)
+    M.removeClasses('fade-in')(snackBar)
+  }, 3000)
 
   return selection
 }
-
-const removeSnackBar = () => {//FIXME usage?
-  DOM.snackbar.classList.add('hidden')
-  DOM.snackbar.classList.remove('snackbar')
-}
-
-export { printSnackbar, stopSnackbarTimeOut }

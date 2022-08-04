@@ -1,28 +1,59 @@
-import DOM from './domElements.js'
+import * as M from '../factory/helpers.js'
+
+export const memoize = fn => {
+  const cache = new Map()
+  return (...args) => {
+    const strX = JSON.stringify(args)
+    if (cache.has(strX)) {
+      // console.log('Fetching from cache: ', `"${args.at(0)}"`)
+    }
+    if (!cache.has(strX)) {
+      // console.log('Calculating result: ', `"${args.at(0)}"`)
+      cache.set(strX, fn(...args))
+    }
+    return cache.get(strX)
+  }
+}
 
 /**
  * Fonction de réinitialisation de la grille d'images
  */
-export const clearCardsSection = () => {
-  while (DOM.cardsSection.firstChild) {
-    DOM.cardsSection.removeChild(DOM.cardsSection.lastChild)
-  }
+export const clearCardsSection = selection => {
+  const recipesCards = M.getElement('.recipes')
+  const { firstChild, lastChild } = recipesCards
+
+  if (!firstChild) return selection
+
+  recipesCards.removeChild(lastChild)
+  clearCardsSection(selection)
+
+  return selection
+}
+
+/**
+ * Traduction: appliance => appareils, ustensils => ustensiles
+ */
+export const getSelector = selector => {
+  const select =
+    selector === 'appliance'
+      ? 'appareils'
+      : selector === 'ustensils'
+      ? 'ustensiles'
+      : 'ingredients'
+  return select
 }
 
 /**
  * Fonction de réinitialisation de la liste de tags
  */
 export const clearTagsSection = selector => {
-  const select = //FIXME rendre générique
-    selector === 'appliance'
-      ? 'appareils'
-      : selector === 'ustensils'
-      ? 'ustensiles'
-      : 'ingredients'
+  const tagsList = M.getElement(`#${getSelector(selector)}-list`)
+  const { firstChild, lastChild } = tagsList
 
-  while (DOM[select].firstChild) {
-    DOM[select].removeChild(DOM[select].lastChild)
-  }
+  if (!firstChild) return
+
+  tagsList.removeChild(lastChild)
+  clearTagsSection(selector)
 }
 
 /**
@@ -37,32 +68,16 @@ export const setAttributesFor = el => attrs =>
 export const capitalize = str => {
   if (typeof str !== 'string') return ''
 
-  return str.replace(/^\w/, c => c.toUpperCase())
+  return str.toLowerCase().replace(/^\w/, str => str.toUpperCase())
 }
 
-export const printErrorMessage = message =>
-  (DOM.errorMessage.textContent = message)
+export const printErrorMessage = (message = '', id = 'error') => {
+  M.getElement(`.${id}`).textContent = message
+}
 
 export const pipe =
   (...fns) =>
   x =>
-    fns.reduce((y, f) => f(y), x)
+    fns.reduce((y, fn) => fn(y), x)
 
-// a simple memoize function that takes in a function
-// and returns a memoized function
-export const memoize = fn => {
-  let cache = {}
-  return (...args) => {
-    let n = args[0]
-    // just taking one argument here
-    if (n in cache) {
-      console.log(n + ': Fetching from cache')
-      return cache[n]
-    } else {
-      console.log(n + ': Calculating result')
-      let result = fn(n)
-      cache[n] = result
-      return result
-    }
-  }
-}
+export const flip = fn => b => a => fn(a)(b)

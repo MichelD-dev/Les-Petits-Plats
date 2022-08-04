@@ -1,11 +1,20 @@
 @use '../utils/variables' as *;
 
 .recipe-card {
+  font-size: $base-font-size * 0.8;
+  font-family: $body-font-family;
   height: 364px;
   width: 380px;
   border-radius: 5px;
   overflow: hidden;
   margin: auto;
+  opacity: 0;
+  transition: opacity 150ms ease-in;
+  cursor: pointer;
+  &:hover {
+    transition: all 0.1s linear;
+    opacity: 0.7;
+  }
   &__image {
     height: 178px;
     background: #c7bebe;
@@ -14,6 +23,7 @@
     height: 186px;
     background: $primary-color;
     display: flex;
+    gap: 20px;
     padding: 20px;
   }
   &__left {
@@ -21,9 +31,9 @@
     flex-direction: column;
     &__title {
       padding-bottom: 20px;
+      font-size: $base-font-size * 1;
     }
   }
-
   &__right {
     width: 189px;
     display: flex;
@@ -31,11 +41,13 @@
     &__duration {
       align-self: flex-end;
       padding-bottom: 20px;
+      font-size: $base-font-size * .9;
+      font-weight: $base-font-weight * 1.5;
     }
     &__description {
-      height: 109px;
+      height: 85px;
       display: -webkit-box;
-      -webkit-line-clamp: 7; //FIXME
+      -webkit-line-clamp: 7;
       -webkit-box-orient: vertical;
       overflow: hidden;
       font-family: 'Roboto', sans-serif;
@@ -47,4 +59,8 @@
 
 .fa-clock {
   padding-right: 5px;
+}
+
+.fadein {
+  opacity: 1;
 }

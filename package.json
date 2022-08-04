@@ -5,8 +5,15 @@
   "main": "index.js",
   "author": "Michel DELAUNAY",
   "scripts": {
-    "sass": "sass -w ./style.scss:./css/style.css"
+    "sass": "sass -w ./style.scss:./css/style.css",
+    "eslint": "eslint scripts "
   },
   "license": "MIT",
-  "packageManager": "yarn@3.2.1"
+  "packageManager": "yarn@3.2.1",
+  "devDependencies": {
+    "eslint": "^7.32.0 || ^8.2.0",
+    "eslint-config-airbnb-base": "latest",
+    "eslint-plugin-immutable": "^1.0.0",
+    "eslint-plugin-import": "^2.25.2"
+  }
 }

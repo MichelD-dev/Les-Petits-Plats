@@ -10,18 +10,21 @@
   border-radius: 5px;
   font-weight: 600;
   letter-spacing: 1.2px;
-  animation: fade 3s forwards;
   font-family: 'Roboto', sans-serif;
+  opacity: 0;
 }
 
-@keyframes fade {
+@keyframes fadeIn {
   0% {
     opacity: 0;
   }
-  30% {
+  100% {
     opacity: 0.9;
   }
-  80% {
+}
+
+@keyframes fadeOut {
+  0% {
     opacity: 0.9;
   }
   100% {
@@ -29,6 +32,10 @@
   }
 }
 
-.hidden {
-  display: none;
+.fade-in {
+  animation: fadeIn 0.5s forwards;
+}
+
+.fade-out {
+  animation: fadeOut 0.5s forwards;
 }

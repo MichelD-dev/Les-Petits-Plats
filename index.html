@@ -1,106 +1,139 @@
 <!DOCTYPE html>
 <html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Site de recettes de cuisine" />
+    <script
+      src="https://kit.fontawesome.com/9adb84594d.js"
+      crossorigin="anonymous"
+    ></script>
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <script type="module" src="scripts/index.js"></script>
+    <title>Les petits plats</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Site de recettes de cuisine" />
-  <script src="https://kit.fontawesome.com/9adb84594d.js" crossorigin="anonymous"></script>
-  <link href="css/style.css" rel="stylesheet" type="text/css" />
-  <script type="module" src="scripts/index.js"></script>
-  <title>Les petits plats</title>
-</head>
+  <body>
+    <div class="container">
+      <!---------------------------- HEADER------------------------------->
 
-<body>
-  <div class="container">
-    <!---------------------------- HEADER------------------------------->
+      <header class="header">
+        <figure>
+          <img
+            class="logo"
+            src="./assets/logo/15973932905401_logo.png"
+            alt="Logo de l'entreprise Les Petits Plats"
+          />
+        </figure>
+      </header>
 
-    <header class="header">
-      <figure>
-        <img class="logo" src="./assets/logo/15973932905401_logo.png" alt="Logo de l'entreprise Les Petits Plats" />
-      </figure>
-    </header>
+      <!------------------------------------------------------------>
+      <!--------------------------SNACKBAR-------------------------->
+      <!------------------------------------------------------------>
 
-    <!------------------------------------------------------------>
-    <!--------------------------SNACKBAR-------------------------->
-    <!------------------------------------------------------------>
+      <div id="snackbar" class="snackbar fade-out"></div>
 
-    <div id="snackbar" class="hidden"></div>
+      <!---------------------------------------------------------------------->
+      <!------------------------- SECTION RECHERCHE -------------------------->
+      <!---------------------------------------------------------------------->
 
-    <!---------------------------------------------------------------------->
-    <!------------------------- SECTION RECHERCHE -------------------------->
-    <!---------------------------------------------------------------------->
+      <div class="search">
+        <form class="search__form" method="get" action="#">
+          <input
+            type="text"
+            class="search__form_searchbar"
+            placeholder="Rechercher une recette"
+          />
+          <!-- <input type="submit" value="Rechercher" /> -->
+        </form>
+        <i class="search__fa-search fas fa-search fa-2x"></i>
+      </div>
+      <p class="error"></p>
+      <p class="error error-tag"></p>
 
-    <div class="search">
-      <form class="search__form" method="get" action="#">
-        <input type="text" class="search__form_searchbar" placeholder="Rechercher une recette" />
-        <!-- <input type="submit" value="Rechercher" /> -->
-      </form>
-      <i class="search__fa-search fas fa-search fa-2x"></i>
+      <!------------------------------------------------------------>
+      <!--------------------------- TAGS --------------------------->
+      <!------------------------------------------------------------>
+
+      <section class="tags">
+        <h2 class="visually-hidden">Liste de tags</h2>
+      </section>
+
+      <!------------------------------------------------------------>
+      <!--------------------------SELECTEURS------------------------->
+      <!------------------------------------------------------------>
+
+      <section class="selectors">
+        <h2 class="visually-hidden">Selecteurs</h2>
+        <div class="select" id="select_ingredients">
+          <div
+            tabindex="0"
+            class="select__trigger select__trigger_ingredients"
+            id="ingredients"
+          >
+            <input
+              class="select__input select__input_ingredients"
+              placeholder="Ingredients"
+            />
+            <div class="arrow-container" id="ingredients-arrow">
+              <div class="arrow"></div>
+            </div>
+          </div>
+          <div class="list-bg list-bg_ingredients custom-scrollbar">
+            <p class="tags__error tags__error_ingredients"></p>
+            <ul class="custom-options" id="ingredients-list"></ul>
+          </div>
+        </div>
+
+        <div class="select" id="select_appareils">
+          <div
+            tabindex="0"
+            class="select__trigger select__trigger_appareils"
+            id="appliance"
+          >
+            <input
+              class="select__input select__input_appareils"
+              placeholder="Appareils"
+            />
+            <div class="arrow-container" id="appareils-arrow">
+              <div class="arrow"></div>
+            </div>
+          </div>
+          <div class="list-bg list-bg_appareils">
+            <p class="tags__error tags__error_appliance"></p>
+            <ul class="custom-options" id="appareils-list"></ul>
+          </div>
+        </div>
+
+        <div class="select" id="select_ustensiles">
+          <div
+            tabindex="0"
+            class="select__trigger select__trigger_ustensiles"
+            id="ustensils"
+          >
+            <input
+              class="select__input select__input_ustensiles"
+              placeholder="Ustensiles"
+            />
+            <div class="arrow-container" id="ustensiles-arrow">
+              <div class="arrow"></div>
+            </div>
+          </div>
+          <div class="list-bg list-bg_ustensiles">
+            <p class="tags__error tags__error_ustensils"></p>
+            <ul class="custom-options" id="ustensiles-list"></ul>
+          </div>
+        </div>
+      </section>
+
+      <!------------------------------------------------------------>
+      <!--------------------------RECETTES------------------------->
+      <!------------------------------------------------------------>
+
+      <section class="recipes">
+        <h2 class="visually-hidden">Recettes</h2>
+      </section>
     </div>
-    <p class="error"></p>
-
-    <!------------------------------------------------------------>
-    <!--------------------------- TAGS --------------------------->
-    <!------------------------------------------------------------>
-
-    <section class="tags"></section>
-
-    <!------------------------------------------------------------>
-    <!--------------------------SELECTEURS------------------------->
-    <!------------------------------------------------------------>
-
-    <section class="selectors">
-      <div class="select" id="select_ingredients">
-        <div tabindex="0" class="select__trigger select__trigger_ingredients" id="ingredients">
-          <input class="select__input select__input_ingredients" placeholder="Ingredients"></input>
-          <div class="arrow-container">
-            <div class="arrow"></div>
-          </div>
-        </div>
-        <div class="list-bg list-bg_ingredients custom-scrollbar">
-          <p class="tags__error"></p>
-          <ul class="custom-options" id="ingredients-list">
-          </ul>
-        </div>
-      </div>
-
-      <div class="select" id="select_appareils">
-        <div tabindex="0" class="select__trigger select__trigger_appareils" id="appareils">
-          <input class="select__input select__input_appareils" placeholder="Appareils"></input>
-          <div class="arrow-container">
-            <div class="arrow"></div>
-          </div>
-        </div>
-        <div class="list-bg list-bg_appareils">
-          <p class="tags__error"></p>
-          <ul class="custom-options" id="appareils-list">
-          </ul>
-        </div>
-      </div>
-
-      <div class="select" id="select_ustensiles">
-        <div tabindex="0" class="select__trigger select__trigger_ustensiles" id="ustensiles">
-          <input class="select__input select__input_ustensiles" placeholder="Ustensiles"></input>
-          <div class="arrow-container">
-            <div class="arrow"></div>
-          </div>
-        </div>
-        <div class="list-bg list-bg_ustensiles">
-          <p class="tags__error"></p>
-          <ul class="custom-options" id="ustensiles-list">
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <!------------------------------------------------------------>
-    <!--------------------------RECETTES------------------------->
-    <!------------------------------------------------------------>
-
-    <section class="recipes"></section>
-  </div>
-</body>
-
+  </body>
 </html>

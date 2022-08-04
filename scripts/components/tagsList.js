@@ -1,147 +1,117 @@
-import DOM from '../utils/domElements.js'
-import { addReactionTo } from '../utils/eventListener.js'
-import {
-  capitalize,
-  setAttributesFor,
-  clearTagsSection,
-  memoize,
-} from '../utils/utils.js'
-import { selectorChange } from './selector.js'
-import { listAll } from '../algorithms/quickSort.js'
-import { getRecipes } from '../index.js'
+import * as M from '../factory/helpers.js'
+import { recipes } from '../data/recipes.js'
+import { appareilsList, ingredientsList, ustensilesList } from '../init.js'
+import { deepFreeze, formatted, lowerCased, on } from '../helpers.js'
+import { capitalize, flip, getSelector, pipe } from '../utils/utils.js'
+import { app } from '../index.js'
 
-export const getTags = memoize(selector => {
-  const selection =
-    selector === 'appliance'
-      ? 'appareils'
-      : selector === 'ustensils'
-      ? 'ustensiles'
-      : 'ingredients'
+const recipesList = deepFreeze(recipes)
 
-  // On affiche les tags correspondants au selecteur cliqué
-  printTagsList(listAll[selection], selector)
+export const getTags = (recipesSelection = recipesList) => {
+  const compareByAlphabet = (a, b) => a.localeCompare(b)
 
-  // Les tags sont filtrés en fonction du terme entré par l'utilisateur dans l'input selecteur
-  addReactionTo('input')
-    .on(DOM.selectorInput)
-    .withFunction(() => {
-      filterTags(DOM.selectorInput.value, listAll[selection], selector)
-    })
-
-  // Les tags sont filtrés en fonction du terme entré par l'utilisateur dans le selecteur de recherche
-  if (DOM.searchInput.value)
-    filterTags(DOM.searchInput.value, listAll[selection], selector)
-
-  return listAll[selection]
-})
-
-// Fonction d'affichage de la liste de tags
-const printTagsList = (selectorList, selector) => {
-  const tagsList = [...new Set(selectorList)].sort((a, b) => a.localeCompare(b))
-
-  // Suppression du tag
-  const closeTag = tagElement => (tagElement.style.display = 'none')
-
-  // Réinitialisation de la liste de tags
-  // clearTagsSection(selector)
-
-  // Selection d'un tag dans la liste
-  const selectTag = selectedTag => {
-
-getRecipes(selectedTag, selector)
-
-    // On affiche le tag choisi
-    const tag = tagsList.find(item => item === selectedTag)
-
-    // on évite d'afficher deux fois le même tag
-    if (
-      [...document.querySelectorAll('.tag')].some(
-        elem => capitalize(selectedTag) === elem.textContent
-      )
-    ) {
-      return
-    }
-
-    // Création du tag
-    const tagElement = document.createElement('div')
-    tagElement.classList.add('tag', `tag_${selector}`)
-
-    const tagText = document.createElement('span')
-    tagText.textContent = capitalize(tag)
-
-    const tagClose = document.createElement('span')
-    tagClose.classList.add('tag__close')
-    tagClose.innerHTML = `<i class="fa-regular fa-circle-xmark fa-xl tag__close"></i>`
-
-    addReactionTo('pointerdown')
-      .on(tagClose)
-      .withFunction(() => closeTag(tagElement))
-
-    tagElement.appendChild(tagText)
-    tagElement.appendChild(tagClose)
-
-    DOM.tagsSection.appendChild(tagElement)
+  // Les tags sont filtrés en fonction de la selection de recettes reçue en argument
+  const setIngredientsTags = (
+    recipesSelection,
+    ingredientsTags = [],
+    ...allTags
+  ) => {
+    M.forEach(recipe => {
+      M.forEach(ingr => {
+        if (
+          ingredientsList.includes(formatted(ingr.ingredient)) &&
+          !ingredientsTags.includes(capitalize(lowerCased(ingr.ingredient)))
+        ) {
+          ingredientsTags.push(capitalize(lowerCased(ingr.ingredient)))
+        }
+        ingredientsTags.sort(compareByAlphabet)
+        // Liste de tags originelle
+        if (ingredientsTags.length === 0) return ingredientsList
+      })(recipe.ingredients)
+    })(recipesSelection)
+    return { recipesSelection, ...allTags, ingredientsTags }
   }
 
-  tagsList.forEach(tag => {
-    const item = document.createElement('li')
-    item.classList.add(`custom-option`, `custom-option_${selector}`)
-    setAttributesFor(item)({
-      tabIndex: 0,
-      'data-value': `${selector}`,
-    })
-
-    item.textContent = capitalize(tag)
-
-    const choice = {
-      ingredients: () => DOM.ingredients.appendChild(item),
-      appliance: () => DOM.appareils.appendChild(item),
-      ustensils: () => DOM.ustensiles.appendChild(item),
-    }
-    choice[selector]?.() ?? 'Selecteur non reconnu'
-
-    addReactionTo('pointerdown')
-      .on(item)
-      .withFunction(() => {
-        selectTag(tag)
-      })
-  })
-}
-
-// Fonction de filtrage des tags en fonction des inputs
-export const filterTags = (userInput, itemsList, selector) => {
-  const filteredTags = itemsList.filter(tag => {
-    if (tag.toLowerCase().includes(userInput.toLowerCase())) return tag
-  })
-
-  clearTagsSection(selector)
-
-  if (filteredTags.length === 0)
-    return (DOM.tagError.textContent =
-      "Il n'y a pas de tag associé à votre recherche")
-
-  DOM.tagError.textContent = ''
-  printTagsList(filteredTags, selector)
-}
-
-// Routage en fonction du selecteur cliqué
-export const showTagsList = selector => {
-  const id = {
-    ingredients: () => {
-      selectorChange(DOM.ingredientsSelector)
-      return getTags('ingredients')
-    },
-    appareils: () => {
-      selectorChange(DOM.appareilsSelector)
-      return getTags('appliance')
-    },
-    ustensiles: () => {
-      selectorChange(DOM.ustensilesSelector)
-      return getTags('ustensils')
-    },
+  const setUstensilesTags = ({
+    recipesSelection,
+    ustensilesTags = [],
+    ...allTags
+  }) => {
+    M.forEach(recipe => {
+      M.forEach(ustensile => {
+        if (
+          ustensilesList.includes(formatted(ustensile)) &&
+          !ustensilesTags.includes(capitalize(lowerCased(ustensile)))
+        ) {
+          ustensilesTags.push(capitalize(lowerCased(ustensile)))
+        }
+        ustensilesTags.sort(compareByAlphabet)
+        // Liste de tags originelle
+        if (ustensilesTags.length === 0) return ustensilesList
+      })(recipe.ustensils)
+    })(recipesSelection)
+    return { recipesSelection, ...allTags, ustensilesTags }
   }
 
-  const getSelectedTags = id[selector]?.()
+  const setAppareilssTags = ({
+    recipesSelection,
+    appareilsTags = [],
+    ...allTags
+  }) => {
+    M.forEach(recipe => {
+      if (
+        appareilsList.includes(formatted(recipe.appliance)) &&
+        !appareilsTags.includes(capitalize(lowerCased(recipe.appliance)))
+      ) {
+        appareilsTags.push(capitalize(lowerCased(recipe.appliance)))
+      }
+      appareilsTags.sort(compareByAlphabet)
+      // Liste de tags originelle
+      if (appareilsTags.length === 0) return appareilsList
+    })(recipesSelection)
+    return { ...allTags, appareilsTags }
+  }
 
-  return getSelectedTags
+  return pipe(
+    setIngredientsTags,
+    setUstensilesTags,
+    setAppareilssTags
+  )(recipesSelection)
+}
+
+// ------------------------------------------------------
+
+export const selectTag = (category, selectedTag) => {
+  // Création du tag
+  const tagText = pipe(
+    capitalize,
+    M.text,
+    flip(M.append)(M.element('span'))
+  )(selectedTag)
+
+  const tagClose = M.addClasses('tag__close')(M.element('span'))
+  tagClose.innerHTML = `<i class="fa-regular fa-circle-xmark fa-xl tag__close"></i>`
+
+  pipe(
+    M.addClasses('tag', `tag_${category}`),
+    M.addAttributes({ 'data-selector': category }),
+    M.append(tagText),
+    M.append(tagClose),
+    flip(M.append)(M.getElement('.tags'))
+  )(M.element('div'))
+
+  // // Suppression du tag
+  const removeTag = on('pointerdown')(tagClose)
+  removeTag(() => {
+    tagClose.parentElement.remove()
+
+    // On ferme le selecteur adéquat
+    const selector = M.getElement(`#select_${getSelector(category)}`)
+    M.removeClasses('open')(selector)
+  })
+
+  // // On rafraîchit la liste de cartes recettes à la suppression d'un tag
+  app(removeTag)
+
+  return selectedTag
 }

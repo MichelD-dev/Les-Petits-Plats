@@ -1,69 +1,53 @@
-import { recipes } from '../data/recipes.js'
+import { recipes } from './data/recipes.js'
+import { map } from './factory/helpers.js'
+import * as M from './helpers.js'
 
-const list = (recipes, ...categories) => {
-  let listing = categories.map(category => {
-    return recipes.reduce((arr, obj1) => {
-      const formatted = str =>
-        str
-          .toLowerCase()
-          .replace(/[.,/#!$%^&*;:{}=-_`~]/g, '')
-          .replace(/\s+/g, ' ')
-          .replace(/^\w/, c => c.toUpperCase())
-          .trim()
+// Copie du fichier de recettes initial avec ajout d'un attribut text à chaque recette, concatenant nom, ingredients et description
+const initialList = map(recipe => {
+  const { name, description, ingredients: ingrs } = recipe
 
-      const choice = {
-        name: formatted(obj1.name),
-        description: formatted(obj1.description),
-        ingredients: obj1.ingredients.map(ingredient =>
-          formatted(ingredient.ingredient)
-        ),
-        appareils: formatted(obj1.appliance),
-        ustensiles: obj1.ustensils.map(ustensile => formatted(ustensile)),
-      }
-
-      return [...arr, choice[category]]
-    }, [])
-  })
+  const ingredients = map(obj => obj.ingredient)(ingrs).join(' ')
 
   return {
-    names: listing[0],
-    descriptions: listing[1],
-    ingredients: [...new Set(listing[2].flat())],
-    appareils: [...new Set(listing[3])],
-    ustensiles: [...new Set(listing[4].flat())],
-    init: recipes.reduce((arr, obj1) => {
-      const splitted = str =>
-        str
-          .toLowerCase()
-          .replace(/[.,/#!$%^&*;:{}=-_`~()]/g, '')
-          .replace(/\s+/g, ' ')
-          .trim()
-          .split(' ')
-          .map(element => {
-            if (!element) return
-            return { text: element, id: obj1.id }
-          })
-
-      return [
-        ...arr,
-        splitted(obj1.name),
-        splitted(obj1.description),
-
-        obj1.ingredients
-          .reduce((arr, obj2) => {
-            return [...arr, splitted(obj2.ingredient)]
-          }, [])
-          .map(element => element),
-      ].flat(2)
-    }, []),
+    text: `
+    ${M.formatted(name)}
+    ${M.formatted(ingredients)}
+    ${M.formatted(description)}
+    `,
+    ...recipe,
   }
-}
+})(recipes)
+
+// Création des listes de tags correspondants au fichier initial de recettes
+const setTagsList =
+  recipes =>
+  (...categories) => {
+    const tagsLists = map(category =>
+      recipes.reduce((arr, recipe) => {
+        const choice = {
+          ingredients: map(ingredient =>
+            M.formatted(ingredient.ingredient)
+          )(recipe.ingredients),
+          appareils: M.formatted(recipe.appliance),
+          ustensiles: map(ustensile => M.formatted(ustensile))(recipe.ustensils),
+        }
+
+        return [...arr, choice[category]]
+      }, [])
+    )(categories)
+
+    return {
+      ingredients: [...new Set(tagsLists[0].flat())],
+      appareils: [...new Set(tagsLists[1])],
+      ustensiles: [...new Set(tagsLists[2].flat())],
+    }
+  }
 
 /* ---------------------------------------------------------------------- */
 /* ---------------------------------------------------------------------- */
 /* ---------------------------------------------------------------------- */
 
-const defaultCompare = (a, b) => a.localeCompare(b)
+const defaultCompare = (a, b) => new Intl.Collator('fr').compare(a, b)
 
 const quickSort = (unsortedArray, compare = defaultCompare) => {
   // On crée une copie du tableau reçu
@@ -85,6 +69,7 @@ const quickSort = (unsortedArray, compare = defaultCompare) => {
       const sort = initialArray
         ? compare(sortedArray[i].text, pivotValue.text)
         : compare(sortedArray[i], pivotValue)
+
       // l'élément est inférieur au pivot
       if (sort === -1) {
         // Si l'élément juste à droite du split index n'est pas celui-ci, on les échange
@@ -93,37 +78,41 @@ const quickSort = (unsortedArray, compare = defaultCompare) => {
           sortedArray[splitIndex] = sortedArray[i]
           sortedArray[i] = temp
         }
+
         // On déplace le split index d'un rang vers la droite
         // augmentant la taille du sous-tableau d'éléments inférieurs d'un rang
         splitIndex++
       }
       // On laisse les éléments égaux ou plus grands que le pivot à leur place
     }
+
     // On déplace le pivot à l'endroit de la séparation entre les sous-tableaux
     sortedArray[right] = sortedArray[splitIndex]
     sortedArray[splitIndex] = pivotValue
+
     // On trie récursivement les deux sous-tableaux
     recursiveSort(left, splitIndex - 1)
     recursiveSort(splitIndex + 1, right)
   }
+
   // On trie le tableau complet
   recursiveSort(0, unsortedArray.length - 1)
+
   return sortedArray
 }
 
 /* ---------------------------------------------------------------------- */
 
-export const listAll = list(
-  recipes,
-  'name',
-  'description',
+// Création des listes initiales de tags à partir du fichier de recettes
+const { ingredients, appareils, ustensiles } = setTagsList(M.deepFreeze(recipes))(
   'ingredients',
   'appareils',
   'ustensiles'
 )
 
-export const initiateSortedList = () => quickSort(listAll.init)
-export const initiateIngredientsTagsList = () => quickSort(listAll.ingredients)
-// export const initiateIngredientsTagsList = () => {}
+// Tri par ordre alphabétique des listes initiales de tags et export
+const ingredientsList = quickSort(ingredients)
+const appareilsList = quickSort(appareils)
+const ustensilesList = quickSort(ustensiles)
 
-
+export { initialList, ingredientsList, appareilsList, ustensilesList }

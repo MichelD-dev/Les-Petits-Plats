@@ -1,64 +1,66 @@
+import * as M from './helpers.js'
+import { pipe } from '../utils/utils.js'
+
 const recipeCardFactory = recipe => {
   /**
    * Création des éléments médias du DOM
    */
-  const article = document.createElement('article')
-  article.classList.add('recipe-card')
+  const image = M.addClasses('recipe-card__image')(M.element('div'))
 
-  const image = document.createElement('div')
-  image.classList.add('recipe-card__image')
+  const name = pipe(
+    M.addClasses('recipe-card__left__title'),
+    M.append(M.text(recipe.name))
+  )(M.element('h2'))
 
-  const text = document.createElement('div')
-  text.classList.add('recipe-card__recipe')
+  const ingredients = M.addClasses('recipe-card__left__ingredients')(
+    M.element('ul')
+  )
 
-  const textLeft = document.createElement('div')
-  textLeft.classList.add('recipe-card__left')
-
-  const name = document.createElement('h2')
-  name.classList.add('recipe-card__left__title')
-  name.textContent = recipe.name
-
-  const ingredients = document.createElement('ul')
-  recipe.ingredients.forEach(item => {
-    const ingredient = document.createElement('li')
-    const ingredientName = document.createElement('span')
-
-    ingredientName.textContent = `${item.ingredient}`
-    ingredient.textContent = `${item.quantity || item.quantite ? ':' : ''}  ${
+  M.forEach(item => {
+    const quantity = `${item.quantity || item.quantite ? ':' : ''}  ${
       item.quantity || item.quantite || ''
     } ${item.unit || item.unite || ''}`
 
+    const ingredient = M.append(M.text(quantity))(M.element('li'))
+
+    const ingredientName = M.append(M.text(`${item.ingredient}`))(
+      M.element('span')
+    )
+
     ingredient.insertAdjacentElement('afterbegin', ingredientName)
-    ingredients.appendChild(ingredient)
-  })
+    M.append(ingredient)(ingredients)
+  })(recipe.ingredients)
 
-  const textRight = document.createElement('div')
-  textRight.classList.add('recipe-card__right')
+  const cookingTime = pipe(
+    M.addClasses('recipe-card__right__duration'),
+    M.append(M.text(`${recipe.time} min`)),
+    M.insert(`<i class="fa-regular fa-clock"></i> `)('afterbegin')
+  )(M.element('h2'))
 
-  const cookingTime = document.createElement('h2')
-  cookingTime.classList.add('recipe-card__right__duration')
-  cookingTime.textContent = `${recipe.time} min`
+  const description = pipe(
+    M.addClasses('recipe-card__right__description'),
+    M.append(M.text(recipe.description))
+  )(M.element('p'))
 
-  const description = document.createElement('p')
-  description.classList.add('recipe-card__right__description')
-  description.textContent = recipe.description
+  const textLeft = pipe(
+    M.addClasses('recipe-card__left'),
+    M.appendChildren([name, ingredients])
+  )(M.element('div'))
 
-  article.appendChild(image)
-  article.appendChild(text)
+  const textRight = pipe(
+    M.addClasses('recipe-card__right'),
+    M.appendChildren([cookingTime, description])
+  )(M.element('div'))
 
-  text.appendChild(textLeft)
-  text.appendChild(textRight)
+  const texts = pipe(
+    M.addClasses('recipe-card__recipe'),
+    M.appendChildren([textLeft, textRight])
+  )(M.element('div'))
 
-  textLeft.appendChild(name)
-  textLeft.appendChild(ingredients)
-
-  textRight.appendChild(cookingTime)
-  textRight.appendChild(description)
-
-  cookingTime.insertAdjacentHTML(
-    'afterbegin',
-    `<i class="fa-regular fa-clock"></i> `
-  )
+  const article = pipe(
+    M.addClasses('recipe-card'),
+    M.appendChildren([image, texts])
+  )(M.element('article'))
 
   return article
 }

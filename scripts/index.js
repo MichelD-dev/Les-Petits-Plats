@@ -1,114 +1,145 @@
-import DOM from './utils/domElements.js'
+import * as M from './factory/helpers.js'
+import { onSelect, createTagsLists } from './components/selector.js'
+import { getTags } from './components/tagsList.js'
+import { clearPage, formatted, observer, on } from './helpers.js'
+import { pipe, printErrorMessage } from './utils/utils.js'
+import { createCardsView } from './views/cardsView.js'
 import { getRecipesFromSearch } from './components/searchBar.js'
-import { printSnackbar, stopSnackbarTimeOut } from './components/snackbar.js'
-import recipeCardFactory from './factory/recipeFactory.js'
-import { addReactionTo } from './utils/eventListener.js'
-import { clearCardsSection, printErrorMessage, pipe } from './utils/utils.js'
-import { recipes } from './data/recipes.js'
-import { init } from './utils/init.js'
+import { printSnackbar } from './components/snackbar.js'
 
-// ---------------------------------------------------------------------------- //
-// ------------------------------- UTILITAIRES -------------------------------- //
-// ---------------------------------------------------------------------------- //
+// On récupère une liste initiale immutable de tags
+const initTags = getTags()
 
-// Fonction de suppression du message d'erreur
-const deleteErrorMessage = printErrorMessage
+// On place le focus sur le champ de recherche à l'initialisation
+M.getElement('.search__form_searchbar').focus()
 
-// Fonction de reset de la page
-const clearPage = pipe(clearCardsSection, deleteErrorMessage)
+export const app = (userEvent, initialTags = initTags) => {
+  // On place l'event reçu dans un HOF Stop() pour pouvoir retirer l'eventListener après chaque frappe
+  const stop = userEvent(() => {
+    // Nombre de caractères minimal
+    const MIN_SEARCH_LENGTH = 3
 
-// Fonction renvoyant le nombre de recettes trouvées
-const getRecipesQuantity = selection => ({
-  selection,
-  recipesQuantity: selection.length,
-})
+    // On récupère la frappe de l'utilisateur
+    const searchInput = M.getElement('.search__form_searchbar').value
 
-// Fonction de récupération des cards DOM correspondantes aux recettes selectionnées
-const getRecipesCards = selection => selection.map(recipeCardFactory)
+    // On crée un tableau des tags selectionnés
+    const tags = M.getElements('.tag')
+    const selectedTags = M.map(tag => tag.textContent.toLowerCase())(tags) ?? []
 
-// Fonction d'affichage de la selection de cartes de recettes
-const printRecipesCards = recipeCards =>
-  recipeCards.forEach(recipeCard => DOM.cardsSection.appendChild(recipeCard))
+    // On récupère le texte du premier tag selectionné
+    const tagSelect = tags[0]?.children[0].textContent
 
-const formatted = str => {
-  return (
-    str
-      .toLowerCase()
-      // On enlève les accents et les caractères spéciaux
-      .normalize('NFD')
-      .replace(/([\u0300-\u036f]|[^0-9a-zA-Z\s])/g, '')
-      // On reduit les espaces de plus d'un caractère
-      .replace(/\s+/g, ' ')
-      .trim()
-  )
-}
+    // En dessous de trois caractères, on réinitialise la page (en cas de recherche effectuée précédemment)
+    if (searchInput.length < MIN_SEARCH_LENGTH && !tagSelect) {
+      // On réactualise la liste de tags
+      onSelect(initialTags)
 
-const updateSelectionWithTags = (recipesSelection, tag) => {
-  const newSelection = []
+      // On réinitialise la page
+      clearPage()
+      return
+    }
 
-  recipesSelection.forEach(recipe => {
-    if (formatted(recipe.name).includes(formatted(tag)))
-      newSelection.push(recipe)
-    if (formatted(recipe.description).includes(formatted(tag)))
-      newSelection.push(recipe)
-    recipe.ingredients.forEach(ingredient => {
-      if (formatted(ingredient.ingredient).includes(formatted(tag)))
-        newSelection.push(recipe)
-    })
+    // On récupère les recettes correspondantes à la requête de l'utilisateur
+    const getRecipes = request => {
+      const selector = tags[0]?.dataset.selector
+
+      const recipes = getRecipesFromSearch(request, selector, MIN_SEARCH_LENGTH)
+
+      //On affiche un message d'erreur si aucune recette n'est retournée par la requête
+      printErrorMessage(
+        recipes?.length === 0
+          ? 'Aucune recette ne correspond à votre critère...Vous pouvez chercher "tarte aux pommes", "poisson", etc.'
+          : ''
+      )
+      return recipes
+    }
+
+    // On filtre les tags pour ne garder que ceux associés au résultat
+    const updateTags = recipes => {
+      onSelect(getTags(recipes))
+
+      return recipes
+    }
+
+    // On actualise la liste de recettes affichées en fonction des tags selectionnés
+    const updateResult = selectedTags => selection => {
+      let newSelection = []
+      let recipesTags = []
+
+      M.forEach(recipe => {
+        const ingredientsTags = M.map(ingredient =>
+          formatted(ingredient.ingredient)
+        )(recipe.ingredients)
+        const appareilsTags = formatted(recipe.appliance)
+        const ustensilesTags = M.map(ustensile =>
+          formatted(ustensile)
+        )(recipe.ustensils)
+
+        recipesTags = [...ingredientsTags, appareilsTags, ...ustensilesTags]
+
+        if (
+          selectedTags.every(tag => recipesTags.includes(tag)) &&
+          !newSelection.includes(recipe)
+        ) {
+          newSelection = [...newSelection, recipe]
+        }
+      })(selection)
+
+      if (newSelection.length === 0 || selectedTags.length === 0) return selection
+
+      onSelect(getTags(newSelection))
+
+      return newSelection
+    }
+
+    const updateRecipesWithSelectedTags = updateResult(selectedTags)
+
+    /**
+    On affiche les cartes résultant de la recherche, via une composition de fonctions
+    1. On récupère le nombre de recettes trouvées
+    2. On filtre les listes de tags en fonction des recettes trouvées
+    3. On actualise la liste de recettes lors de la selection d'un ou plusieurs tags
+    4. On créée les listes de tags après selection d'un ou plusieurs tagsList
+    5. On affiche brièvement une snackbar indiquant le nombre de recttes trouvées
+    6. On affiche les cartes correspondantes aux recettes trouvées.
+   */
+    const createUI = pipe(
+      getRecipes,
+      updateTags,
+      updateRecipesWithSelectedTags,
+      createTagsLists,
+      printSnackbar,
+      createCardsView
+    )
+
+    // La requète utilisateur sera un mot de plus de trois caractères ou un tag selectionné
+    const request =
+      searchInput.length >= MIN_SEARCH_LENGTH ? searchInput : tagSelect
+
+    createUI(formatted(request))
+
+    // On implémente un intersectionObserver pour ne rendre les cartes que lorsqu'elles sont dans le champ d'affichage
+    const cards = M.getElements('.recipe-card')
+    cards.length !== 0 && M.forEach(card => observer.observe(card))(cards)
+
+    // On retire l'eventListener après l'appel à son callback
+    stop()
+
+    // On rappelle la fonction à chaque action de l'utilisateur
+    app(userEvent)
   })
-
-  clearPage()
-  printCards(newSelection)
 }
 
-init()
+// EventListener sur la barre de recherche
+const userSearch = on('input')(M.getElement('.search__form_searchbar'))
 
-// ---------------------------------------------------------------------------- //
-// -------------------- FONCTION DE RECHERCHE DE RECETTES --------------------- //
-// ---------------------------------------------------------------------------- //
+// EventListener sur la liste de tags
+const tagSelect = on('pointerdown')(M.getElement('.tag'))
 
-const getRecipes = (tag = null, selector = '') => {
-  /**
-   On ne retourne un résultat qu'à partir de trois caractères tapés par l'utilisateur
-   On réinitialise l'affichage des cards recettes lorsqu'on redescend en dessous de 3 caractères
-   */
-  if (DOM.searchInput.value.length < 3) return clearPage()
+// Affichage des listes initiales de tags à l'ouverture d'un selecteur
+onSelect(initTags)
 
-  // On recrée une liste complète de tags lorsqu'on redescend en dessous de 3 caractères
-  if (!DOM.searchInput.value || DOM.searchInput.value.length < 3)
-    return createTagsListWith(recipes)
+// Action de l'utilisateur
+let userEvent = userSearch || tagSelect
 
-  // On initialise l'affichage des cards recettes
-  clearPage()
-
-  stopSnackbarTimeOut() //FIXME fonctionne?
-
-  // On récupère un tableau de selections de recettes d'après les critères de recherche
-  const recipesSelection = getRecipesFromSearch(DOM.searchInput.value)
-
-  if (typeof tag === 'string')
-    return updateSelectionWithTags(recipesSelection, tag)
-
-  printCards(recipesSelection)
-
-  return recipesSelection
-}
-
-/**
-   On affiche les cartes résultant de la recherche, via une composition des fonctions listées plus haut:
-   1. On récupère le nombre de recettes trouvées
-   2. On affiche une snackbar avec le nombre de recettes trouvées
-   3. On récupère les cards DOM correspondantes
-   4. On affiche la selection
-   */
-const printCards = pipe(
-  getRecipesQuantity,
-  printSnackbar,
-  getRecipesCards,
-  printRecipesCards
-)
-
-export { getRecipes }
-
-// On écoute les frappes clavier
-addReactionTo('input').on(DOM.searchInput).withFunction(getRecipes)
+app(userEvent)
