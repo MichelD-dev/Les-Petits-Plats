@@ -1,16 +1,18 @@
 import * as M from '../factory/helpers.js'
-import { recipes } from '../data/recipes.js'
-import { appareilsList, ingredientsList, ustensilesList } from '../init.js'
+import {
+  appareilsList,
+  ingredientsList,
+  initialList,
+  ustensilesList,
+} from '../init.js'
 import { deepFreeze, formatted, lowerCased, on } from '../helpers.js'
 import { capitalize, flip, getSelector, pipe } from '../utils/utils.js'
 import { app } from '../index.js'
 
-const recipesList = deepFreeze(recipes)
-
-export const getTags = (recipesSelection = recipesList) => {
+export const getTags = (recipesSelection = initialList) => {
   const compareByAlphabet = (a, b) => a.localeCompare(b)
 
-  // Les tags sont filtrés en fonction de la selection de recettes reçue en argument
+  // Les tags sont filtrés en fonction de la selection de recettes reçue en argument, ou par défaut en fonction de la liste initiale de recettes
   const setIngredientsTags = (
     recipesSelection,
     ingredientsTags = [],
@@ -25,10 +27,11 @@ export const getTags = (recipesSelection = recipesList) => {
           ingredientsTags.push(capitalize(lowerCased(ingr.ingredient)))
         }
         ingredientsTags.sort(compareByAlphabet)
-        // Liste de tags originelle
+        // Si on n'a pas de recettes cherchées (si le tableau de tags que l'on vient de créer est toujous vide, condition moins gourmande en ressources), on retourne la liste de tags originelle
         if (ingredientsTags.length === 0) return ingredientsList
       })(recipe.ingredients)
     })(recipesSelection)
+
     return { recipesSelection, ...allTags, ingredientsTags }
   }
 
@@ -46,14 +49,15 @@ export const getTags = (recipesSelection = recipesList) => {
           ustensilesTags.push(capitalize(lowerCased(ustensile)))
         }
         ustensilesTags.sort(compareByAlphabet)
-        // Liste de tags originelle
+        // Si on n'a pas de recettes cherchées (si le tableau de tags que l'on vient de créer est toujous vide, condition moins gourmande en ressources), on retourne la liste de tags originelle
         if (ustensilesTags.length === 0) return ustensilesList
       })(recipe.ustensils)
     })(recipesSelection)
+
     return { recipesSelection, ...allTags, ustensilesTags }
   }
 
-  const setAppareilssTags = ({
+  const setAppareilsTags = ({
     recipesSelection,
     appareilsTags = [],
     ...allTags
@@ -66,23 +70,27 @@ export const getTags = (recipesSelection = recipesList) => {
         appareilsTags.push(capitalize(lowerCased(recipe.appliance)))
       }
       appareilsTags.sort(compareByAlphabet)
-      // Liste de tags originelle
+      // Si on n'a pas de recettes cherchées (si le tableau de tags que l'on vient de créer est toujous vide, condition moins gourmande en ressources), on retourne la liste de tags originelle
       if (appareilsTags.length === 0) return appareilsList
     })(recipesSelection)
+
     return { ...allTags, appareilsTags }
   }
 
-  return pipe(
+  const tagsList = pipe(
     setIngredientsTags,
     setUstensilesTags,
-    setAppareilssTags
+    setAppareilsTags
   )(recipesSelection)
+
+  // On retourne un objet immutable contenant les listes de tags filtrées => tagsList = {ingredientsTags:[...], appareilsTags: [...], ustensilesTags: [...]}
+  return deepFreeze(tagsList)
 }
 
-// ------------------------------------------------------
+// SELECTION D'UN TAG
 
 export const selectTag = (category, selectedTag) => {
-  // Création du tag
+  // Création de la balise à partir du tag selectionné
   const tagText = pipe(
     capitalize,
     M.text,
@@ -102,13 +110,7 @@ export const selectTag = (category, selectedTag) => {
 
   // // Suppression du tag
   const removeTag = on('pointerdown')(tagClose)
-  removeTag(() => {
-    tagClose.parentElement.remove()
-
-    // On ferme le selecteur adéquat
-    const selector = M.getElement(`#select_${getSelector(category)}`)
-    M.removeClasses('open')(selector)
-  })
+  removeTag(() => tagClose.parentElement.remove())
 
   // // On rafraîchit la liste de cartes recettes à la suppression d'un tag
   app(removeTag)

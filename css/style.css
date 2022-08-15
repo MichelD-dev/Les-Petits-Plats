@@ -409,6 +409,7 @@ label[for=medias-sort] {
   outline: none;
   background-color: #e7e7e7;
   border: none;
+  font-size: 18px;
 }
 .search__form_searchbar::placeholder {
   color: #a2a2a2;
@@ -560,7 +561,7 @@ label[for=medias-sort] {
 }
 
 .error {
-  color: red;
+  color: #d04f4f;
   margin-right: auto;
   font-weight: bold;
   font-size: 1.2rem;

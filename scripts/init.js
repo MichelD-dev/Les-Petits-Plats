@@ -2,22 +2,18 @@ import { recipes } from './data/recipes.js'
 import { map } from './factory/helpers.js'
 import * as M from './helpers.js'
 
-// Copie du fichier de recettes initial avec ajout d'un attribut text à chaque recette, concatenant nom, ingredients et description
+// Création d'une copie immutable du fichier de recettes initial, avec ajout d'un attribut text à chaque recette concatenant nom, ingredients et description
 const initialList = map(recipe => {
   const { name, description, ingredients: ingrs } = recipe
 
   const ingredients = map(obj => obj.ingredient)(ingrs).join(' ')
 
-  return {
-    text: `
-    ${M.formatted(name)}
-    ${M.formatted(ingredients)}
-    ${M.formatted(description)}
-    `,
+  return M.deepFreeze({
+    text: `${M.formatted(name)} ${M.formatted(ingredients)} ${M.formatted(description)}`,
     ...recipe,
-  }
+  })
 })(recipes)
-
+console.log(initialList);
 // Création des listes de tags correspondants au fichier initial de recettes
 const setTagsList =
   recipes =>
@@ -25,17 +21,18 @@ const setTagsList =
     const tagsLists = map(category =>
       recipes.reduce((arr, recipe) => {
         const choice = {
-          ingredients: map(ingredient =>
-            M.formatted(ingredient.ingredient)
-          )(recipe.ingredients),
+          ingredients: map(ingredient => M.formatted(ingredient.ingredient))(
+            recipe.ingredients
+          ),
           appareils: M.formatted(recipe.appliance),
-          ustensiles: map(ustensile => M.formatted(ustensile))(recipe.ustensils),
+          ustensiles: map(ustensile => M.formatted(ustensile))(
+            recipe.ustensils
+          ),
         }
 
         return [...arr, choice[category]]
       }, [])
     )(categories)
-
     return {
       ingredients: [...new Set(tagsLists[0].flat())],
       appareils: [...new Set(tagsLists[1])],
@@ -104,15 +101,15 @@ const quickSort = (unsortedArray, compare = defaultCompare) => {
 /* ---------------------------------------------------------------------- */
 
 // Création des listes initiales de tags à partir du fichier de recettes
-const { ingredients, appareils, ustensiles } = setTagsList(M.deepFreeze(recipes))(
+const { ingredients, appareils, ustensiles } = setTagsList(recipes)(
   'ingredients',
   'appareils',
   'ustensiles'
 )
 
-// Tri par ordre alphabétique des listes initiales de tags et export
-const ingredientsList = quickSort(ingredients)
-const appareilsList = quickSort(appareils)
-const ustensilesList = quickSort(ustensiles)
+// Tri par ordre alphabétique des listes initiales de tags, gel de celles-ci, et export
+const ingredientsList = Object.freeze(quickSort(ingredients))
+const appareilsList = Object.freeze(quickSort(appareils))
+const ustensilesList = Object.freeze(quickSort(ustensiles))
 
 export { initialList, ingredientsList, appareilsList, ustensilesList }
