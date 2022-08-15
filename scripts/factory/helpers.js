@@ -8,7 +8,7 @@ const text = content => document.createTextNode(content)
 
 const filter = predicate => array => array.filter(predicate)
 
-const find = val => array => array.find(val) 
+const find = val => array => array.find(val)
 
 const forEach = fn => array => array.forEach(fn)
 
@@ -18,10 +18,11 @@ const insert = icon => location => element => (
   element.insertAdjacentHTML(location, icon), element
 )
 
+// Définition d'attributs en une ligne d'un élément du DOM
 const addAttributes = attributes => element => (
-  forEach(([key, value]) =>
-    element.setAttribute(key, value)
-  )(Object.entries(attributes)),
+  forEach(([key, value]) => element.setAttribute(key, value))(
+    Object.entries(attributes)
+  ),
   element
 )
 
@@ -59,5 +60,5 @@ export {
   removeClasses,
   append,
   appendChildren,
-  trace
+  trace,
 }

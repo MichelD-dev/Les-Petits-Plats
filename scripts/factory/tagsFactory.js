@@ -11,9 +11,9 @@ import {
 import { tagsView } from '../views/tagsView.js'
 
 export const tagsFactory = tagsList => selector => {
-  const selectedTags = M.map(tag =>
-    tag.textContent.toLowerCase()
-  )([...M.getElements('.tag')])
+  const selectedTags = M.map(tag => tag.textContent.toLowerCase())([
+    ...M.getElements('.tag'),
+  ])
 
   const newTagsList = tagsList.filter(tag => !selectedTags.includes(tag))
 

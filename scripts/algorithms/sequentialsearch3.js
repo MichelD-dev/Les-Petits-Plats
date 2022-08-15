@@ -14,6 +14,7 @@ export const sequentialSearch3 = (
   const first = list[0]
   const next = list.slice(1)
 
+  // Recherche sur le champ de recherche principal, si le mot entré fait au moins 3 lettres et qu'aucun tag n'a été selectionné
   if (
     M.getElement('.search__form_searchbar').value.length >= MIN_SEARCH_LENGTH ||
     !selector
@@ -29,35 +30,10 @@ export const sequentialSearch3 = (
       next,
       searchResults
     )
-  } else if (selector === 'appliance') {
-    if (list.length === 0) return searchResults
+  }
 
-    if (formatted(first[selector]).includes(search))
-      searchResults = [...searchResults, first]
-
-    return sequentialSearch3(
-      search,
-      selector,
-      MIN_SEARCH_LENGTH,
-      next,
-      searchResults
-    )
-  } else if (selector === 'ustensils') {
-    if (list.length === 0) return searchResults
-
-    M.forEach(ustensile => {
-      if (formatted(ustensile).includes(search))
-        searchResults = [...searchResults, first]
-    })(first[selector])
-
-    return sequentialSearch3(
-      search,
-      selector,
-      MIN_SEARCH_LENGTH,
-      next,
-      searchResults
-    )
-  } else if (selector === 'ingredients') {
+  // Recherche à partir d'un tag Ingredients
+  else if (selector === 'ingredients') {
     if (list.length === 0) return searchResults
 
     M.forEach(ingredient => {
@@ -74,5 +50,39 @@ export const sequentialSearch3 = (
     )
   }
 
-  return searchResults
+  // Recherche à partir d'un tag Appareils
+  else if (selector === 'appliance') {
+    if (list.length === 0) return searchResults
+
+    if (formatted(first[selector]).includes(search))
+      searchResults = [...searchResults, first]
+
+    return sequentialSearch3(
+      search,
+      selector,
+      MIN_SEARCH_LENGTH,
+      next,
+      searchResults
+    )
+  }
+
+  // Recherche à partir d'un tag Ustensiles
+  else if (selector === 'ustensils') {
+    if (list.length === 0) return searchResults
+
+    M.forEach(ustensile => {
+      if (formatted(ustensile).includes(search))
+        searchResults = [...searchResults, first]
+    })(first[selector])
+
+    return sequentialSearch3(
+      search,
+      selector,
+      MIN_SEARCH_LENGTH,
+      next,
+      searchResults
+    )
+  }
+
+  return [...new Set(searchResults)]
 }
