@@ -6,9 +6,14 @@ import { pipe, printErrorMessage } from './utils/utils.js'
 import { createCardsView } from './views/cardsView.js'
 import { getRecipesFromSearch } from './components/searchBar.js'
 import { printSnackbar } from './components/snackbar.js'
+import { appareilsList, ingredientsList, ustensilesList } from './init.js'
 
-// On récupère une liste initiale immutable de tags
-const initTags = getTags()
+// On récupère une liste initiale immutable de tous les tags
+const initTags = {
+  ingredientsTags: ingredientsList,
+  appareilsTags: appareilsList,
+  ustensilesTags: ustensilesList,
+}
 
 // On place le focus sur le champ de recherche à l'initialisation
 M.getElement('.search__form_searchbar').focus()
@@ -22,7 +27,7 @@ export const app = (userEvent, initialTags = initTags) => {
     // On récupère la frappe de l'utilisateur
     const searchInput = M.getElement('.search__form_searchbar').value
 
-    // On crée un tableau des tags selectionnés
+    // On crée un tableau des tags selectionnés si il y en a
     const tags = M.getElements('.tag')
     const selectedTags = M.map(tag => tag.textContent.toLowerCase())(tags) ?? []
 
@@ -61,34 +66,53 @@ export const app = (userEvent, initialTags = initTags) => {
       return recipes
     }
 
-    // On actualise la liste de recettes affichées en fonction des tags selectionnés
+    // On actualise la liste de recettes affichées en fonction des tags selectionnés par l'utilisateur
     const updateResult = selectedTags => selection => {
       let newSelection = []
       let recipesTags = []
 
-      M.forEach(recipe => {
-        const ingredientsTags = M.map(ingredient =>
-          formatted(ingredient.ingredient)
-        )(recipe.ingredients)
-        const appareilsTags = formatted(recipe.appliance)
-        const ustensilesTags = M.map(ustensile =>
-          formatted(ustensile)
-        )(recipe.ustensils)
+      if (searchInput.length >= MIN_SEARCH_LENGTH || selectedTags.length >= 2) {
+        // On crée un tableau global de tags par recette
+        M.forEach(recipe => {
+          const ingredientsTags = M.map(ingredient =>
+            formatted(ingredient.ingredient)
+          )(recipe.ingredients)
+          const appareilsTags = formatted(recipe.appliance)
+          const ustensilesTags = M.map(ustensile => formatted(ustensile))(
+            recipe.ustensils
+          )
 
-        recipesTags = [...ingredientsTags, appareilsTags, ...ustensilesTags]
+          recipesTags = [...ingredientsTags, appareilsTags, ...ustensilesTags]
 
-        if (
-          selectedTags.every(tag => recipesTags.includes(tag)) &&
-          !newSelection.includes(recipe)
-        ) {
-          newSelection = [...newSelection, recipe]
-        }
-      })(selection)
+          // Si l'input fait au moins 3 lettres, on filtre à partir de tous les tags selectionnés, sinon à partir du 2ème, le premier servant à la recherche initiale.
+          const selectedTagsArray =
+            searchInput.length >= MIN_SEARCH_LENGTH
+              ? selectedTags
+              : selectedTags.slice(1)
 
-      if (newSelection.length === 0 || selectedTags.length === 0) return selection
+          // On vérifie la correspondance entre les tableaux de tags par recette et les tags selectionnés
+          if (
+            selectedTagsArray.every(tag =>
+              recipesTags.includes(formatted(tag))
+            ) &&
+            !newSelection.includes(recipe)
+          ) {
+            newSelection = [...newSelection, recipe]
+          }
+        })(selection)
+      }
 
+      if (
+        newSelection.length === 0 ||
+        selectedTags.length === 0 ||
+        (searchInput.length < MIN_SEARCH_LENGTH && selectedTags.length === 0)
+      )
+        return selection
+
+      // On récupère les listes de tags actualisés
       onSelect(getTags(newSelection))
 
+      // On retourne la selection de recettes filtrées
       return newSelection
     }
 
@@ -99,7 +123,7 @@ export const app = (userEvent, initialTags = initTags) => {
     1. On récupère le nombre de recettes trouvées
     2. On filtre les listes de tags en fonction des recettes trouvées
     3. On actualise la liste de recettes lors de la selection d'un ou plusieurs tags
-    4. On créée les listes de tags après selection d'un ou plusieurs tagsList
+    4. On créée les listes de tags après selection d'un ou plusieurs tags
     5. On affiche brièvement une snackbar indiquant le nombre de recttes trouvées
     6. On affiche les cartes correspondantes aux recettes trouvées.
    */
@@ -140,6 +164,6 @@ const tagSelect = on('pointerdown')(M.getElement('.tag'))
 onSelect(initTags)
 
 // Action de l'utilisateur
-let userEvent = userSearch || tagSelect
+const userEvent = userSearch || tagSelect
 
 app(userEvent)

@@ -1,7 +1,7 @@
 import * as M from '../factory/helpers.js'
 import recipeCardFactory from '../factory/recipeFactory.js'
 import { clearPage } from '../helpers.js'
-import { flip, memoize, pipe } from '../utils/utils.js'
+import { memoize, pipe } from '../utils/utils.js'
 
 // Création d'un tableau de cards DOM correspondantes aux recettes selectionnées
 // On évite de recréer des cartes déjà créées

@@ -57,12 +57,6 @@ export const clearTagsSection = selector => {
 }
 
 /**
- * Définition d'attributs en une ligne d'un élément du DOM
- */
-export const setAttributesFor = el => attrs =>
-  Object.entries(attrs).forEach(([key, value]) => el.setAttribute(key, value))
-
-/**
  * Fonction capitalize
  */
 export const capitalize = str => {

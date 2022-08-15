@@ -1,7 +1,7 @@
 import * as M from '../factory/helpers.js'
 import { tagsFactory } from '../factory/tagsFactory.js'
 import { formatted, on } from '../helpers.js'
-import { getSelector } from '../utils/utils.js'
+import { capitalize, getSelector } from '../utils/utils.js'
 import { getTags } from './tagsList.js'
 
 /**
@@ -24,16 +24,12 @@ export const openSelector = allTags => selector => {
       selectInput => document.activeElement === selectInput
     )(M.getElements('.select__input'))
 
-    // On remplace le texte du placeholder à l'ouverture du selecteur par 'rechercher
-    if (selector !== selectorInput) {
-      selector.previousElementSibling.placeholder = 'Rechercher'
-      M.addClasses('select__input_dimmed')(selector.previousElementSibling)
-    }
-
     // On ne permet la fermeture des tags que sur la flêche, pas le selectorInput
     if (categorySelector.classList.contains('open') && !selectorInput) {
       // On rétablit le texte du placeholder à la fermeture du selecteur
-      selector.previousElementSibling.placeholder = selector.parentElement.id
+      selector.previousElementSibling.placeholder = capitalize(
+        getSelector(selector.parentElement.id)
+      )
       M.removeClasses('select__input_dimmed')(selector.previousElementSibling)
 
       return M.removeClasses('open')(categorySelector)
@@ -49,7 +45,14 @@ export const openSelector = allTags => selector => {
 
 export const onSelect = allTags => {
   // Ouverture/fermeture des selecteurs par la flêche
-  M.forEach(openSelector(allTags))(M.getElements('.arrow-container'))
+  M.forEach(selector => {
+    // On remplace le texte du placeholder à l'ouverture du selecteur
+    on('pointerdown')(selector)(() => {
+      selector.previousElementSibling.placeholder = 'Rechercher'
+      M.addClasses('select__input_dimmed')(selector.previousElementSibling)
+      openSelector(allTags)(selector)
+    })
+  })(M.getElements('.arrow-container'))
 
   // Ouverture des selecteurs par l'input
   M.forEach(selector => {
@@ -67,7 +70,7 @@ on('pointerdown')(window)(e => {
       // On rétablit le texte du placeholder à la fermeture du selecteur
       const tagInput = select.firstElementChild.firstElementChild
 
-      tagInput.placeholder = tagInput.parentElement.id
+      tagInput.placeholder = capitalize(getSelector(tagInput.parentElement.id))
       M.removeClasses('select__input_dimmed')(tagInput)
 
       M.removeClasses('open')(select)
