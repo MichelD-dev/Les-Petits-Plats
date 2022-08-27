@@ -1,10 +1,10 @@
 import * as M from './factory/helpers.js'
-import { clearCardsSection, pipe, printErrorMessage } from './utils/utils.js'
+import {clearCardsSection, pipe, printErrorMessage} from './utils/utils.js'
 
 // Fonction permettant de rendre immutable un objet ET AUSSI les objets/arrays qu'il contient
 export const deepFreeze = obj => {
   // Retrieve the property names defined on obj
-  var propNames = Object.getOwnPropertyNames(obj)
+  const propNames = Object.getOwnPropertyNames(obj)
 
   // Freeze properties before freezing self
   M.forEach(name => {
@@ -66,7 +66,7 @@ const observer = new IntersectionObserver(
     })(entries),
   {
     threshold: 0.5,
-  }
+  },
 )
 
-export { lowerCased, normalized, formatted, clearPage, on, observer }
+export {lowerCased, normalized, formatted, clearPage, on, observer}

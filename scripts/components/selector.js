@@ -1,8 +1,8 @@
 import * as M from '../factory/helpers.js'
-import { tagsFactory } from '../factory/tagsFactory.js'
-import { formatted, on } from '../helpers.js'
-import { capitalize, getSelector } from '../utils/utils.js'
-import { getTags } from './tagsList.js'
+import {tagsFactory} from '../factory/tagsFactory.js'
+import {formatted, on} from '../helpers.js'
+import {capitalize, getSelector} from '../utils/utils.js'
+import {getTags} from './tagsList.js'
 
 /**
  * Changements d'apparence du selecteur à l'ouverture
@@ -21,14 +21,14 @@ export const openSelector = allTags => selector => {
 
     // On vérifie si un des selecteurs a acquis le focus sur son input
     const selectorInput = M.find(
-      selectInput => document.activeElement === selectInput
+      selectInput => document.activeElement === selectInput,
     )(M.getElements('.select__input'))
 
     // On ne permet la fermeture des tags que sur la flêche, pas le selectorInput
     if (categorySelector.classList.contains('open') && !selectorInput) {
       // On rétablit le texte du placeholder à la fermeture du selecteur
       selector.previousElementSibling.placeholder = capitalize(
-        getSelector(selector.parentElement.id)
+        getSelector(selector.parentElement.id),
       )
       M.removeClasses('select__input_dimmed')(selector.previousElementSibling)
 
@@ -80,7 +80,7 @@ on('pointerdown')(window)(e => {
 
 //On actualise la liste de tags après selection d'un tag
 export const createTagsLists = selection => {
-  const { ingredientsTags, appareilsTags, ustensilesTags } = getTags(selection)
+  const {ingredientsTags, appareilsTags, ustensilesTags} = getTags(selection)
 
   const tagsCategory = {
     ingredients: ingredientsTags,
@@ -95,7 +95,7 @@ export const createTagsLists = selection => {
 }
 
 const filteredByTagsInput = allTags => selector => {
-  const { ingredientsTags, appareilsTags, ustensilesTags } = allTags
+  const {ingredientsTags, appareilsTags, ustensilesTags} = allTags
 
   const tagsCategory = {
     ingredients: ingredientsTags,
@@ -105,7 +105,7 @@ const filteredByTagsInput = allTags => selector => {
 
   const select = selector.parentElement.id
 
-  // On filtre les tags dans chaque catégorie
+  // On filtre les tags dans chaque catégorie à partir de l'input
   const tagInput = tag => formatted(tag).includes(formatted(selector.value))
   const filteredTags = M.filter(tagInput)(tagsCategory[select])
 

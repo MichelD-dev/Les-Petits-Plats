@@ -21,7 +21,7 @@ const insert = icon => location => element => (
 // Définition d'attributs en une ligne d'un élément du DOM
 const addAttributes = attributes => element => (
   forEach(([key, value]) => element.setAttribute(key, value))(
-    Object.entries(attributes)
+    Object.entries(attributes),
   ),
   element
 )
