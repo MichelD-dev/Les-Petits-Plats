@@ -1,15 +1,27 @@
 {
-  "name": "Les_petits_plats",
+  "name": "les_petits_plats",
   "version": "1.0.0",
   "description": "Site de recettes de cuisine",
   "main": "index.js",
   "author": "Michel DELAUNAY",
+  "private": true,
   "scripts": {
-    "sass": "sass -w ./style.scss:./css/style.css"
+    "sass": "sass -w ./style.scss:./css/style.css",
+    "lint": "eslint .",
+    "prettier": "prettier --ignore-path .gitignore **/*.{js,json,html,scss}",
+    "format": "yarn prettier --write",
+    "check-format": "yarn prettier --list-different",
+    "validate": "npm-run-all --parallel check-format lint",
+    "postinstall": "husky install"
   },
   "license": "MIT",
   "packageManager": "yarn@3.2.1",
   "devDependencies": {
-    "prettier": "2.7.1"
+    "eslint": "^8.22.0",
+    "eslint-config-prettier": "^8.5.0",
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3",
+    "prettier": "2.7.1",
+    "yarn-run-all": "^3.1.1"
   }
 }

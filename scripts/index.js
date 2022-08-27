@@ -1,12 +1,12 @@
 import * as M from './factory/helpers.js'
-import { onSelect, createTagsLists } from './components/selector.js'
-import { getTags } from './components/tagsList.js'
-import { clearPage, formatted, observer, on } from './helpers.js'
-import { pipe, printErrorMessage } from './utils/utils.js'
-import { createCardsView } from './views/cardsView.js'
-import { getRecipesFromSearch } from './components/searchBar.js'
-import { printSnackbar } from './components/snackbar.js'
-import { appareilsList, ingredientsList, ustensilesList } from './init.js'
+import {onSelect, createTagsLists} from './components/selector.js'
+import {getTags} from './components/tagsList.js'
+import {clearPage, formatted, observer, on} from './helpers.js'
+import {pipe, printErrorMessage} from './utils/utils.js'
+import {createCardsView} from './views/cardsView.js'
+import {getRecipesFromSearch} from './components/searchBar.js'
+import {printSnackbar} from './components/snackbar.js'
+import {appareilsList, ingredientsList, ustensilesList} from './init.js'
 
 // On récupère une liste initiale immutable de tous les tags
 const initTags = {
@@ -54,7 +54,7 @@ export const app = (userEvent, initialTags = initTags) => {
       printErrorMessage(
         recipes?.length === 0
           ? 'Aucune recette ne correspond à votre critère...Vous pouvez chercher "tarte aux pommes", "poisson", etc.'
-          : ''
+          : '',
       )
       return recipes
     }
@@ -75,11 +75,11 @@ export const app = (userEvent, initialTags = initTags) => {
         // On crée un tableau global de tags par recette
         M.forEach(recipe => {
           const ingredientsTags = M.map(ingredient =>
-            formatted(ingredient.ingredient)
+            formatted(ingredient.ingredient),
           )(recipe.ingredients)
           const appareilsTags = formatted(recipe.appliance)
           const ustensilesTags = M.map(ustensile => formatted(ustensile))(
-            recipe.ustensils
+            recipe.ustensils,
           )
 
           recipesTags = [...ingredientsTags, appareilsTags, ...ustensilesTags]
@@ -93,7 +93,7 @@ export const app = (userEvent, initialTags = initTags) => {
           // On vérifie la correspondance entre les tableaux de tags par recette et les tags selectionnés
           if (
             selectedTagsArray.every(tag =>
-              recipesTags.includes(formatted(tag))
+              recipesTags.includes(formatted(tag)),
             ) &&
             !newSelection.includes(recipe)
           ) {
@@ -133,7 +133,7 @@ export const app = (userEvent, initialTags = initTags) => {
       updateRecipesWithSelectedTags,
       createTagsLists,
       printSnackbar,
-      createCardsView
+      createCardsView,
     )
 
     // La requète utilisateur sera un mot de plus de trois caractères ou un tag selectionné

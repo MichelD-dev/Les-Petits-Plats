@@ -16,8 +16,8 @@ export const printSnackbar = selection => {
     M.text(
       `Votre recherche a retourné ${selection.length} recette${
         selection.length === 1 ? '' : 's'
-      }`
-    )
+      }`,
+    ),
   )(snackBar)
 
   M.addClasses('fade-in')(snackBar)
