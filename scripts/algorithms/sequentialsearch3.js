@@ -1,6 +1,6 @@
 import * as M from '../factory/helpers.js'
-import { deepFreeze, formatted } from '../helpers.js'
-import { initialList } from '../init.js'
+import {deepFreeze, formatted} from '../helpers.js'
+import {initialList} from '../init.js'
 
 const searchList = deepFreeze(initialList)
 
@@ -9,7 +9,7 @@ export const sequentialSearch3 = (
   selector,
   MIN_SEARCH_LENGTH,
   list = searchList,
-  searchResults = []
+  searchResults = [],
 ) => {
   const first = list[0]
   const next = list.slice(1)
@@ -28,7 +28,7 @@ export const sequentialSearch3 = (
       selector,
       MIN_SEARCH_LENGTH,
       next,
-      searchResults
+      searchResults,
     )
   }
 
@@ -36,17 +36,18 @@ export const sequentialSearch3 = (
   else if (selector === 'ingredients') {
     if (list.length === 0) return searchResults
 
-    M.forEach(ingredient => {
-      if (formatted(ingredient.ingredient).includes(search))
-        searchResults = [...searchResults, first]
-    })(first[selector])
+    const foundRecipe = M.find(ingredient =>
+      formatted(ingredient.ingredient).includes(search),
+    )(first[selector])
+
+    searchResults = foundRecipe ? [...searchResults, first] : searchResults
 
     return sequentialSearch3(
       search,
       selector,
       MIN_SEARCH_LENGTH,
       next,
-      searchResults
+      searchResults,
     )
   }
 
@@ -62,7 +63,7 @@ export const sequentialSearch3 = (
       selector,
       MIN_SEARCH_LENGTH,
       next,
-      searchResults
+      searchResults,
     )
   }
 
@@ -70,19 +71,20 @@ export const sequentialSearch3 = (
   else if (selector === 'ustensils') {
     if (list.length === 0) return searchResults
 
-    M.forEach(ustensile => {
-      if (formatted(ustensile).includes(search))
-        searchResults = [...searchResults, first]
-    })(first[selector])
+    const foundRecipe = M.find(ustensile =>
+      formatted(ustensile).includes(search),
+    )(first[selector])
+
+    searchResults = foundRecipe ? [...searchResults, first] : searchResults
 
     return sequentialSearch3(
       search,
       selector,
       MIN_SEARCH_LENGTH,
       next,
-      searchResults
+      searchResults,
     )
   }
 
-  return [...new Set(searchResults)]
+  return searchResults
 }
