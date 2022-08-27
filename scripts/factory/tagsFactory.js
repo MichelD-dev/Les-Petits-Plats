@@ -1,14 +1,14 @@
 import * as M from './helpers.js'
-import { selectTag } from '../components/tagsList.js'
-import { on } from '../helpers.js'
-import { app } from '../index.js'
+import {selectTag} from '../components/tagsList.js'
+import {on} from '../helpers.js'
+import {app} from '../index.js'
 import {
   capitalize,
   getSelector,
   pipe,
   printErrorMessage,
 } from '../utils/utils.js'
-import { tagsView } from '../views/tagsView.js'
+import {tagsView} from '../views/tagsView.js'
 
 export const tagsFactory = tagsList => selector => {
   const selectedTags = M.map(tag => tag.textContent.toLowerCase())([
@@ -20,7 +20,7 @@ export const tagsFactory = tagsList => selector => {
   const createTag = tag => {
     const tagElement = pipe(
       M.addClasses(`custom-option`, `custom-option_${selector}`),
-      M.append(M.text(capitalize(tag)))
+      M.append(M.text(capitalize(tag))),
     )(M.element('li'))
 
     // Selection d'un tag
@@ -35,7 +35,7 @@ export const tagsFactory = tagsList => selector => {
       if (isAlreadySelected)
         return printErrorMessage(
           'Vous avez déjà selectionné ce tag.',
-          'error-tag'
+          'error-tag',
         )
       printErrorMessage('', 'error-tag')
 

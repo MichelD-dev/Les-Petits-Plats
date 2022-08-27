@@ -1,5 +1,5 @@
 import * as M from '../factory/helpers.js'
-import { clearTagsSection, getSelector } from '../utils/utils.js'
+import {clearTagsSection, getSelector} from '../utils/utils.js'
 
 // Fonction d'affichage de la liste de tags
 export const tagsView = tags => selector => {

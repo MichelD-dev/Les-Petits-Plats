@@ -19,13 +19,7 @@ export const memoize = fn => {
  * Fonction de réinitialisation de la grille d'images
  */
 export const clearCardsSection = selection => {
-  const recipesCards = M.getElement('.recipes')
-  const { firstChild, lastChild } = recipesCards
-
-  if (!firstChild) return selection
-
-  recipesCards.removeChild(lastChild)
-  clearCardsSection(selection)
+  M.getElement('.recipes').replaceChildren()
 
   return selection
 }
@@ -48,7 +42,7 @@ export const getSelector = selector => {
  */
 export const clearTagsSection = selector => {
   const tagsList = M.getElement(`#${getSelector(selector)}-list`)
-  const { firstChild, lastChild } = tagsList
+  const {firstChild, lastChild} = tagsList
 
   if (!firstChild) return
 

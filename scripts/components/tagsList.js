@@ -5,9 +5,9 @@ import {
   initialList,
   ustensilesList,
 } from '../init.js'
-import { deepFreeze, formatted, lowerCased, on } from '../helpers.js'
-import { capitalize, flip, getSelector, pipe } from '../utils/utils.js'
-import { app } from '../index.js'
+import {deepFreeze, formatted, lowerCased, on} from '../helpers.js'
+import {capitalize, flip, pipe} from '../utils/utils.js'
+import {app} from '../index.js'
 
 export const getTags = (recipesSelection = initialList) => {
   const compareByAlphabet = (a, b) => a.localeCompare(b)
@@ -32,7 +32,7 @@ export const getTags = (recipesSelection = initialList) => {
       })(recipe.ingredients)
     })(recipesSelection)
 
-    return { recipesSelection, ...allTags, ingredientsTags }
+    return {recipesSelection, ...allTags, ingredientsTags}
   }
 
   const setUstensilesTags = ({
@@ -54,7 +54,7 @@ export const getTags = (recipesSelection = initialList) => {
       })(recipe.ustensils)
     })(recipesSelection)
 
-    return { recipesSelection, ...allTags, ustensilesTags }
+    return {recipesSelection, ...allTags, ustensilesTags}
   }
 
   const setAppareilsTags = ({
@@ -74,13 +74,13 @@ export const getTags = (recipesSelection = initialList) => {
       if (appareilsTags.length === 0) return appareilsList
     })(recipesSelection)
 
-    return { ...allTags, appareilsTags }
+    return {...allTags, appareilsTags}
   }
 
   const tagsList = pipe(
     setIngredientsTags,
     setUstensilesTags,
-    setAppareilsTags
+    setAppareilsTags,
   )(recipesSelection)
 
   // On retourne un objet immutable contenant les listes de tags filtrées => tagsList = {ingredientsTags:[...], appareilsTags: [...], ustensilesTags: [...]}
@@ -94,7 +94,7 @@ export const selectTag = (category, selectedTag) => {
   const tagText = pipe(
     capitalize,
     M.text,
-    flip(M.append)(M.element('span'))
+    flip(M.append)(M.element('span')),
   )(selectedTag)
 
   const tagClose = M.addClasses('tag__close')(M.element('span'))
@@ -102,10 +102,10 @@ export const selectTag = (category, selectedTag) => {
 
   pipe(
     M.addClasses('tag', `tag_${category}`),
-    M.addAttributes({ 'data-selector': category }),
+    M.addAttributes({'data-selector': category}),
     M.append(tagText),
     M.append(tagClose),
-    flip(M.append)(M.getElement('.tags'))
+    flip(M.append)(M.getElement('.tags')),
   )(M.element('div'))
 
   // // Suppression du tag
