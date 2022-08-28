@@ -9,11 +9,8 @@ export const sequentialSearch4 = (search, selector, MIN_SEARCH_LENGTH) => {
     !selector
   ) {
     const generator = function* (recipes) {
-      for (const recipe of recipes) {
-        if (recipe.text.includes(search)) yield recipe
-      }
+      yield* M.filter(recipe => recipe.text.includes(search))(recipes)
     }
-
     return [...generator(initialList)]
   }
 
