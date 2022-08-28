@@ -3,8 +3,6 @@ import {formatted} from '../helpers.js'
 import {initialList} from '../init.js'
 
 export const sequentialSearch4 = (search, selector, MIN_SEARCH_LENGTH) => {
-  let searchResults = []
-
   // Recherche sur le champ de recherche principal, si le mot entré fait au moins 3 lettres et qu'aucun tag n'a été selectionné
   if (
     M.getElement('.search__form_searchbar').value.length >= MIN_SEARCH_LENGTH ||
@@ -16,7 +14,7 @@ export const sequentialSearch4 = (search, selector, MIN_SEARCH_LENGTH) => {
       }
     }
 
-    searchResults = [...generator(initialList)]
+    return [...generator(initialList)]
   }
 
   // Recherche à partir d'un tag Ingredients
@@ -28,13 +26,17 @@ export const sequentialSearch4 = (search, selector, MIN_SEARCH_LENGTH) => {
           return
         }
       }
+      // const foundRecipe = recipe.ingredients.find(ingredient => formatted(ingredient.ingredient).includes(formatted(search)))
+      // if (foundRecipe) {
+      //   yield recipe
+      //  }
     }
     const generator = function* (recipes) {
       for (const recipe of recipes) {
         yield* generator2(recipe)
       }
     }
-    searchResults = [...generator(initialList)]
+    return [...generator(initialList)]
   }
 
   // Recherche à partir d'un tag Appareils
@@ -46,7 +48,7 @@ export const sequentialSearch4 = (search, selector, MIN_SEARCH_LENGTH) => {
       }
     }
 
-    searchResults = [...generator(initialList)]
+    return [...generator(initialList)]
   }
 
   // Recherche à partir d'un tag Ustensiles
@@ -59,14 +61,11 @@ export const sequentialSearch4 = (search, selector, MIN_SEARCH_LENGTH) => {
         }
       }
     }
-
     const generator = function* (recipes) {
       for (const recipe of recipes) {
         yield* generator2(recipe)
       }
     }
-    searchResults = [...generator(initialList)]
+    return [...generator(initialList)]
   }
-
-  return searchResults
 }
