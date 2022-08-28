@@ -35,7 +35,7 @@ npm installed.
 
 ## Usage
 
-This repository has 4 available branchs, each one corresponding to a different
+This repository has 4 available branches, each one corresponding to a different
 search implementation:
 
 1. [Recherche_par_boucles_natives](https://github.com/MichelD-dev/Les-Petits-Plats/tree/Recherche_par_boucles_natives)
@@ -43,11 +43,19 @@ search implementation:
 2. [Recherche_par_boucles_fonctionnelles](https://github.com/MichelD-dev/Les-Petits-Plats/tree/Recherche_par_boucles_fonctionnelles)
 3. [Recherche_par_récursion](https://github.com/MichelD-dev/Les-Petits-Plats/tree/Recherche_par_r%C3%A9cursion)
 4. [Recherche_par_generator](https://github.com/MichelD-dev/Les-Petits-Plats/tree/Recherche_par_generator)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+A benchmark has been made to evaluate the performance of each implementation:
+
+<img src="benchmark.jpg" alt="Benchmark" width="600">
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Contact:
 
-Michel DELAUNAY - delaunaymichel@hotmail.fr  
+Michel DELAUNAY - delaunaymichel@hotmail.fr -
+https://www.linkedin.com/in/michel-delaunay/  
 Project Link: https://micheld-dev.github.io/Les-Petits-Plats
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
