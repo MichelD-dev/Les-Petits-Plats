@@ -11,9 +11,9 @@ export const sequentialSearch4 = (search, selector, MIN_SEARCH_LENGTH) => {
     const generator = function* (recipes) {
       yield* M.filter(recipe => recipe.text.includes(search))(recipes)
     }
+
     return [...generator(initialList)]
   }
-
   // Recherche à partir d'un tag Ingredients
   else if (selector === 'ingredients') {
     const generator2 = function* (recipe) {

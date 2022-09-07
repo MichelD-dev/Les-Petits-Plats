@@ -114,4 +114,7 @@ const ingredientsList = Object.freeze(quickSort(ingredients))
 const appareilsList = Object.freeze(quickSort(appareils))
 const ustensilesList = Object.freeze(quickSort(ustensiles))
 
+console.log(initialList)
+console.log(`{text: ${initialList[0].text}}`)
+
 export {initialList, ingredientsList, appareilsList, ustensilesList}

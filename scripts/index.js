@@ -46,7 +46,7 @@ export const app = (userEvent, initialTags = initTags) => {
 
     // On récupère les recettes correspondantes à la requête de l'utilisateur
     const getRecipes = request => {
-      const selector = tags[0]?.dataset.selector
+      const selector = tags[0]?.dataset.selector || null
 
       const recipes = getRecipesFromSearch(request, selector, MIN_SEARCH_LENGTH)
 
