@@ -1,4 +1,4 @@
-<a name="readme-top"></a>
+****<a name="readme-top"></a>
 
 # Les Petits Plats
 
@@ -30,7 +30,12 @@ npm installed.
 
 4. (Optional) Configure the application inside the `.env.local` file
 
-5. Launch the application: `yarn install` or `npm install`
+5. Install live-server to lauch a local server: `npm install -g live-server` or `yarn add -g live-server`
+
+6. Launch the application: `live-server`
+
+If the app doesn't launch automatically :
+Open the browser at: http://127.0.0.1:8080/
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Usage
