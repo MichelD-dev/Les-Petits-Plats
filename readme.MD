@@ -44,6 +44,10 @@ $ npm install
 ```
 $ npm install -g live-server
 ```
+or 
+```
+$ yarn add -g live-server
+```
 
 5. (Optional) Configure the application inside the `.env.local` file
   
