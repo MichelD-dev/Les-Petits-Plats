@@ -22,15 +22,39 @@ npm installed.
 ## Installation
 
 1. Clone this repository (or download a zip file):
-   `git clone https://github.com/MichelD-dev/Les-Petits-Plats`
+```
+$ git clone https://github.com/MichelD-dev/Les-Petits-Plats
+```
 
-2. Go to the projet root folder `cd Les-Petits-Plats`
+2. Go to the projet root folder 
+```
+$ cd Les-Petits-Plats
+```
 
-3. Install the dependencies: `yarn install` or `npm install`
+3. Install the dependencies: 
+```
+$ yarn install
+``` 
+or 
+```
+$ npm install
+```
 
-4. (Optional) Configure the application inside the `.env.local` file
+4. Install live-server: 
+```
+$ npm install -g live-server
+```
+or 
+```
+$ yarn add -g live-server
+```
 
-5. Launch the application: `yarn install` or `npm install`
+5. (Optional) Configure the application inside the `.env.local` file
+  
+6. Launch the application: 
+```
+$ live-server
+```
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Usage
